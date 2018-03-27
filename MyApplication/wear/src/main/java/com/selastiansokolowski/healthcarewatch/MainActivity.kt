@@ -1,20 +1,27 @@
 package com.selastiansokolowski.healthcarewatch
 
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.support.wearable.activity.WearableActivity
 import android.support.wearable.view.BoxInsetLayout
-import android.view.View
+import android.widget.Button
 import android.widget.TextView
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-class MainActivity : WearableActivity() {
+class MainActivity : WearableActivity(), SensorEventListener {
 
     private var mContainerView: BoxInsetLayout? = null
     private var mTextView: TextView? = null
-    private var mClockView: TextView? = null
+    private var mStartButton: Button? = null
+
+    private var mSensorManager: SensorManager? = null
+    private var mHeartRateSensor: Sensor? = null
+
+    private var measureStarted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +30,49 @@ class MainActivity : WearableActivity() {
 
         mContainerView = findViewById(R.id.container) as BoxInsetLayout
         mTextView = findViewById(R.id.text) as TextView
-        mClockView = findViewById(R.id.clock) as TextView
+        mStartButton = findViewById(R.id.start_btn) as Button
+        mStartButton?.setOnClickListener { startMeasure() }
+
+        mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mHeartRateSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_HEART_RATE)
+    }
+
+    fun startMeasure(){
+        mTextView?.setText("");
+
+
+        var sensorRegistered = mSensorManager?.registerListener(this, mHeartRateSensor, SensorManager.SENSOR_DELAY_FASTEST)
+
+        if(sensorRegistered == true){
+            measureStarted = true
+            mStartButton?.setText("Stop")
+        }else{
+            measureStarted = false
+            mStartButton?.setText("Start")
+
+            mSensorManager?.unregisterListener(this);
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mSensorManager?.unregisterListener(this);
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+         //TODO:
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        val mHeartRateFloat = event!!.values[0]
+
+        val mHeartRate = Math.round(mHeartRateFloat)
+
+        mTextView?.setText(Integer.toString(mHeartRate))
     }
 
     override fun onEnterAmbient(ambientDetails: Bundle?) {
@@ -45,18 +94,10 @@ class MainActivity : WearableActivity() {
         if (isAmbient) {
             mContainerView!!.setBackgroundColor(resources.getColor(android.R.color.black))
             mTextView!!.setTextColor(resources.getColor(android.R.color.white))
-            mClockView!!.visibility = View.VISIBLE
-
-            mClockView!!.text = AMBIENT_DATE_FORMAT.format(Date())
         } else {
             mContainerView!!.background = null
             mTextView!!.setTextColor(resources.getColor(android.R.color.black))
-            mClockView!!.visibility = View.GONE
         }
     }
 
-    companion object {
-
-        private val AMBIENT_DATE_FORMAT = SimpleDateFormat("HH:mm", Locale.US)
-    }
 }
