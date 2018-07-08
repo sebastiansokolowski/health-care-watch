@@ -6,6 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.wearable.activity.WearableActivity
 import android.support.wearable.view.BoxInsetLayout
 import android.widget.Button
@@ -37,34 +38,30 @@ class MainActivity : WearableActivity(), SensorEventListener {
         mHeartRateSensor = mSensorManager?.getDefaultSensor(Sensor.TYPE_HEART_RATE)
     }
 
-    fun startMeasure(){
-        mTextView?.setText("");
+    fun startMeasure() {
+        mTextView?.text = ""
 
 
         var sensorRegistered = mSensorManager?.registerListener(this, mHeartRateSensor, SensorManager.SENSOR_DELAY_FASTEST)
 
-        if(sensorRegistered == true){
+        if (sensorRegistered == true) {
             measureStarted = true
-            mStartButton?.setText("Stop")
-        }else{
+            mStartButton?.text = "Stop"
+        } else {
             measureStarted = false
-            mStartButton?.setText("Start")
+            mStartButton?.text = "Start"
 
-            mSensorManager?.unregisterListener(this);
+            mSensorManager?.unregisterListener(this)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onPause() {
         super.onPause()
-        mSensorManager?.unregisterListener(this);
+        mSensorManager?.unregisterListener(this)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-         //TODO:
+        //TODO:
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -72,7 +69,7 @@ class MainActivity : WearableActivity(), SensorEventListener {
 
         val mHeartRate = Math.round(mHeartRateFloat)
 
-        mTextView?.setText(Integer.toString(mHeartRate))
+        mTextView?.text = Integer.toString(mHeartRate)
     }
 
     override fun onEnterAmbient(ambientDetails: Bundle?) {
@@ -86,17 +83,17 @@ class MainActivity : WearableActivity(), SensorEventListener {
     }
 
     override fun onExitAmbient() {
-        updateDisplay()
         super.onExitAmbient()
+        updateDisplay()
     }
 
     private fun updateDisplay() {
         if (isAmbient) {
-            mContainerView!!.setBackgroundColor(resources.getColor(android.R.color.black))
-            mTextView!!.setTextColor(resources.getColor(android.R.color.white))
+            mContainerView!!.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
+            mTextView!!.setTextColor(ContextCompat.getColor(this, android.R.color.white))
         } else {
             mContainerView!!.background = null
-            mTextView!!.setTextColor(resources.getColor(android.R.color.black))
+            mTextView!!.setTextColor(ContextCompat.getColor(this, android.R.color.black))
         }
     }
 
