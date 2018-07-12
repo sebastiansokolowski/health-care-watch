@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.selastiansokolowski.healthcarewatch.MainActivity"
+    tools:context="com.selastiansokolowski.healthcarewatch.ui.MainActivity"
     tools:deviceIds="wear">
 
     <LinearLayout
@@ -13,147 +13,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ScrollView
+        <TextView
+            android:id="@+id/tv_heart_rate"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="Step status"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-
-                    <TextView
-                        android:id="@+id/tv_step_status"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="no"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="Linear acceleration"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-
-                    <TextView
-                        android:id="@+id/tv_linear_acceleration"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="x:0 y:0 z:0"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="Acceleration"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-
-                    <TextView
-                        android:id="@+id/tv_acceleration"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="x:0 y:0 z:0"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="Gyroscope"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-
-                    <TextView
-                        android:id="@+id/tv_gyroscope"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="x:0 y:0 z:0"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="Heart rate:"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-
-                    <TextView
-                        android:id="@+id/tv_heart_rate"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textSize="30sp"
-                        app:layout_box="all" />
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="30sp"
+            app:layout_box="all" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -161,7 +28,7 @@
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/start_btn"
+                android:id="@+id/btn_measurement_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

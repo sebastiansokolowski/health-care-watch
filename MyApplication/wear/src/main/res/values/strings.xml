@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Health Care Watch</string>
     <string name="hello_world">Hello World!</string>
+
+    <string name="measurement_button_start_label">START</string>
+    <string name="measurement_button_stop_label">STOP</string>
 </resources>
