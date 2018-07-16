@@ -30,9 +30,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     wearApp project(':wear')
-    implementation 'com.google.android.gms:play-services-wearable:10.2.0'
-    implementation 'com.android.support:appcompat-v7:25.3.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.google.android.gms:play-services-wearable:15.0.1'
+    implementation 'com.android.support:appcompat-v7:25.4.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     testImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // Dagger

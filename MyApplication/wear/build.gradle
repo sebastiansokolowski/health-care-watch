@@ -22,9 +22,9 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.android.support:wearable:2.0.0'
-    implementation 'com.google.android.gms:play-services-wearable:10.2.0'
-    compileOnly 'com.google.android.wearable:wearable:2.0.0'
+    implementation 'com.google.android.support:wearable:2.3.0'
+    implementation 'com.google.android.gms:play-services-wearable:15.0.1'
+    compileOnly 'com.google.android.wearable:wearable:2.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // Dagger
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
