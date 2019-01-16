@@ -62,7 +62,9 @@ class WearableDataClient(context: Context) {
     }
 
     private fun send(request: PutDataMapRequest) {
-        val putDataReq = request.asPutDataRequest()
+        val putDataReq = request
+                .asPutDataRequest()
+                .setUrgent()
 
         val dataItemTask = dataClient.putDataItem(putDataReq)
 
