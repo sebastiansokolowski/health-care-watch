@@ -30,6 +30,8 @@ class WearableDataClient(context: Context) {
     private val dataClient: DataClient = Wearable.getDataClient(context)
 
     fun sendSensorEvent(event: SensorEvent) {
+        Log.d(TAG, "sendSensorEvent event=${event.sensor.name}")
+
         val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, event.values)
@@ -42,6 +44,8 @@ class WearableDataClient(context: Context) {
     }
 
     fun sendSensorAccuracy(sensor: Sensor, accuracy: Int) {
+        Log.d(TAG, "sendSensorAccuracy sensor=$sensor accuracy=$accuracy")
+
         val putDataMapReq = PutDataMapRequest.create(ACCURACY_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putInt(ACCURACY_MAP_SENSOR_TYPE, sensor.type)
@@ -52,6 +56,8 @@ class WearableDataClient(context: Context) {
     }
 
     fun sendSensorSupportedInfo(type: Int, supported: Boolean) {
+        Log.d(TAG, "sendSensorSupportedInfo type=$type supported=$supported")
+
         val putDataMapReq = PutDataMapRequest.create(SUPPORTED_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putInt(SUPPORTED_MAP_SENSOR_TYPE, type)
