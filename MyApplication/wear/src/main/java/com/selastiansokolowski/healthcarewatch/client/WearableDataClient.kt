@@ -13,7 +13,7 @@ import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_SEN
 import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_SENSOR_TYPE
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_PATH
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY
-import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_SENSOR_KEY
+import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_VALUES_KEY
 import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_MAP_PATH
@@ -35,7 +35,7 @@ class WearableDataClient(context: Context) {
         val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, event.values)
-            putString(DATA_MAP_SENSOR_EVENT_SENSOR_KEY, event.sensor.name)
+            putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, event.sensor.type)
             putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, event.accuracy)
             putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, event.timestamp)
         }

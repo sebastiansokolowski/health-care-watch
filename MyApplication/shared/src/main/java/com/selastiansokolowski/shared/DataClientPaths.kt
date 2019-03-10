@@ -14,7 +14,7 @@ class DataClientPaths {
 
         const val DATA_MAP_PATH = "/sensor"
         const val DATA_MAP_SENSOR_EVENT_VALUES_KEY = "values"
-        const val DATA_MAP_SENSOR_EVENT_SENSOR_KEY = "sensor"
+        const val DATA_MAP_SENSOR_EVENT_SENSOR_TYPE = "sensor"
         const val DATA_MAP_SENSOR_EVENT_ACCURACY_KEY = "accuracy"
         const val DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY = "timestamp"
 

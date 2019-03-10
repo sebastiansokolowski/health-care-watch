@@ -37,15 +37,15 @@ class SensorDataModel(context: Context) : DataClient.OnDataChangedListener {
             when (event.dataItem.uri.path) {
                 DataClientPaths.DATA_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
+                        val type = getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE)
                         val values = getFloatArray(DataClientPaths.DATA_MAP_SENSOR_EVENT_VALUES_KEY)
-                        val sensorName = getString(DataClientPaths.DATA_MAP_SENSOR_EVENT_SENSOR_KEY)
                         val accuracy = getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY)
                         val timestamp = getLong(DataClientPaths.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY)
 
-                        val sensorEvent = SensorEventData(sensorName, accuracy, timestamp, values)
+
+                        val sensorEvent = SensorEventData(type, accuracy, timestamp, values)
 
                         sensorEventData.add(sensorEvent)
-
                         Log.d(TAG, "$sensorEvent")
                     }
                 }
