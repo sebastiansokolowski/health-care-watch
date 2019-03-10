@@ -1,4 +1,4 @@
-package com.selastiansokolowski.healthcarewatch.data_model
+package com.selastiansokolowski.healthcarewatch.dataModel
 
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
