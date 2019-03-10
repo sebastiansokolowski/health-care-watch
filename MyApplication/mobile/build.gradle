@@ -46,6 +46,9 @@ dependencies {
 
     //Charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+    //LiveData
+    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
 }
 repositories {
     mavenCentral()
