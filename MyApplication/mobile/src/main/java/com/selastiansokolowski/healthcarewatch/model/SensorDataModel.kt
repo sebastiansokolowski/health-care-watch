@@ -1,20 +1,31 @@
-package com.selastiansokolowski.healthcarewatch.listener
+package com.selastiansokolowski.healthcarewatch.model
 
+import android.content.Context
 import android.util.Log
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.DataEvent
-import com.google.android.gms.wearable.DataEventBuffer
-import com.google.android.gms.wearable.DataMapItem
+import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.dataModel.SensorEventAccuracy
 import com.selastiansokolowski.healthcarewatch.dataModel.SensorEventData
 import com.selastiansokolowski.healthcarewatch.dataModel.SensorEventSupportedInfo
 import com.selastiansokolowski.shared.DataClientPaths
+import io.reactivex.rxkotlin.toObservable
 
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataListener : DataClient.OnDataChangedListener {
+class SensorDataModel(context: Context) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
+
+    private val sensorEventData = arrayListOf<SensorEventData>()
+    private val sensorEventAccuracy = arrayListOf<SensorEventAccuracy>()
+    private val sensorEventSupportedInfo = arrayListOf<SensorEventSupportedInfo>()
+
+    val observableSensorEventData = sensorEventData.toObservable()
+    val observableSensorEventAccuracy = sensorEventAccuracy.toObservable()
+    val observableEventSupportedInfo = sensorEventSupportedInfo.toObservable()
+
+    init {
+        Wearable.getDataClient(context).addListener(this)
+    }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
         dataEvent.forEach { event ->
@@ -33,6 +44,8 @@ class SensorDataListener : DataClient.OnDataChangedListener {
 
                         val sensorEvent = SensorEventData(sensorName, accuracy, timestamp, values)
 
+                        sensorEventData.add(sensorEvent)
+
                         Log.d(TAG, "$sensorEvent")
                     }
                 }
@@ -43,6 +56,8 @@ class SensorDataListener : DataClient.OnDataChangedListener {
 
                         val sensorEvent = SensorEventAccuracy(type, accuracy)
 
+                        sensorEventAccuracy.add(sensorEvent)
+
                         Log.d(TAG, "$sensorEvent")
                     }
                 }
@@ -52,6 +67,8 @@ class SensorDataListener : DataClient.OnDataChangedListener {
                         val supported = getBoolean(DataClientPaths.SUPPORTED_MAP_SENSOR_SUPPORTED)
 
                         val sensorEvent = SensorEventSupportedInfo(type, supported)
+
+                        sensorEventSupportedInfo.add(sensorEvent)
 
                         Log.d(TAG, "$sensorEvent")
                     }
