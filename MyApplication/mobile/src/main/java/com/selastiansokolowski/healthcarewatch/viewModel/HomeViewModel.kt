@@ -1,6 +1,7 @@
 package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.*
+import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import io.reactivex.BackpressureStrategy
 import javax.inject.Inject
@@ -9,7 +10,7 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HomeViewModel
-@Inject constructor(private val sensorDataModel: SensorDataModel) : ViewModel() {
+@Inject constructor(private val sensorDataModel: SensorDataModel, private val wearableDataClient: WearableDataClient) : ViewModel() {
 
     val measurementState: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
@@ -33,9 +34,11 @@ class HomeViewModel
 
     fun toggleMeasurementState() {
         val lastState = measurementState.value ?: false
+        val newState = !lastState
 
-        measurementState.value = !lastState
-
-
+        measurementState.value = newState
+        Thread(Runnable {
+            wearableDataClient.sendMeasurementEvent(newState)
+        }).start()
     }
 }

@@ -5,6 +5,8 @@ package com.selastiansokolowski.shared
  */
 class DataClientPaths {
     companion object {
+        const val NODE_CAPABILITY = "health_care_watch"
+
         const val START_MEASUREMENT = "/start_measurement"
         const val STOP_MEASUREMENT = "/stop_measurement"
 

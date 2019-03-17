@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.wearable.activity.WearableActivity
 import com.selastiansokolowski.healthcarewatch.R
+import com.selastiansokolowski.healthcarewatch.service.MessageReceiverService
 import com.selastiansokolowski.healthcarewatch.service.SensorService
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
@@ -23,6 +24,8 @@ class MainActivity : WearableActivity(), MainView {
         setAmbientEnabled()
 
         startService(Intent(this, SensorService::class.java))
+        startService(Intent(this, MessageReceiverService::class.java))
+
 
         btn_measurement_start.setOnClickListener {
             mainPresenter.toggleMeasurementState()
