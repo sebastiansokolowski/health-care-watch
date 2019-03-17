@@ -1,0 +1,86 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:5945329733278448333",
+      "lastPropertyId": "5:744993564005451496",
+      "name": "SensorEventData",
+      "properties": [
+        {
+          "id": "1:8038907277621769351",
+          "name": "id"
+        },
+        {
+          "id": "2:8296299707058392429",
+          "name": "type"
+        },
+        {
+          "id": "3:3719614490264785414",
+          "name": "accuracy"
+        },
+        {
+          "id": "4:8096025002865451187",
+          "name": "timestamp"
+        },
+        {
+          "id": "5:744993564005451496",
+          "name": "values"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:3077164819406872547",
+      "lastPropertyId": "3:5217401193066746252",
+      "name": "SensorEventAccuracy",
+      "properties": [
+        {
+          "id": "1:1033219896639260609",
+          "name": "id"
+        },
+        {
+          "id": "2:7431483495792661048",
+          "name": "type"
+        },
+        {
+          "id": "3:5217401193066746252",
+          "name": "accuracy"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:6847505716280616152",
+      "lastPropertyId": "3:3978716418250032961",
+      "name": "SensorEventSupportedInfo",
+      "properties": [
+        {
+          "id": "1:811192466233767144",
+          "name": "id"
+        },
+        {
+          "id": "2:7479756183492175080",
+          "name": "type"
+        },
+        {
+          "id": "3:3978716418250032961",
+          "name": "supported"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "3:6847505716280616152",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

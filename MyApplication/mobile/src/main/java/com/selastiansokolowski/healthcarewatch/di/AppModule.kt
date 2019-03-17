@@ -4,9 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.selastiansokolowski.healthcarewatch.db.entity.MyObjectBox
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import dagger.Module
 import dagger.Provides
+import io.objectbox.BoxStore
 import javax.inject.Singleton
 
 /**
@@ -25,7 +27,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(context: Context): SensorDataModel = SensorDataModel(context)
+    fun provideSensorDataModel(context: Context, boxStore: BoxStore): SensorDataModel =
+            SensorDataModel(context, boxStore)
 
     @Provides
     @Singleton

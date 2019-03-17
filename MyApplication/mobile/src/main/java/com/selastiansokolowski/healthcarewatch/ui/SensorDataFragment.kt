@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.selastiansokolowski.healthcarewatch.R
@@ -15,7 +14,6 @@ import com.selastiansokolowski.healthcarewatch.view.DateValueFormatter
 import com.selastiansokolowski.healthcarewatch.viewModel.SensorDataViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.sensor_data_fragment.*
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 
@@ -42,14 +40,12 @@ class SensorDataFragment : DaggerFragment() {
         pressure_chart.xAxis.valueFormatter = DateValueFormatter()
         gravity_chart.xAxis.valueFormatter = DateValueFormatter()
 
-        sensorDataViewModel.heartRateEntries.observe(this, Observer {
-            val values = mutableListOf<Entry>()
-
-            it?.let {
-                values.addAll(it)
+        sensorDataViewModel.heartRateLiveData.observe(this, Observer {
+            if (it == null || it.isEmpty()) {
+                return@Observer
             }
 
-            val lineDataSet = LineDataSet(values, "Heart rate")
+            val lineDataSet = LineDataSet(it, "Heart rate")
             lineDataSet.lineWidth = 2.5f
             lineDataSet.circleRadius = 4.5f
 
@@ -57,14 +53,12 @@ class SensorDataFragment : DaggerFragment() {
             heart_rate_chart.notifyDataSetChanged()
             heart_rate_chart.invalidate()
         })
-        sensorDataViewModel.stepCounterEntries.observe(this, Observer {
-            val values = mutableListOf<Entry>()
-
-            it?.let {
-                values.addAll(it)
+        sensorDataViewModel.stepCounterLiveData.observe(this, Observer {
+            if (it == null || it.isEmpty()) {
+                return@Observer
             }
 
-            val lineDataSet = LineDataSet(values, "Step counter")
+            val lineDataSet = LineDataSet(it, "Step counter")
             lineDataSet.lineWidth = 2.5f
             lineDataSet.circleRadius = 4.5f
 
@@ -72,14 +66,12 @@ class SensorDataFragment : DaggerFragment() {
             step_counter_chart.notifyDataSetChanged()
             step_counter_chart.invalidate()
         })
-        sensorDataViewModel.pressureEntries.observe(this, Observer {
-            val values = mutableListOf<Entry>()
-
-            it?.let {
-                values.addAll(it)
+        sensorDataViewModel.pressureLiveData.observe(this, Observer {
+            if (it == null || it.isEmpty()) {
+                return@Observer
             }
 
-            val lineDataSet = LineDataSet(values, "Pressure")
+            val lineDataSet = LineDataSet(it, "Pressure")
             lineDataSet.lineWidth = 2.5f
             lineDataSet.circleRadius = 4.5f
 
@@ -87,14 +79,12 @@ class SensorDataFragment : DaggerFragment() {
             pressure_chart.notifyDataSetChanged()
             pressure_chart.invalidate()
         })
-        sensorDataViewModel.gravityEntries.observe(this, Observer {
-            val values = mutableListOf<Entry>()
-
-            it?.let {
-                values.addAll(it)
+        sensorDataViewModel.gravityLiveData.observe(this, Observer {
+            if (it == null || it.isEmpty()) {
+                return@Observer
             }
 
-            val lineDataSet = LineDataSet(values, "Gravity")
+            val lineDataSet = LineDataSet(it, "Gravity")
             lineDataSet.lineWidth = 2.5f
             lineDataSet.circleRadius = 4.5f
 
