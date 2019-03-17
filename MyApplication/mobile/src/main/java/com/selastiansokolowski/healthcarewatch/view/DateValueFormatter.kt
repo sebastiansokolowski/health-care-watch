@@ -8,7 +8,7 @@ import java.util.*
 /**
  * Created by Sebastian Sokołowski on 10.03.19.
  */
-class DateValueFormatter : IAxisValueFormatter {
+class DateValueFormatter() : IAxisValueFormatter {
     var dtf1 = SimpleDateFormat("yyyyy-mm-dd")
     var dtf2 = SimpleDateFormat("hh:mm:ss")
 

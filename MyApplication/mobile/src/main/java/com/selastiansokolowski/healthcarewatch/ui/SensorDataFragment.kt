@@ -52,7 +52,7 @@ class SensorDataFragment : DaggerFragment() {
             lineDataSet.lineWidth = 2.5f
             lineDataSet.circleRadius = 4.5f
 
-            view.xAxis.valueFormatter = DateValueFormatter(it)
+            view.xAxis.valueFormatter = DateValueFormatter()
             view.data = LineData(lineDataSet)
             view.notifyDataSetChanged()
             view.invalidate()

@@ -1,6 +1,7 @@
 package com.selastiansokolowski.healthcarewatch.model
 
 import android.content.Context
+import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventAccuracy
@@ -8,6 +9,7 @@ import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventSupportedInfo
 import com.selastiansokolowski.shared.DataClientPaths
 import io.objectbox.BoxStore
+import io.reactivex.subjects.ReplaySubject
 
 
 /**
@@ -18,6 +20,12 @@ class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnD
 
     init {
         Wearable.getDataClient(context).addListener(this)
+    }
+
+    val heartRateObserver: ReplaySubject<SensorEventData> = ReplaySubject.create()
+
+    private fun notifyHeartRateObserver(sensorEventData: SensorEventData) {
+        heartRateObserver.onNext(sensorEventData)
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
@@ -44,6 +52,10 @@ class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnD
 
                         val eventBox = boxStore.boxFor(SensorEventData::class.java)
                         eventBox.put(sensorEvent)
+
+                        if (type == Sensor.TYPE_HEART_RATE) {
+                            notifyHeartRateObserver(sensorEvent)
+                        }
 
                         Log.d(TAG, "$sensorEvent")
                     }
