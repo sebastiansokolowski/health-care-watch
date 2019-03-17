@@ -37,7 +37,7 @@ class WearableDataClient(context: Context) {
             putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, event.values)
             putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, event.sensor.type)
             putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, event.accuracy)
-            putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, event.timestamp)
+            putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, System.currentTimeMillis())
         }
 
         send(putDataMapReq)
