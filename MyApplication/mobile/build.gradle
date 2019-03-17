@@ -48,11 +48,12 @@ dependencies {
     // ReactiveX
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
 
-    //Charts
+    // Charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
-    //LiveData
+    // LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+    implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
 
     // ObjectBox
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
