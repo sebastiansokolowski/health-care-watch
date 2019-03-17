@@ -53,6 +53,9 @@ dependencies {
 
     //LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
+
+    // ObjectBox
+    implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
 }
 repositories {
     mavenCentral()

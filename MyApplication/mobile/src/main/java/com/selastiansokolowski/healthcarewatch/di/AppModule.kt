@@ -27,4 +27,10 @@ class AppModule {
     @Singleton
     fun provideSensorDataModel(context: Context): SensorDataModel = SensorDataModel(context)
 
+    @Provides
+    @Singleton
+    fun provideBoxStore(context: Context): BoxStore = MyObjectBox.builder()
+            .androidContext(context)
+            .build()
+
 }
