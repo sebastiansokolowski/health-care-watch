@@ -10,6 +10,7 @@ import android.os.IBinder
 import android.util.Log
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import dagger.android.DaggerService
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -69,7 +70,7 @@ class SensorService : DaggerService(), SensorEventListener {
                 wearableDataClient.sendSensorSupportedInfo(sensorId, false)
                 continue
             }
-            val registered = sensorManager.registerListener(this@SensorService, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+            val registered = sensorManager.registerListener(this@SensorService, sensor, TimeUnit.SECONDS.toMicros(1).toInt())
             if (!registered) {
                 Log.d(TAG, "error register sensor: $sensorId")
             }
