@@ -1,7 +1,6 @@
 package com.selastiansokolowski.healthcarewatch.viewModel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
@@ -9,8 +8,9 @@ import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import io.objectbox.BoxStore
-import io.objectbox.android.ObjectBoxLiveData
+import io.objectbox.android.AndroidScheduler
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -21,40 +21,56 @@ class SensorDataViewModel
 
     private val disposables = CompositeDisposable()
 
-    val heartRateLiveData: LiveData<MutableList<Entry>> by lazy {
-        initLiveData(Sensor.TYPE_HEART_RATE)
+    val currentDateLiveData: MutableLiveData<Date> = MutableLiveData()
+
+    val heartRateLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
+    val stepCounterLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
+    val pressureLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
+    val gravityLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
+
+    init {
+        val currentDate = Date()
+        currentDateLiveData.postValue(currentDate)
+
+        refreshCharts(currentDate)
     }
 
-    val stepCounterLiveData: LiveData<MutableList<Entry>> by lazy {
-        initLiveData(Sensor.TYPE_STEP_COUNTER)
+    public fun refreshCharts(date: Date) {
+        initChart(heartRateLiveData, Sensor.TYPE_HEART_RATE, date)
+        initChart(stepCounterLiveData, Sensor.TYPE_STEP_COUNTER, date)
+        initChart(pressureLiveData, Sensor.TYPE_PRESSURE, date)
+        initChart(gravityLiveData, Sensor.TYPE_GRAVITY, date)
     }
 
-    val pressureLiveData: LiveData<MutableList<Entry>> by lazy {
-        initLiveData(Sensor.TYPE_PRESSURE)
-    }
+    private fun initChart(liveData: MutableLiveData<MutableList<Entry>>, type: Int, date: Date) {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
 
-    val gravityLiveData: LiveData<MutableList<Entry>> by lazy {
-        initLiveData(Sensor.TYPE_GRAVITY)
-    }
+        val startTimestamp = calendar.time.time
+        val stopTimestamp = startTimestamp + 24 * 60 * 60 * 1000
 
-    private fun initLiveData(type: Int): LiveData<MutableList<Entry>> {
         val heartRateBox = boxStore.boxFor(SensorEventData::class.java)
         val heartRateQuery = heartRateBox.query().filter {
-            it.type == type
+            it.type == type && it.timestamp!! in startTimestamp..stopTimestamp
         }.build()
 
-        val liveData = ObjectBoxLiveData<SensorEventData>(heartRateQuery)
-
-        return Transformations.map(liveData) {
-            val result = mutableListOf<Entry>()
-            it.forEach {
-                SafeCall.safeLet(it.timestamp, it.values) { timestamp, values ->
-                    result.add(Entry(it.id.toFloat(), values[0], it))
+        heartRateQuery.subscribe()
+                .on(AndroidScheduler.mainThread())
+                .transform {
+                    val result = mutableListOf<Entry>()
+                    it.forEach {
+                        SafeCall.safeLet(it.timestamp, it.values) { timestamp, values ->
+                            result.add(Entry((timestamp - startTimestamp).toFloat(), values[0], it))
+                        }
+                    }
+                    return@transform result
                 }
-            }
-
-            return@map result
-        }
+                .observer {
+                    liveData.postValue(it)
+                }
     }
 
     override fun onCleared() {
