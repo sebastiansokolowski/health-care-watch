@@ -20,7 +20,7 @@
                 android:text="Heart Rate" />
 
             <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/gravity_chart"
+                android:id="@+id/heart_rate_chart"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -61,7 +61,7 @@
                 android:text="Gravity" />
 
             <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/heart_rate_chart"
+                android:id="@+id/gravity_chart"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 app:layout_constraintLeft_toLeftOf="parent"
