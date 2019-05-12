@@ -30,4 +30,12 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Alert notification (SMS)">
+
+        <com.selastiansokolowski.healthcarewatch.view.ContactListPreference
+            android:key="contacts"
+            android:title="Select contacts" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
