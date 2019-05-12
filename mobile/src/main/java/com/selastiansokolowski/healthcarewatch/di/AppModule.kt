@@ -7,6 +7,7 @@ import android.preference.PreferenceManager
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.MyObjectBox
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
+import com.selastiansokolowski.healthcarewatch.model.SmsNotificationModel
 import dagger.Module
 import dagger.Provides
 import io.objectbox.BoxStore
@@ -41,5 +42,10 @@ class AppModule {
     @Singleton
     fun provideWearableDataClient(context: Context): WearableDataClient =
             WearableDataClient(context)
+
+    @Provides
+    @Singleton
+    fun provideSmsNotificationModel(prefs: SharedPreferences): SmsNotificationModel =
+            SmsNotificationModel(prefs)
 
 }
