@@ -30,11 +30,20 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Alert notification (SMS)">
+    <PreferenceCategory android:title="Alert notification">
+
+        <SwitchPreference
+            android:key="sms_notification_enabled"
+            android:title="SMS notification" />
 
         <com.selastiansokolowski.healthcarewatch.view.ContactListPreference
+            android:dependency="sms_notification_enabled"
             android:key="contacts"
             android:title="Select contacts" />
+
+        <SwitchPreference
+            android:key="android_notification_enabled"
+            android:title="Android notification" />
 
     </PreferenceCategory>
 
