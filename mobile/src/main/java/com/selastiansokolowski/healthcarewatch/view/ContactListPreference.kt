@@ -11,12 +11,21 @@ import android.util.AttributeSet
  * Created by Sebastian Sokołowski on 12.05.19.
  */
 class ContactListPreference : MultiSelectListPreference {
+
     constructor(context: Context) : super(context) {
-        loadContacts()
+        setDefaultValues()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        loadContacts()
+        setDefaultValues()
+    }
+
+    fun setDefaultValues() {
+        val myEntries: MutableList<String> = mutableListOf("")
+        val myValues: MutableList<String> = mutableListOf("")
+
+        entries = myEntries.toTypedArray()
+        entryValues = myValues.toTypedArray()
     }
 
     fun loadContacts() {

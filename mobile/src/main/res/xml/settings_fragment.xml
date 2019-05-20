@@ -33,6 +33,7 @@
     <PreferenceCategory android:title="Alert notification">
 
         <SwitchPreference
+            android:defaultValue="false"
             android:key="sms_notification_enabled"
             android:title="SMS notification" />
 
