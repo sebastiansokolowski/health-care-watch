@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.MyObjectBox
+import com.selastiansokolowski.healthcarewatch.model.NotificationModel
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.selastiansokolowski.healthcarewatch.model.SmsNotificationModel
 import dagger.Module
@@ -26,6 +27,11 @@ class AppModule {
     @Provides
     @Singleton
     fun provideContext(app: Application): Context = app
+
+    @Provides
+    @Singleton
+    fun provideNotificationModel(app: Application, prefs: SharedPreferences): NotificationModel =
+            NotificationModel(app, prefs)
 
     @Provides
     @Singleton
