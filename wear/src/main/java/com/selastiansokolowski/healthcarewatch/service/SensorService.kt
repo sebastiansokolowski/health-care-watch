@@ -78,7 +78,8 @@ class SensorService : DaggerService(), SensorEventListener {
         }
     }
 
-    private fun stopMeasurement() {
+    fun stopMeasurement() {
+        measurementRunning = false
         sensorManager.unregisterListener(this@SensorService)
     }
 
