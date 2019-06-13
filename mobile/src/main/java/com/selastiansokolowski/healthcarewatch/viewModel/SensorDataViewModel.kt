@@ -59,6 +59,7 @@ class SensorDataViewModel
 
         heartRateQuery.subscribe()
                 .on(AndroidScheduler.mainThread())
+                .single()
                 .transform {
                     val result = mutableListOf<Entry>()
                     it.forEach {
