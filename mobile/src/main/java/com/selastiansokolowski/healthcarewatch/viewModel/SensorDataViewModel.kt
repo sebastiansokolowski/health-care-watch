@@ -35,7 +35,7 @@ class SensorDataViewModel
         refreshCharts(currentDate)
     }
 
-    public fun refreshCharts(date: Date) {
+    fun refreshCharts(date: Date) {
         initChart(heartRateLiveData, Sensor.TYPE_HEART_RATE, date)
         initChart(stepCounterLiveData, Sensor.TYPE_STEP_COUNTER, date)
         initChart(pressureLiveData, Sensor.TYPE_PRESSURE, date)
@@ -63,7 +63,8 @@ class SensorDataViewModel
                     val result = mutableListOf<Entry>()
                     it.forEach {
                         SafeCall.safeLet(it.timestamp, it.values) { timestamp, values ->
-                            result.add(Entry((timestamp - startTimestamp).toFloat(), values[0], it))
+                            val timestampFromMidnight: Int = (timestamp - startTimestamp).toInt()
+                            result.add(Entry(timestampFromMidnight.toFloat(), values[0], it))
                         }
                     }
                     return@transform result
