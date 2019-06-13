@@ -13,65 +13,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/current_date_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="01/01/2019"
-                android:textColor="@android:color/black"
-                android:textSize="25sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Heart Rate" />
-
             <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/heart_rate_chart"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Step Counter" />
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/step_counter_chart"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Pressure" />
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/pressure_chart"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent">
-
-            </com.github.mikephil.charting.charts.LineChart>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Gravity" />
-
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/gravity_chart"
+                android:id="@+id/chart_lc"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 app:layout_constraintLeft_toLeftOf="parent"

@@ -1,23 +1,16 @@
 package com.selastiansokolowski.healthcarewatch.ui
 
 import android.app.DatePickerDialog
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.*
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.selastiansokolowski.healthcarewatch.R
-import com.selastiansokolowski.healthcarewatch.view.CustomMarkerView
-import com.selastiansokolowski.healthcarewatch.view.DateValueFormatter
+import com.selastiansokolowski.healthcarewatch.ui.sensorData.SensorDataPageAdapter
 import com.selastiansokolowski.healthcarewatch.viewModel.SensorDataViewModel
 import dagger.android.support.DaggerFragment
-import kotlinx.android.synthetic.main.sensor_data_fragment.*
-import kotlinx.android.synthetic.main.sensor_data_fragment.view.*
+import kotlinx.android.synthetic.main.watch_data_fragment.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -26,7 +19,7 @@ import javax.inject.Inject
 /**
  * Created by Sebastian Sokołowski on 10.03.19.
  */
-class SensorDataFragment : DaggerFragment() {
+class WatchDataFragment : DaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -39,21 +32,19 @@ class SensorDataFragment : DaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.sensor_data_fragment, container, false)
+        return inflater.inflate(R.layout.watch_data_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         sensorDataViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(SensorDataViewModel::class.java)
 
-        initChart(heart_rate_chart, sensorDataViewModel.heartRateLiveData)
-        initChart(step_counter_chart, sensorDataViewModel.stepCounterLiveData)
-        initChart(pressure_chart, sensorDataViewModel.pressureLiveData)
-        initChart(gravity_chart, sensorDataViewModel.gravityLiveData)
+        sensor_vp.adapter = SensorDataPageAdapter(childFragmentManager)
+        sensor_data_tl.setupWithViewPager(sensor_vp)
 
         sensorDataViewModel.currentDateLiveData.observe(this, Observer {
             val dateTimeFormatter = SimpleDateFormat("yyyy/MM/dd")
-            view.current_date_tv.text = dateTimeFormatter.format(it)
+            current_date_tv.text = dateTimeFormatter.format(it)
         })
     }
 
@@ -70,31 +61,6 @@ class SensorDataFragment : DaggerFragment() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun initChart(view: LineChart, data: LiveData<MutableList<Entry>>) {
-        context?.let {
-            val marker = CustomMarkerView(it, R.layout.custom_marker_view)
-            marker.chartView = view
-            view.marker = marker
-        }
-        view.setTouchEnabled(true)
-
-        data.observe(this, Observer {
-            if (it == null || it.isEmpty()) {
-                view.clear()
-                return@Observer
-            }
-
-            val lineDataSet = LineDataSet(it, "Heart rate")
-            lineDataSet.lineWidth = 2.5f
-            lineDataSet.circleRadius = 4.5f
-
-            view.xAxis.valueFormatter = DateValueFormatter()
-            view.data = LineData(lineDataSet)
-            view.notifyDataSetChanged()
-            view.invalidate()
-        })
     }
 
     private fun showSelectDateDialog() {

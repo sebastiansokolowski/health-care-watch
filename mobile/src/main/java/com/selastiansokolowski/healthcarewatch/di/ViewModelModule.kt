@@ -25,7 +25,6 @@ import com.selastiansokolowski.healthcarewatch.viewModel.ViewModelFactory
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import io.objectbox.BoxStore
 
 @Suppress("unused")
 @Module

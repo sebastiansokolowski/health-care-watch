@@ -5,7 +5,7 @@ import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.view.MenuItem
 import com.selastiansokolowski.healthcarewatch.ui.HomeFragment
-import com.selastiansokolowski.healthcarewatch.ui.SensorDataFragment
+import com.selastiansokolowski.healthcarewatch.ui.WatchDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.SettingsFragment
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -34,7 +34,7 @@ class MainActivity : DaggerAppCompatActivity() {
         override fun onNavigationItemSelected(p0: MenuItem): Boolean {
             val selectedFragment: Fragment? = when (p0.itemId) {
                 R.id.nav_home -> HomeFragment()
-                R.id.nav_data -> SensorDataFragment()
+                R.id.nav_data -> WatchDataFragment()
                 R.id.nav_settings -> SettingsFragment()
                 else -> null
             }
