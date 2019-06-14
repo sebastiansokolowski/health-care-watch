@@ -46,7 +46,6 @@
         android:layout_marginEnd="8dp"
         android:gravity="center"
         android:padding="5dp"
-        android:text="01/01/2019"
         android:textColor="@android:color/black"
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@id/sensor_vp"
