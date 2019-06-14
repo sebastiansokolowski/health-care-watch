@@ -84,11 +84,10 @@ class SensorDataFragment : DaggerFragment() {
             }
 
             val lineDataSet = LineDataSet(it, sensorType.title)
-            lineDataSet.lineWidth = 2.5f
-            lineDataSet.circleRadius = 4.5f
 
             chart_lc.xAxis.valueFormatter = DateValueFormatter()
             chart_lc.data = LineData(lineDataSet)
+            chart_lc.setVisibleXRangeMaximum(60 * 60 * 5 * 60f)
             chart_lc.notifyDataSetChanged()
             chart_lc.invalidate()
         })
