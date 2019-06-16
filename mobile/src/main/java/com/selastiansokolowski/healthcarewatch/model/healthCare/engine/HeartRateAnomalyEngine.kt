@@ -27,9 +27,11 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
                 .subscribe { sensorEventData ->
                     sensorEventData.values?.let { values ->
                         val heartRate = values[0].toInt()
-                        if (heartRate > 90 && !anomalyState) {
-                            notifyHealthCareEvent(sensorEventData)
-                            anomalyState = true
+                        if (heartRate > 90) {
+                            if (!anomalyState) {
+                                notifyHealthCareEvent(sensorEventData)
+                                anomalyState = true
+                            }
                         } else {
                             anomalyState = false
                         }
