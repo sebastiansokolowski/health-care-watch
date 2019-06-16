@@ -9,7 +9,7 @@ import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventSupportedInfo
 import com.selastiansokolowski.shared.DataClientPaths
 import io.objectbox.BoxStore
-import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.PublishSubject
 
 
 /**
@@ -22,10 +22,10 @@ class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnD
         Wearable.getDataClient(context).addListener(this)
     }
 
-    val heartRateObserver: ReplaySubject<SensorEventData> = ReplaySubject.create()
+    val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
 
-    private fun notifyHeartRateObserver(sensorEventData: SensorEventData) {
-        heartRateObserver.onNext(sensorEventData)
+    private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
+        heartRateObservable.onNext(sensorEventData)
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
@@ -54,7 +54,7 @@ class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnD
                         eventBox.put(sensorEvent)
 
                         if (type == Sensor.TYPE_HEART_RATE) {
-                            notifyHeartRateObserver(sensorEvent)
+                            notifyHeartRateObservable(sensorEvent)
                         }
 
                         Log.d(TAG, "$sensorEvent")
