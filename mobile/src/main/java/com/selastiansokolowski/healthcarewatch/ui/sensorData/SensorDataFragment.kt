@@ -1,6 +1,9 @@
 package com.selastiansokolowski.healthcarewatch.ui.sensorData
 
-import android.arch.lifecycle.*
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +61,22 @@ class SensorDataFragment : DaggerFragment() {
         sensorDataViewModel = ViewModelProviders.of(parentFragment!!, viewModelFactory)
                 .get(SensorDataViewModel::class.java)
 
+        sensorDataViewModel.showLoadingProgressBar.observe(this, Observer {
+            val visibility = it ?: false
+
+            if (visibility) {
+                loading_pb.visibility = View.VISIBLE
+                chart_lc.visibility = View.INVISIBLE
+            } else {
+                loading_pb.visibility = View.GONE
+                chart_lc.visibility = View.VISIBLE
+            }
+        })
+        initChart(sensorType)
+    }
+
+
+    private fun initChart(sensorType: SensorDataPageAdapter.SENSOR_TYPE) {
         val chartLiveData: MutableLiveData<MutableList<Entry>> = when (sensorType) {
             SensorDataPageAdapter.SENSOR_TYPE.HEART_RATE -> sensorDataViewModel.heartRateLiveData
             SensorDataPageAdapter.SENSOR_TYPE.STEP_COUNTER -> sensorDataViewModel.stepCounterLiveData
@@ -65,11 +84,6 @@ class SensorDataFragment : DaggerFragment() {
             SensorDataPageAdapter.SENSOR_TYPE.GRAVITY -> sensorDataViewModel.gravityLiveData
         }
 
-        initChart(chartLiveData)
-    }
-
-
-    private fun initChart(data: LiveData<MutableList<Entry>>) {
         context?.let {
             val marker = CustomMarkerView(it, R.layout.custom_marker_view)
             marker.chartView = chart_lc
@@ -77,7 +91,7 @@ class SensorDataFragment : DaggerFragment() {
         }
         chart_lc.setTouchEnabled(true)
 
-        data.observe(this, Observer {
+        chartLiveData.observe(this, Observer {
             if (it == null || it.isEmpty()) {
                 chart_lc.clear()
                 return@Observer

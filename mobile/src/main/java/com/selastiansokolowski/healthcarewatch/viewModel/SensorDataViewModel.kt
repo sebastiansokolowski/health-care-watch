@@ -22,6 +22,7 @@ class SensorDataViewModel
     private val disposables = CompositeDisposable()
 
     val currentDateLiveData: MutableLiveData<Date> = MutableLiveData()
+    val showLoadingProgressBar: MutableLiveData<Boolean> = MutableLiveData()
 
     val heartRateLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
     val stepCounterLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
@@ -57,6 +58,10 @@ class SensorDataViewModel
             it.type == type && it.timestamp!! in startTimestamp..stopTimestamp
         }.build()
 
+        if (heartRateQuery.count() > 0) {
+            showLoadingProgressBar.value = true
+        }
+
         heartRateQuery.subscribe()
                 .on(AndroidScheduler.mainThread())
                 .single()
@@ -72,6 +77,7 @@ class SensorDataViewModel
                 }
                 .observer {
                     liveData.postValue(it)
+                    showLoadingProgressBar.value = false
                 }
     }
 
