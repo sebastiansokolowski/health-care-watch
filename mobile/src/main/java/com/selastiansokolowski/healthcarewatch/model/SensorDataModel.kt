@@ -23,9 +23,14 @@ class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnD
     }
 
     val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
+    val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
 
     private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
         heartRateObservable.onNext(sensorEventData)
+    }
+
+    private fun notifySensorsObservable(sensorEventData: SensorEventData) {
+        sensorsObservable.onNext(sensorEventData)
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
@@ -56,6 +61,7 @@ class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnD
                         if (type == Sensor.TYPE_HEART_RATE) {
                             notifyHeartRateObservable(sensorEvent)
                         }
+                        notifySensorsObservable(sensorEvent)
 
                         Log.d(TAG, "$sensorEvent")
                     }

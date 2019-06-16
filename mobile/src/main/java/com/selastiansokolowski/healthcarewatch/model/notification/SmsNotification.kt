@@ -1,4 +1,4 @@
-package com.selastiansokolowski.healthcarewatch.model
+package com.selastiansokolowski.healthcarewatch.model.notification
 
 import android.content.SharedPreferences
 import android.telephony.SmsManager
@@ -6,7 +6,7 @@ import android.telephony.SmsManager
 /**
  * Created by Sebastian Sokołowski on 10.05.19.
  */
-class SmsNotificationModel(val prefs: SharedPreferences) {
+class SmsNotification(val prefs: SharedPreferences) {
     fun sendSms(message: String) {
         val numbersToNotify = getPhoneNumbers()
 

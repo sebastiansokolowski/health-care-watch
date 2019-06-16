@@ -1,77 +1,46 @@
 package com.selastiansokolowski.healthcarewatch.model
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.content.ContextCompat.getSystemService
-import com.selastiansokolowski.healthcarewatch.MainActivity
-import com.selastiansokolowski.healthcarewatch.R
+import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEvent
+import com.selastiansokolowski.healthcarewatch.model.notification.AndroidNotification
+import com.selastiansokolowski.healthcarewatch.model.notification.SmsNotification
 
 /**
- * Created by Sebastian Sokołowski on 05.06.19.
+ * Created by Sebastian Sokołowski on 07.06.19.
  */
-class NotificationModel(val context: Context, val prefs: SharedPreferences) {
+class NotificationModel(context: Context, val prefs: SharedPreferences) {
+    private val androidNotificationModel = AndroidNotification(context)
+    private val smsNotificationModel = SmsNotification(prefs)
 
-    private val CHANNEL_ID: String = context.packageName
-    private var NOTIFICATION_ID: Int = 1
-
-    private val notificationManagerCompat = NotificationManagerCompat.from(context)
-
-    init {
-        createNotificationChannel()
-    }
-
-    private fun isNotificationEnabled(): Boolean {
+    private fun isAndroidNotificationEnabled(): Boolean {
         return prefs.getBoolean("android_notification_enabled", false)
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = context.getString(R.string.app_name)
-            val channel = NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT)
+    private fun isSmsNotificationEnabled(): Boolean {
+        return prefs.getBoolean("sms_notification_enabled", false)
+    }
 
-            val notificationManager: NotificationManager =
-                    getSystemService(context, NotificationManager::class.java) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+    fun notifyHealthCareEvent(healthCareEvent: HealthCareEvent) {
+        val message = createMessage(healthCareEvent) ?: return
+
+        if (isAndroidNotificationEnabled()) {
+            androidNotificationModel.showAlertNotification(message)
+        }
+        if (isSmsNotificationEnabled()) {
+            smsNotificationModel.sendSms(message)
         }
     }
 
-    private fun showNotification(notification: Notification) {
-        notificationManagerCompat.notify(NOTIFICATION_ID, notification)
-        NOTIFICATION_ID++
-    }
-
-    private fun buildNotification(title: String, message: String): Notification {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    private fun createMessage(healthCareEvent: HealthCareEvent): String? {
+        return when (healthCareEvent.healthCareEventType) {
+            HealthCareEvent.HealthCareEventType.EPILEPSY -> {
+                ""
+            }
+            HealthCareEvent.HealthCareEventType.HEARTH_RATE_ANOMALY -> {
+                ""
+            }
+            else -> null
         }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-
-        return NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_heart_black_24dp)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .build()
-    }
-
-    fun showAlertNotification(message: String) {
-        if (!isNotificationEnabled()) {
-            return
-        }
-
-        val notification = buildNotification("Alert!!", message)
-
-        showNotification(notification)
     }
 }
