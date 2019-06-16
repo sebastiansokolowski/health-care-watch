@@ -1,5 +1,6 @@
 package com.selastiansokolowski.healthcarewatch.di
 
+import com.selastiansokolowski.healthcarewatch.ui.HistoryDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.HomeFragment
 import com.selastiansokolowski.healthcarewatch.ui.WatchDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.SettingsFragment
@@ -14,7 +15,10 @@ abstract class FragmentBuildersModule {
     abstract fun contributeHomeFragment(): HomeFragment
 
     @ContributesAndroidInjector
-    abstract fun contributeSensorsDataFragment(): WatchDataFragment
+    abstract fun contributeWatchDataFragment(): WatchDataFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeHistoryDataFragment(): HistoryDataFragment
 
     @ContributesAndroidInjector
     abstract fun contributeSensorDataFragment(): SensorDataFragment

@@ -10,6 +10,7 @@ import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import io.objectbox.BoxStore
 import io.objectbox.android.AndroidScheduler
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -20,6 +21,11 @@ class SensorDataViewModel
 @Inject constructor(private val sensorDataModel: SensorDataModel, private val boxStore: BoxStore) : ViewModel() {
 
     private val disposables = CompositeDisposable()
+    private val supportedSensors: List<Int> = listOf(
+            Sensor.TYPE_HEART_RATE,
+            Sensor.TYPE_STEP_COUNTER,
+            Sensor.TYPE_PRESSURE,
+            Sensor.TYPE_GRAVITY)
 
     val currentDateLiveData: MutableLiveData<Date> = MutableLiveData()
     val showLoadingProgressBar: MutableLiveData<Boolean> = MutableLiveData()
@@ -29,21 +35,58 @@ class SensorDataViewModel
     val pressureLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
     val gravityLiveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
 
+
     init {
         val currentDate = Date()
         currentDateLiveData.postValue(currentDate)
-
-        refreshCharts(currentDate)
     }
 
-    fun refreshCharts(date: Date) {
-        initChart(heartRateLiveData, Sensor.TYPE_HEART_RATE, date)
-        initChart(stepCounterLiveData, Sensor.TYPE_STEP_COUNTER, date)
-        initChart(pressureLiveData, Sensor.TYPE_PRESSURE, date)
-        initChart(gravityLiveData, Sensor.TYPE_GRAVITY, date)
+    fun initLiveData() {
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        val startTimestamp = calendar.time.time
+
+        val disposable = sensorDataModel
+                .sensorsObservable
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    SafeCall.safeLet(it.type, it.timestamp, it.values) { type, timestamp, values ->
+                        if (values.isEmpty()) {
+                            return@safeLet
+                        }
+                        if (!supportedSensors.contains(type)) {
+                            return@safeLet
+                        }
+
+                        val timestampFromMidnight: Int = (timestamp - startTimestamp).toInt()
+                        val entry = Entry(timestampFromMidnight.toFloat(), values[0], it)
+                        when (type) {
+                            Sensor.TYPE_HEART_RATE -> postValueToLiveData(heartRateLiveData, entry)
+                            Sensor.TYPE_STEP_COUNTER -> postValueToLiveData(stepCounterLiveData, entry)
+                            Sensor.TYPE_PRESSURE -> postValueToLiveData(pressureLiveData, entry)
+                            Sensor.TYPE_GRAVITY -> postValueToLiveData(gravityLiveData, entry)
+                        }
+                    }
+                }
+        disposables.add(disposable)
     }
 
-    private fun initChart(liveData: MutableLiveData<MutableList<Entry>>, type: Int, date: Date) {
+    private fun postValueToLiveData(liveData: MutableLiveData<MutableList<Entry>>, entry: Entry) {
+        val value: MutableList<Entry> = liveData.value ?: mutableListOf()
+        value.add(entry)
+        liveData.postValue(value)
+    }
+
+    fun initHistoryData(date: Date) {
+        initHistoryLiveData(heartRateLiveData, Sensor.TYPE_HEART_RATE, date)
+        initHistoryLiveData(stepCounterLiveData, Sensor.TYPE_STEP_COUNTER, date)
+        initHistoryLiveData(pressureLiveData, Sensor.TYPE_PRESSURE, date)
+        initHistoryLiveData(gravityLiveData, Sensor.TYPE_GRAVITY, date)
+    }
+
+    private fun initHistoryLiveData(liveData: MutableLiveData<MutableList<Entry>>, type: Int, date: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = date
         calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -53,16 +96,16 @@ class SensorDataViewModel
         val startTimestamp = calendar.time.time
         val stopTimestamp = startTimestamp + 24 * 60 * 60 * 1000
 
-        val heartRateBox = boxStore.boxFor(SensorEventData::class.java)
-        val heartRateQuery = heartRateBox.query().filter {
+        val box = boxStore.boxFor(SensorEventData::class.java)
+        val query = box.query().filter {
             it.type == type && it.timestamp!! in startTimestamp..stopTimestamp
         }.build()
 
-        if (heartRateQuery.count() > 0) {
+        if (query.count() > 0) {
             showLoadingProgressBar.value = true
         }
 
-        heartRateQuery.subscribe()
+        query.subscribe()
                 .on(AndroidScheduler.mainThread())
                 .single()
                 .transform {

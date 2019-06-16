@@ -8,7 +8,7 @@
         android:id="@+id/sensor_data_tl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/sensor_vp"
+        app:layout_constraintBottom_toTopOf="@id/current_date_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,6 +38,21 @@
             android:text="Gravity" />
     </android.support.design.widget.TabLayout>
 
+    <TextView
+        android:id="@+id/current_date_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:padding="5dp"
+        android:textColor="@android:color/black"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@id/sensor_vp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sensor_data_tl" />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/sensor_vp"
         android:layout_width="match_parent"
@@ -48,6 +63,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sensor_data_tl" />
+        app:layout_constraintTop_toBottomOf="@id/current_date_tv" />
 
 </android.support.constraint.ConstraintLayout>
