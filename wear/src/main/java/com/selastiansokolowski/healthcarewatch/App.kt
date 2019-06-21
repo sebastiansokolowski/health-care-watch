@@ -1,5 +1,6 @@
 package com.selastiansokolowski.healthcarewatch
 
+import com.selastiansokolowski.healthcarewatch.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 
