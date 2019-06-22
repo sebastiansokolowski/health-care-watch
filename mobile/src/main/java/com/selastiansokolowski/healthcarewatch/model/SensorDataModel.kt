@@ -1,6 +1,7 @@
 package com.selastiansokolowski.healthcarewatch.model
 
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
@@ -8,6 +9,7 @@ import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventAccuracy
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventSupportedInfo
+import com.selastiansokolowski.healthcarewatch.service.MeasurementService
 import com.selastiansokolowski.shared.DataClientPaths
 import io.objectbox.BoxStore
 import io.reactivex.subjects.BehaviorSubject
@@ -17,7 +19,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataModel(context: Context, private val wearableDataClient: WearableDataClient, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
+class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
     init {
@@ -26,8 +28,8 @@ class SensorDataModel(context: Context, private val wearableDataClient: Wearable
 
     private var measurementRunning = false
 
-    val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
+    val heartRateObservable: BehaviorSubject<SensorEventData> = BehaviorSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
@@ -47,6 +49,12 @@ class SensorDataModel(context: Context, private val wearableDataClient: Wearable
         Thread(Runnable {
             wearableDataClient.sendMeasurementEvent(state)
         }).start()
+        val serviceIntent = Intent(context, MeasurementService::class.java)
+        if (state) {
+            context.startService(serviceIntent)
+        } else {
+            context.stopService(serviceIntent)
+        }
     }
 
     fun toggleMeasurementState() {

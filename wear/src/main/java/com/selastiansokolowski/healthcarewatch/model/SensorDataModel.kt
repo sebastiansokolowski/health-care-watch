@@ -24,7 +24,7 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
             Sensor.TYPE_LINEAR_ACCELERATION
     )
 
-    val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
+    val heartRateObservable: BehaviorSubject<Int> = BehaviorSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     private var measurementRunning = false

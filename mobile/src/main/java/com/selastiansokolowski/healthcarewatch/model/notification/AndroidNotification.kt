@@ -18,8 +18,9 @@ import com.selastiansokolowski.healthcarewatch.R
  */
 class AndroidNotification(val context: Context) {
 
-    private val CHANNEL_ID: String = context.packageName
-    private var NOTIFICATION_ID: Int = 1
+    val CHANNEL_ID: String = context.packageName
+    var NOTIFICATION_ID: Int = 10
+    var FOREGROUND_NOTIFICATION_ID: Int = 10
 
     private val notificationManagerCompat = NotificationManagerCompat.from(context)
 
@@ -43,7 +44,7 @@ class AndroidNotification(val context: Context) {
         NOTIFICATION_ID++
     }
 
-    private fun buildNotification(title: String, message: String): Notification {
+    fun buildNotification(title: String, message: String): Notification {
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
