@@ -6,7 +6,7 @@ import android.telephony.SmsManager
 /**
  * Created by Sebastian Sokołowski on 10.05.19.
  */
-class SmsNotification(val prefs: SharedPreferences) {
+class SmsNotification(private val prefs: SharedPreferences) {
     fun sendSms(message: String) {
         val numbersToNotify = getPhoneNumbers()
 

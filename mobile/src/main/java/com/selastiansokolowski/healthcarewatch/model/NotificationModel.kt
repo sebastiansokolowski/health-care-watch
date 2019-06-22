@@ -9,7 +9,7 @@ import com.selastiansokolowski.healthcarewatch.model.notification.SmsNotificatio
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class NotificationModel(context: Context, val prefs: SharedPreferences) {
+class NotificationModel(context: Context, private val prefs: SharedPreferences) {
     private val androidNotificationModel = AndroidNotification(context)
     private val smsNotificationModel = SmsNotification(prefs)
 
@@ -40,7 +40,6 @@ class NotificationModel(context: Context, val prefs: SharedPreferences) {
             HealthCareEvent.HealthCareEventType.HEARTH_RATE_ANOMALY -> {
                 ""
             }
-            else -> null
         }
     }
 }

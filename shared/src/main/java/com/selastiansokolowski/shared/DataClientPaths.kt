@@ -22,6 +22,6 @@ class DataClientPaths {
 
         const val ACCURACY_MAP_PATH = "/accuracy"
         const val ACCURACY_MAP_SENSOR_TYPE = "type"
-        const val ACCURACY_MAP_SENSOR_ACCURACY  = "accuracy"
+        const val ACCURACY_MAP_SENSOR_ACCURACY = "accuracy"
     }
 }

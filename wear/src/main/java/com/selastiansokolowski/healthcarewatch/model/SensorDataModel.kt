@@ -29,8 +29,8 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
 
     private var measurementRunning = false
 
-    private fun changeMeasurementState(state: Boolean){
-        if(measurementRunning == state){
+    private fun changeMeasurementState(state: Boolean) {
+        if (measurementRunning == state) {
             return
         }
         measurementRunning = state

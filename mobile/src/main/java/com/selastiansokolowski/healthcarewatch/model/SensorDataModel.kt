@@ -17,7 +17,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataModel(context: Context, val wearableDataClient: WearableDataClient, val boxStore: BoxStore) : DataClient.OnDataChangedListener {
+class SensorDataModel(context: Context, private val wearableDataClient: WearableDataClient, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
     init {
