@@ -9,6 +9,7 @@ class DataClientPaths {
 
         const val START_MEASUREMENT = "/start_measurement"
         const val STOP_MEASUREMENT = "/stop_measurement"
+        const val GET_MEASUREMENT = "/get_measurement"
 
         const val SUPPORTED_MAP_PATH = "/sensor_supported"
         const val SUPPORTED_MAP_SENSOR_TYPE = "type"

@@ -24,7 +24,7 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
             Sensor.TYPE_LINEAR_ACCELERATION
     )
 
-    val heartRateObservable: BehaviorSubject<Int> = BehaviorSubject.create()
+    val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     private var measurementRunning = false
@@ -35,9 +35,11 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
         }
         measurementRunning = state
         measurementStateObservable.onNext(measurementRunning)
-        Thread(Runnable {
-            wearableDataClient.sendMeasurementEvent(state)
-        }).start()
+        notifyMeasurementState()
+    }
+
+    fun notifyMeasurementState() {
+        wearableDataClient.sendMeasurementEvent(measurementRunning)
     }
 
     fun toggleMeasurementState() {

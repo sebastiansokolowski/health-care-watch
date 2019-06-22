@@ -27,27 +27,35 @@ class WearableDataClient(context: Context) {
         }
     }
 
-    private fun sendMessage(message: String) {
-        val task = capabilityClient.getCapability(
-                DataClientPaths.NODE_CAPABILITY,
-                CapabilityClient.FILTER_REACHABLE)
-        val capabilityInfo: CapabilityInfo = Tasks.await(task)
+    fun getMeasurementState() {
+        Log.d(TAG, "getMeasurementState")
 
-        if (capabilityInfo.nodes.isNotEmpty()) {
-            val nodeId = capabilityInfo.nodes.iterator().next()
-            messageClient.sendMessage(nodeId.id, message, null).apply {
-                if (BuildConfig.DEBUG) {
-                    addOnSuccessListener {
-                        Log.d(TAG, "Success sent message")
-                    }
-                    addOnFailureListener { ex ->
-                        Log.d(TAG, "Error sending message $ex")
+        sendMessage(DataClientPaths.GET_MEASUREMENT)
+    }
+
+    private fun sendMessage(message: String) {
+        Thread(Runnable {
+            val task = capabilityClient.getCapability(
+                    DataClientPaths.NODE_CAPABILITY,
+                    CapabilityClient.FILTER_REACHABLE)
+            val capabilityInfo: CapabilityInfo = Tasks.await(task)
+
+            if (capabilityInfo.nodes.isNotEmpty()) {
+                val nodeId = capabilityInfo.nodes.iterator().next()
+                messageClient.sendMessage(nodeId.id, message, null).apply {
+                    if (BuildConfig.DEBUG) {
+                        addOnSuccessListener {
+                            Log.d(TAG, "Success sent message")
+                        }
+                        addOnFailureListener { ex ->
+                            Log.d(TAG, "Error sending message $ex")
+                        }
                     }
                 }
+            } else {
+                Log.d(TAG, "missing node!")
             }
-        } else {
-            Log.d(TAG, "missing node!")
-        }
+        }).start()
     }
 
     private fun sendData(request: PutDataMapRequest) {

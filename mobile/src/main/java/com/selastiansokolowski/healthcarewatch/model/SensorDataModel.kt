@@ -24,12 +24,13 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     init {
         Wearable.getDataClient(context).addListener(this)
+        wearableDataClient.getMeasurementState()
     }
 
     private var measurementRunning = false
 
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
-    val heartRateObservable: BehaviorSubject<SensorEventData> = BehaviorSubject.create()
+    val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
@@ -46,9 +47,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
         }
         measurementRunning = state
         measurementStateObservable.onNext(measurementRunning)
-        Thread(Runnable {
-            wearableDataClient.sendMeasurementEvent(state)
-        }).start()
+        wearableDataClient.sendMeasurementEvent(state)
         val serviceIntent = Intent(context, MeasurementService::class.java)
         if (state) {
             context.startService(serviceIntent)

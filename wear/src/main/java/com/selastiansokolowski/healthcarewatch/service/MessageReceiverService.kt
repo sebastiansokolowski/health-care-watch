@@ -28,6 +28,9 @@ class MessageReceiverService : WearableListenerService() {
             DataClientPaths.STOP_MEASUREMENT -> {
                 sensorDataModel.stopMeasurement()
             }
+            DataClientPaths.GET_MEASUREMENT -> {
+                sensorDataModel.notifyMeasurementState()
+            }
             else -> super.onMessageReceived(event)
         }
     }
