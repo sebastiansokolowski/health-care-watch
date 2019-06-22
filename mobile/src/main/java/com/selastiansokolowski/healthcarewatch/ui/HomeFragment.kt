@@ -42,6 +42,7 @@ class HomeFragment : DaggerFragment() {
 
         homeViewModel.heartRate.observe(this, Observer {
             heart_rate_tv.text = it
+            heart_rate_iv.startAnimation()
         })
 
         homeViewModel.measurementState.observe(this, Observer {
