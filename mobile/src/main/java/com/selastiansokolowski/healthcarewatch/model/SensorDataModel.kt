@@ -4,26 +4,31 @@ import android.content.Context
 import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
+import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventAccuracy
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventSupportedInfo
 import com.selastiansokolowski.shared.DataClientPaths
 import io.objectbox.BoxStore
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnDataChangedListener {
+class SensorDataModel(context: Context, val wearableDataClient: WearableDataClient, val boxStore: BoxStore) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
     init {
         Wearable.getDataClient(context).addListener(this)
     }
 
+    private var measurementRunning = false
+
     val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
+    val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
         heartRateObservable.onNext(sensorEventData)
@@ -31,6 +36,39 @@ class SensorDataModel(context: Context, val boxStore: BoxStore) : DataClient.OnD
 
     private fun notifySensorsObservable(sensorEventData: SensorEventData) {
         sensorsObservable.onNext(sensorEventData)
+    }
+
+    private fun changeMeasurementState(state: Boolean) {
+        if (measurementRunning == state) {
+            return
+        }
+        measurementRunning = state
+        measurementStateObservable.onNext(measurementRunning)
+        Thread(Runnable {
+            wearableDataClient.sendMeasurementEvent(state)
+        }).start()
+    }
+
+    fun toggleMeasurementState() {
+        if (measurementRunning) {
+            stopMeasurement()
+        } else {
+            startMeasurement()
+        }
+    }
+
+    fun startMeasurement() {
+        if (measurementRunning) {
+            return
+        }
+        changeMeasurementState(true)
+    }
+
+    fun stopMeasurement() {
+        if (!measurementRunning) {
+            return
+        }
+        changeMeasurementState(false)
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {

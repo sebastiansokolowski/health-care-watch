@@ -1,7 +1,9 @@
 package com.selastiansokolowski.healthcarewatch.viewModel
 
-import android.arch.lifecycle.*
-import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.LiveDataReactiveStreams
+import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.ViewModel
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import io.reactivex.BackpressureStrategy
 import javax.inject.Inject
@@ -10,10 +12,10 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HomeViewModel
-@Inject constructor(private val sensorDataModel: SensorDataModel, private val wearableDataClient: WearableDataClient) : ViewModel() {
+@Inject constructor(private val sensorDataModel: SensorDataModel) : ViewModel() {
 
-    val measurementState: MutableLiveData<Boolean> by lazy {
-        MutableLiveData<Boolean>()
+    val measurementState: LiveData<Boolean> by lazy {
+        initMeasurementStateLiveData()
     }
 
     val heartRate: LiveData<String> by lazy {
@@ -32,13 +34,12 @@ class HomeViewModel
         }
     }
 
-    fun toggleMeasurementState() {
-        val lastState = measurementState.value ?: false
-        val newState = !lastState
+    private fun initMeasurementStateLiveData(): LiveData<Boolean> {
+        val measurementStateFlowable = sensorDataModel.measurementStateObservable.toFlowable(BackpressureStrategy.LATEST)
+        return LiveDataReactiveStreams.fromPublisher(measurementStateFlowable)
+    }
 
-        measurementState.value = newState
-        Thread(Runnable {
-            wearableDataClient.sendMeasurementEvent(newState)
-        }).start()
+    fun toggleMeasurementState() {
+        sensorDataModel.toggleMeasurementState()
     }
 }

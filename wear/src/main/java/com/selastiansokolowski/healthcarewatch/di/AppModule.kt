@@ -30,6 +30,7 @@ class AppModule {
     }
 
     @Provides
+    @Singleton
     fun provideSensorDataModel(wearableDataClient: WearableDataClient, sensorManager: SensorManager): SensorDataModel {
         return SensorDataModel(wearableDataClient, sensorManager)
     }

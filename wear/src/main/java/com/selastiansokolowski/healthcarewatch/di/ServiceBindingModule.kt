@@ -1,4 +1,4 @@
-package com.selastiansokolowski.healthcarewatch
+package com.selastiansokolowski.healthcarewatch.di
 
 import com.selastiansokolowski.healthcarewatch.service.MessageReceiverService
 import com.selastiansokolowski.healthcarewatch.service.SensorService

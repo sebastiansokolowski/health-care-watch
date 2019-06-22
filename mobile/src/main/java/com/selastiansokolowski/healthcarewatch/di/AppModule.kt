@@ -35,8 +35,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(context: Context, boxStore: BoxStore): SensorDataModel =
-            SensorDataModel(context, boxStore)
+    fun provideSensorDataModel(context: Context, wearableDataClient: WearableDataClient, boxStore: BoxStore): SensorDataModel =
+            SensorDataModel(context, wearableDataClient, boxStore)
 
     @Provides
     @Singleton

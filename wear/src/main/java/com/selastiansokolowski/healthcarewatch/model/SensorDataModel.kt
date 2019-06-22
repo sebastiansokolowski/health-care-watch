@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -24,7 +25,7 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
     )
 
     val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
-    val measurementStateObservable: PublishSubject<Boolean> = PublishSubject.create()
+    val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     private var measurementRunning = false
 
@@ -34,6 +35,9 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
         }
         measurementRunning = state
         measurementStateObservable.onNext(measurementRunning)
+        Thread(Runnable {
+            wearableDataClient.sendMeasurementEvent(state)
+        }).start()
     }
 
     fun toggleMeasurementState() {

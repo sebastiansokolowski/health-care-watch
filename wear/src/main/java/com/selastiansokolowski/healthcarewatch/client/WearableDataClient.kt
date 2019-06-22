@@ -4,10 +4,10 @@ import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.util.Log
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.BuildConfig
+import com.selastiansokolowski.shared.DataClientPaths
 import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_PATH
 import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_SENSOR_ACCURACY
 import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_SENSOR_TYPE
@@ -28,6 +28,41 @@ class WearableDataClient(context: Context) {
     private val TAG = javaClass.canonicalName
 
     private val dataClient: DataClient = Wearable.getDataClient(context)
+    private val messageClient: MessageClient = Wearable.getMessageClient(context)
+    private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
+
+    fun sendMeasurementEvent(state: Boolean) {
+        Log.d(TAG, "sendMeasurementEvent state: $state")
+
+        if (state) {
+            sendMessage(DataClientPaths.START_MEASUREMENT)
+        } else {
+            sendMessage(DataClientPaths.STOP_MEASUREMENT)
+        }
+    }
+
+    private fun sendMessage(message: String) {
+        val task = capabilityClient.getCapability(
+                DataClientPaths.NODE_CAPABILITY,
+                CapabilityClient.FILTER_REACHABLE)
+        val capabilityInfo: CapabilityInfo = Tasks.await(task)
+
+        if (capabilityInfo.nodes.isNotEmpty()) {
+            val nodeId = capabilityInfo.nodes.iterator().next()
+            messageClient.sendMessage(nodeId.id, message, null).apply {
+                if (BuildConfig.DEBUG) {
+                    addOnSuccessListener {
+                        Log.d(TAG, "Success sent message")
+                    }
+                    addOnFailureListener { ex ->
+                        Log.d(TAG, "Error sending message $ex")
+                    }
+                }
+            }
+        } else {
+            Log.d(TAG, "missing node!")
+        }
+    }
 
     fun sendSensorEvent(event: SensorEvent) {
         Log.d(TAG, "sendSensorEvent event=${event.sensor.name}")

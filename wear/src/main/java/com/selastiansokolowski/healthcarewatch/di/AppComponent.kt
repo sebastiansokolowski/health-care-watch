@@ -2,7 +2,6 @@ package com.selastiansokolowski.healthcarewatch.di
 
 import android.app.Application
 import com.selastiansokolowski.healthcarewatch.App
-import com.selastiansokolowski.healthcarewatch.ServiceBindingModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule

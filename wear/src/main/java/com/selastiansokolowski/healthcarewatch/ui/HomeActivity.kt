@@ -3,9 +3,12 @@ package com.selastiansokolowski.healthcarewatch.ui
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.util.AttributeSet
+import android.view.View
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.service.MessageReceiverService
 import com.selastiansokolowski.healthcarewatch.service.SensorService
@@ -46,7 +49,7 @@ class HomeActivity : WearableFragmentActivity() {
                     text = if (it) {
                         getString(R.string.measurement_button_stop_label)
                     } else {
-                        tv_heart_rate.text = ""
+                        tv_heart_rate.text = "---"
                         getString(R.string.measurement_button_start_label)
                     }
                 }
