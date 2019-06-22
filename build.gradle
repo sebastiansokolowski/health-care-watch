@@ -2,7 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.51'
-    ext.dagger_version = '2.16'
+    ext.dagger_version = '2.23.2'
     ext.lifecycle_version = '1.1.1'
     ext.objectboxVersion = '2.3.3'
 
