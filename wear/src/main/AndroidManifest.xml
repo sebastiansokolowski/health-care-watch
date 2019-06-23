@@ -22,9 +22,9 @@
             android:value="26.1.0"
             tools:replace="android:value" />
 
-        <uses-library
-            android:name="com.google.android.wearable"
-            android:required="false" />
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="false" />
 
         <activity
             android:name=".ui.HomeActivity"
