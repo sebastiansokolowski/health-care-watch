@@ -8,7 +8,7 @@
         android:id="@+id/sensor_data_tl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/current_date_tv"
+        app:layout_constraintBottom_toTopOf="@id/current_date_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,20 +38,44 @@
             android:text="Gravity" />
     </android.support.design.widget.TabLayout>
 
-    <TextView
-        android:id="@+id/current_date_tv"
+    <LinearLayout
+        android:id="@+id/current_date_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:gravity="center"
-        android:padding="5dp"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/sensor_vp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sensor_data_tl" />
+        app:layout_constraintTop_toBottomOf="@id/sensor_data_tl">
+
+        <ImageView
+            android:id="@+id/current_date_prev_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_chevron_left_black_24dp" />
+
+
+        <TextView
+            android:id="@+id/current_date_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textColor="@android:color/black"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/current_date_next_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
+    </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/sensor_vp"
@@ -63,6 +87,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/current_date_tv" />
+        app:layout_constraintTop_toBottomOf="@id/current_date_container" />
 
 </android.support.constraint.ConstraintLayout>

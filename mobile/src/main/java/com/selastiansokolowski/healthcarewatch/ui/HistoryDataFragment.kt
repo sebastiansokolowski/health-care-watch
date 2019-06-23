@@ -50,6 +50,12 @@ class HistoryDataFragment : DaggerFragment() {
                 sensorDataViewModel.initHistoryData(date)
             }
         })
+        current_date_prev_btn.setOnClickListener {
+            sensorDataViewModel.decreaseCurrentDate()
+        }
+        current_date_next_btn.setOnClickListener {
+            sensorDataViewModel.increaseCurrentDate()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

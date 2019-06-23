@@ -84,6 +84,22 @@ class SensorDataViewModel
         liveData.postValue(value)
     }
 
+    private fun changeCurrentDateDay(amount: Int) {
+        val calendar = Calendar.getInstance()
+        calendar.time = currentDateLiveData.value
+        calendar.add(Calendar.DAY_OF_MONTH, amount)
+
+        currentDateLiveData.postValue(calendar.time)
+    }
+
+    fun decreaseCurrentDate() {
+        changeCurrentDateDay(-1)
+    }
+
+    fun increaseCurrentDate() {
+        changeCurrentDateDay(1)
+    }
+
     fun initHistoryData(date: Date) {
         initHistoryLiveData(heartRateLiveData, Sensor.TYPE_HEART_RATE, date)
         initHistoryLiveData(stepCounterLiveData, Sensor.TYPE_STEP_COUNTER, date)
