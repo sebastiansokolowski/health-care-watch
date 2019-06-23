@@ -73,7 +73,6 @@ class HistoryDataFragment : DaggerFragment() {
             calendar.set(year, month, dayOfMonth)
 
             sensorDataViewModel.currentDateLiveData.postValue(calendar.time)
-            sensorDataViewModel.initHistoryData(calendar.time)
         }
 
         context?.let {
