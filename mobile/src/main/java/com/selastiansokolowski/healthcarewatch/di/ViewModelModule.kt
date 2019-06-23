@@ -18,10 +18,7 @@ package com.selastiansokolowski.healthcarewatch.di
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.selastiansokolowski.healthcarewatch.viewModel.HomeViewModel
-import com.selastiansokolowski.healthcarewatch.viewModel.SensorDataViewModel
-import com.selastiansokolowski.healthcarewatch.viewModel.SettingsViewModel
-import com.selastiansokolowski.healthcarewatch.viewModel.ViewModelFactory
+import com.selastiansokolowski.healthcarewatch.viewModel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -29,10 +26,6 @@ import dagger.multibindings.IntoMap
 @Suppress("unused")
 @Module
 abstract class ViewModelModule {
-    @Binds
-    @IntoMap
-    @ViewModelKey(SensorDataViewModel::class)
-    abstract fun bindSensorDataViewModel(sensorDataViewModel: SensorDataViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -43,6 +36,21 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingsViewModel::class)
     abstract fun bindSettingsViewModel(settingsViewModel: SettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HistoryDataViewModel::class)
+    abstract fun bindHistoryDataViewModel(historyDataViewModel: HistoryDataViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LiveSensorDataViewModel::class)
+    abstract fun bindLiveSensorDataViewModel(liveSensorDataViewModel: LiveSensorDataViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(HistorySensorDataViewModel::class)
+    abstract fun bindHistorySensorDataViewModel(historySensorDataViewModel: HistorySensorDataViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

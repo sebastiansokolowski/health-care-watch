@@ -1,20 +1,19 @@
 package com.selastiansokolowski.healthcarewatch.ui.sensorData
 
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.view.CustomMarkerView
 import com.selastiansokolowski.healthcarewatch.view.DateValueFormatter
-import com.selastiansokolowski.healthcarewatch.viewModel.SensorDataViewModel
+import com.selastiansokolowski.healthcarewatch.viewModel.LiveSensorDataViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.sensor_data_fragment.*
 import javax.inject.Inject
@@ -22,13 +21,13 @@ import javax.inject.Inject
 /**
  * Created by Sebastian Sokołowski on 06.06.19.
  */
-class SensorDataFragment : DaggerFragment() {
+class LiveSensorDataFragment : DaggerFragment() {
 
     companion object {
         private const val SENSOR_TYPE_KEY = "SENSOR_TYPE_KEY"
 
-        fun newInstance(sensorTYPE: SensorDataPageAdapter.SENSOR_TYPE): SensorDataFragment {
-            val fragment = SensorDataFragment()
+        fun newInstance(sensorTYPE: SensorAdapterItem): LiveSensorDataFragment {
+            val fragment = LiveSensorDataFragment()
 
             val bundle = Bundle()
             bundle.putInt(SENSOR_TYPE_KEY, sensorTYPE.ordinal)
@@ -41,16 +40,20 @@ class SensorDataFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var sensorDataViewModel: SensorDataViewModel
-    private var sensorType: SensorDataPageAdapter.SENSOR_TYPE = SensorDataPageAdapter.SENSOR_TYPE.HEART_RATE
+    private lateinit var liveSensorDataViewModel: LiveSensorDataViewModel
+    private var sensorType: SensorAdapterItem = SensorAdapterItem.HEART_RATE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
             val sensorTypeIndex = it.getInt(SENSOR_TYPE_KEY)
-            sensorType = SensorDataPageAdapter.SENSOR_TYPE.values()[sensorTypeIndex]
+            sensorType = SensorAdapterItem.values()[sensorTypeIndex]
         }
+
+        liveSensorDataViewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(LiveSensorDataViewModel::class.java)
+        liveSensorDataViewModel.initLiveData(sensorType.sensorId)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -58,32 +61,36 @@ class SensorDataFragment : DaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sensorDataViewModel = ViewModelProviders.of(parentFragment!!, viewModelFactory)
-                .get(SensorDataViewModel::class.java)
 
-        sensorDataViewModel.showLoadingProgressBar.observe(this, Observer {
+        liveSensorDataViewModel.showStatisticsContainer.observe(this, Observer {
             val visibility = it ?: false
 
             if (visibility) {
-                loading_pb.visibility = View.VISIBLE
-                chart_lc.visibility = View.INVISIBLE
+                statistics_container.visibility = View.VISIBLE
             } else {
-                loading_pb.visibility = View.GONE
-                chart_lc.visibility = View.VISIBLE
+                statistics_container.visibility = View.INVISIBLE
+            }
+        })
+        liveSensorDataViewModel.statisticMinValue.observe(this, Observer {
+            it?.let {
+                statistic_min_tv.text = it.toString()
+            }
+        })
+        liveSensorDataViewModel.statisticMaxValue.observe(this, Observer {
+            it?.let {
+                statistic_max_tv.text = it.toString()
+            }
+        })
+        liveSensorDataViewModel.statisticAverageValue.observe(this, Observer {
+            it?.let {
+                statistic_avg_tv.text = it.toString()
             }
         })
         initChart(sensorType)
     }
 
 
-    private fun initChart(sensorType: SensorDataPageAdapter.SENSOR_TYPE) {
-        val chartLiveData: MutableLiveData<MutableList<Entry>> = when (sensorType) {
-            SensorDataPageAdapter.SENSOR_TYPE.HEART_RATE -> sensorDataViewModel.heartRateLiveData
-            SensorDataPageAdapter.SENSOR_TYPE.STEP_COUNTER -> sensorDataViewModel.stepCounterLiveData
-            SensorDataPageAdapter.SENSOR_TYPE.PRESSURE -> sensorDataViewModel.pressureLiveData
-            SensorDataPageAdapter.SENSOR_TYPE.GRAVITY -> sensorDataViewModel.gravityLiveData
-        }
-
+    private fun initChart(sensorAdapterItem: SensorAdapterItem) {
         context?.let {
             val marker = CustomMarkerView(it, R.layout.custom_marker_view)
             marker.chartView = chart_lc
@@ -91,13 +98,13 @@ class SensorDataFragment : DaggerFragment() {
         }
         chart_lc.setTouchEnabled(true)
 
-        chartLiveData.observe(this, Observer {
+        liveSensorDataViewModel.liveData.observe(this, Observer {
             if (it == null || it.isEmpty()) {
                 chart_lc.clear()
                 return@Observer
             }
 
-            val lineDataSet = LineDataSet(it, sensorType.title)
+            val lineDataSet = LineDataSet(it, sensorAdapterItem.title)
 
             chart_lc.xAxis.valueFormatter = DateValueFormatter()
             chart_lc.data = LineData(lineDataSet)

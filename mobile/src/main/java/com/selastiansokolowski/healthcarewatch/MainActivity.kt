@@ -9,7 +9,7 @@ import com.selastiansokolowski.healthcarewatch.service.MessageReceiverService
 import com.selastiansokolowski.healthcarewatch.ui.HistoryDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.HomeFragment
 import com.selastiansokolowski.healthcarewatch.ui.SettingsFragment
-import com.selastiansokolowski.healthcarewatch.ui.WatchDataFragment
+import com.selastiansokolowski.healthcarewatch.ui.LiveDataFragment
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -39,7 +39,7 @@ class MainActivity : DaggerAppCompatActivity() {
         override fun onNavigationItemSelected(p0: MenuItem): Boolean {
             val selectedFragment: Fragment? = when (p0.itemId) {
                 R.id.nav_home -> HomeFragment()
-                R.id.nav_data -> WatchDataFragment()
+                R.id.nav_data -> LiveDataFragment()
                 R.id.nav_history -> HistoryDataFragment()
                 R.id.nav_settings -> SettingsFragment()
                 else -> null

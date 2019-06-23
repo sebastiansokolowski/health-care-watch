@@ -7,8 +7,8 @@ import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.*
 import com.selastiansokolowski.healthcarewatch.R
-import com.selastiansokolowski.healthcarewatch.ui.sensorData.SensorDataPageAdapter
-import com.selastiansokolowski.healthcarewatch.viewModel.SensorDataViewModel
+import com.selastiansokolowski.healthcarewatch.ui.sensorData.HistorySensorDataPageAdapter
+import com.selastiansokolowski.healthcarewatch.viewModel.HistoryDataViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.history_data_fragment.*
 import java.text.SimpleDateFormat
@@ -24,7 +24,7 @@ class HistoryDataFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var sensorDataViewModel: SensorDataViewModel
+    private lateinit var historyDataViewModel: HistoryDataViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,25 +36,23 @@ class HistoryDataFragment : DaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sensorDataViewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(SensorDataViewModel::class.java)
+        historyDataViewModel = ViewModelProviders.of(this, viewModelFactory)
+                .get(HistoryDataViewModel::class.java)
 
-        sensor_vp.adapter = SensorDataPageAdapter(childFragmentManager)
+        sensor_vp.adapter = HistorySensorDataPageAdapter(childFragmentManager)
         sensor_data_tl.setupWithViewPager(sensor_vp)
 
-        sensorDataViewModel.currentDateLiveData.observe(this, Observer {
+        historyDataViewModel.currentDateLiveData.observe(this, Observer {
             it?.let { date ->
                 val dateTimeFormatter = SimpleDateFormat("yyyy/MM/dd")
                 current_date_tv.text = dateTimeFormatter.format(date)
-
-                sensorDataViewModel.initHistoryData(date)
             }
         })
         current_date_prev_btn.setOnClickListener {
-            sensorDataViewModel.decreaseCurrentDate()
+            historyDataViewModel.decreaseCurrentDate()
         }
         current_date_next_btn.setOnClickListener {
-            sensorDataViewModel.increaseCurrentDate()
+            historyDataViewModel.increaseCurrentDate()
         }
     }
 
@@ -78,12 +76,12 @@ class HistoryDataFragment : DaggerFragment() {
             val calendar: Calendar = Calendar.getInstance()
             calendar.set(year, month, dayOfMonth)
 
-            sensorDataViewModel.currentDateLiveData.postValue(calendar.time)
+            historyDataViewModel.currentDateLiveData.postValue(calendar.time)
         }
 
         context?.let {
             val calendar = Calendar.getInstance()
-            calendar.time = sensorDataViewModel.currentDateLiveData.value
+            calendar.time = historyDataViewModel.currentDateLiveData.value
             val dialog = DatePickerDialog(it, listener,
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
