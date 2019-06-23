@@ -60,6 +60,7 @@ dependencies {
 
     // ObjectBox
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
+    implementation "io.objectbox:objectbox-rxjava:$objectboxVersion"
 }
 repositories {
     mavenCentral()

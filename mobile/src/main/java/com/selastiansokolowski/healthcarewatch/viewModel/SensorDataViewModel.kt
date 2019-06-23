@@ -8,8 +8,11 @@ import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import io.objectbox.BoxStore
-import io.objectbox.android.AndroidScheduler
+import io.objectbox.reactive.DataSubscriptionList
+import io.objectbox.rx.RxQuery
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
@@ -21,6 +24,8 @@ class SensorDataViewModel
 @Inject constructor(private val sensorDataModel: SensorDataModel, private val boxStore: BoxStore) : ViewModel() {
 
     private val disposables = CompositeDisposable()
+    private val subscriptions = DataSubscriptionList()
+
     private val supportedSensors: List<Int> = listOf(
             Sensor.TYPE_HEART_RATE,
             Sensor.TYPE_STEP_COUNTER,
@@ -97,18 +102,15 @@ class SensorDataViewModel
         val stopTimestamp = startTimestamp + 24 * 60 * 60 * 1000
 
         val box = boxStore.boxFor(SensorEventData::class.java)
-        val query = box.query().filter {
-            it.type == type && it.timestamp!! in startTimestamp..stopTimestamp
-        }.build()
+        val query = box.query().build()
 
-        if (query.count() > 0) {
-            showLoadingProgressBar.value = true
-        }
-
-        query.subscribe()
-                .on(AndroidScheduler.mainThread())
-                .single()
-                .transform {
+        var disposable: Disposable? = null
+        disposable = RxQuery.observable(query)
+                .subscribeOn(Schedulers.io())
+                .map {
+                    it.filter { it.type == type && it.timestamp!! in startTimestamp..stopTimestamp }
+                }
+                .map {
                     val result = mutableListOf<Entry>()
                     it.forEach {
                         SafeCall.safeLet(it.timestamp, it.values) { timestamp, values ->
@@ -116,16 +118,23 @@ class SensorDataViewModel
                             result.add(Entry(timestampFromMidnight.toFloat(), values[0], it))
                         }
                     }
-                    return@transform result
+                    return@map result
                 }
-                .observer {
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    showLoadingProgressBar.value = true
+                }
+                .subscribe {
                     liveData.postValue(it)
                     showLoadingProgressBar.value = false
+                    disposable?.dispose()
                 }
+        disposables.add(disposable)
     }
 
     override fun onCleared() {
         super.onCleared()
         disposables.clear()
+        subscriptions.cancel()
     }
 }
