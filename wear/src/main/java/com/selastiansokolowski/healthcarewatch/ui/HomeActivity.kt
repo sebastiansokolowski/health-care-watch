@@ -42,21 +42,29 @@ class HomeActivity : WearableFragmentActivity() {
 
         homeViewModel.measurementState.observe(this, Observer {
             it?.let {
-                btn_measurement_start.apply {
-                    text = if (it) {
-                        getString(R.string.measurement_button_stop_label)
-                    } else {
-                        tv_heart_rate.text = "---"
-                        getString(R.string.measurement_button_start_label)
-                    }
-                }
+                setMeasurementButtonView(it)
             }
         })
         homeViewModel.heartRate.observe(this, Observer {
             it?.let {
-                tv_heart_rate.text = it
+                setHeartRateView(it)
             }
         })
+    }
+
+    private fun setMeasurementButtonView(running: Boolean) {
+        btn_measurement_start.apply {
+            text = if (running) {
+                getString(R.string.measurement_button_stop_label)
+            } else {
+                setHeartRateView("---")
+                getString(R.string.measurement_button_start_label)
+            }
+        }
+    }
+
+    private fun setHeartRateView(text: String) {
+        tv_heart_rate.text = text
     }
 
     override fun onEnterAmbient(ambientDetails: Bundle?) {
@@ -64,7 +72,12 @@ class HomeActivity : WearableFragmentActivity() {
     }
 
     override fun onUpdateAmbient() {
-        updateDisplay()
+        homeViewModel.measurementState.value?.let {
+            setMeasurementButtonView(it)
+        }
+        homeViewModel.heartRate.value?.let {
+            setHeartRateView(it)
+        }
     }
 
     override fun onExitAmbient() {
@@ -75,9 +88,11 @@ class HomeActivity : WearableFragmentActivity() {
         if (isAmbient()) {
             container.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
             tv_heart_rate.setTextColor(ContextCompat.getColor(this, android.R.color.white))
+            tv_heart_rate.paint.isAntiAlias = false
         } else {
             container.background = null
             tv_heart_rate.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+            tv_heart_rate.paint.isAntiAlias = true
         }
     }
 }
