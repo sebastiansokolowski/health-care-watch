@@ -38,4 +38,9 @@ class MeasurementService : DaggerService() {
         val notificationId = androidNotification.FOREGROUND_NOTIFICATION_ID
         startForeground(notificationId, notification)
     }
+
+    override fun onDestroy() {
+        sensorDataModel.stopMeasurement()
+        super.onDestroy()
+    }
 }

@@ -12,8 +12,11 @@ import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventSupportedInf
 import com.selastiansokolowski.healthcarewatch.service.MeasurementService
 import com.selastiansokolowski.shared.DataClientPaths
 import io.objectbox.BoxStore
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -22,16 +25,17 @@ import io.reactivex.subjects.PublishSubject
 class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
-    init {
-        Wearable.getDataClient(context).addListener(this)
-        wearableDataClient.getMeasurementState()
-    }
-
-    private var measurementRunning = false
+    private var measurementRunning: Boolean = false
+    private var saveDataDisposable: Disposable? = null
 
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
+
+    init {
+        Wearable.getDataClient(context).addListener(this)
+        wearableDataClient.getMeasurementState()
+    }
 
     private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
         heartRateObservable.onNext(sensorEventData)
@@ -57,25 +61,49 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     }
 
     fun toggleMeasurementState() {
-        if (measurementRunning) {
-            stopMeasurement()
-        } else {
-            startMeasurement()
+        synchronized(this) {
+            if (measurementRunning) {
+                stopMeasurement()
+            } else {
+                startMeasurement()
+            }
         }
     }
 
     fun startMeasurement() {
-        if (measurementRunning) {
-            return
+        synchronized(this) {
+            if (measurementRunning) {
+                return
+            }
+            changeMeasurementState(true)
+            saveDataToDatabase()
         }
-        changeMeasurementState(true)
     }
 
     fun stopMeasurement() {
-        if (!measurementRunning) {
-            return
+        synchronized(this) {
+            if (!measurementRunning) {
+                return
+            }
+            changeMeasurementState(false)
         }
-        changeMeasurementState(false)
+    }
+
+    private fun saveDataToDatabase() {
+        saveDataDisposable = sensorsObservable
+                .subscribeOn(Schedulers.io())
+                .buffer(10, TimeUnit.SECONDS)
+                .subscribe {
+                    Log.d(TAG, "save data to database")
+                    val eventBox = boxStore.boxFor(SensorEventData::class.java)
+                    eventBox.put(it)
+
+                    synchronized(this) {
+                        if (!measurementRunning) {
+                            saveDataDisposable?.dispose()
+                        }
+                    }
+                }
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
@@ -99,9 +127,6 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                             this.timestamp = timestamp
                             this.values = values
                         }
-
-                        val eventBox = boxStore.boxFor(SensorEventData::class.java)
-                        eventBox.put(sensorEvent)
 
                         if (type == Sensor.TYPE_HEART_RATE) {
                             notifyHeartRateObservable(sensorEvent)
