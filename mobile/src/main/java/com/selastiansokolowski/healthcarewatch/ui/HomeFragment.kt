@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
@@ -11,6 +12,9 @@ import android.text.method.LinkMovementMethod
 import android.view.*
 import android.widget.TextView
 import com.selastiansokolowski.healthcarewatch.R
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
+import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import com.selastiansokolowski.healthcarewatch.viewModel.HomeViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.home_fragment.*
@@ -44,7 +48,6 @@ class HomeFragment : DaggerFragment() {
             heart_rate_tv.text = it
             heart_rate_iv.startAnimation()
         })
-
         homeViewModel.measurementState.observe(this, Observer {
             heart_rate_tv.text = "---"
             it?.let {
@@ -53,6 +56,18 @@ class HomeFragment : DaggerFragment() {
                 } else {
                     measurement_btn.text = "Start measurement"
                 }
+            }
+        })
+        homeViewModel.healthCareEvents.observe(this, Observer {
+            SafeCall.safeLet(context, it) { context, list ->
+                val adapter = HealthCareEventAdapter(context, list, homeViewModel)
+                health_care_events_sv.adapter = adapter
+            }
+        })
+        homeViewModel.healthCareEventToRestore.observe(this, Observer {
+            it?.let {
+                showRestoreDeletedItemSnackBar(it)
+                homeViewModel.healthCareEventToRestore.postValue(null)
             }
         })
 
@@ -91,6 +106,16 @@ class HomeFragment : DaggerFragment() {
                     .show()
 
             dialog.findViewById<TextView>(android.R.id.message)?.movementMethod = LinkMovementMethod.getInstance()
+        }
+    }
+
+    private fun showRestoreDeletedItemSnackBar(healthCareEvent: HealthCareEvent) {
+        view?.let {
+            val snackbar = Snackbar.make(it, "Event removed!", Snackbar.LENGTH_LONG)
+            snackbar.setAction("UNDO") {
+                homeViewModel.restoreDeletedEvent(healthCareEvent)
+            }
+            snackbar.show()
         }
     }
 }

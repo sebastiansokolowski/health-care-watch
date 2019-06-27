@@ -2,8 +2,8 @@ package com.selastiansokolowski.healthcarewatch.model
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
-import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.EpilepsyCareEngine
 import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.HeartRateAnomalyEngine
 import io.reactivex.android.schedulers.AndroidSchedulers

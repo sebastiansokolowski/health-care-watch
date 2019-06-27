@@ -61,6 +61,9 @@ dependencies {
     // ObjectBox
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
     implementation "io.objectbox:objectbox-rxjava:$objectboxVersion"
+
+    // Swipe to delete
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 }
 repositories {
     mavenCentral()

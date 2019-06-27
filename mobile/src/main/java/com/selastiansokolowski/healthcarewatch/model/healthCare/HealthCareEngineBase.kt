@@ -1,5 +1,7 @@
 package com.selastiansokolowski.healthcarewatch.model.healthCare
 
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import io.reactivex.subjects.PublishSubject
 
@@ -12,14 +14,17 @@ abstract class HealthCareEngineBase {
 
     abstract fun setSensorObservable(sensorObservable: PublishSubject<SensorEventData>)
 
-    abstract fun getHealthCareEventType(): HealthCareEvent.HealthCareEventType
+    abstract fun getHealthCareEventType(): HealthCareEventType
 
     fun setNotifyObservable(sensorObservable: PublishSubject<HealthCareEvent>) {
         this.sensorObservable = sensorObservable
     }
 
     fun notifyHealthCareEvent(sensorEventData: SensorEventData) {
-        val healthCareEvent = HealthCareEvent(getHealthCareEventType(), sensorEventData)
+        val healthCareEvent = HealthCareEvent().apply {
+            this.careEvent = getHealthCareEventType()
+            this.sensorEventData?.target = sensorEventData
+        }
         sensorObservable?.onNext(healthCareEvent)
     }
 }

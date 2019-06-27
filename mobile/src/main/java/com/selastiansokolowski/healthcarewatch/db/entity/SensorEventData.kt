@@ -13,4 +13,4 @@ data class SensorEventData(@Id var id: Long = 0,
                            var type: Int? = null,
                            var accuracy: Int? = null,
                            var timestamp: Long? = null,
-                           @Convert(converter = FloatArrayConverter::class, dbType = String::class) var values: FloatArray? = null)
+                           @Convert(converter = FloatArrayConverter::class, dbType = String::class) var values: FloatArray? = null){}

@@ -67,7 +67,7 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
                 continue
             }
 
-            val registered = sensorManager.registerListener(this, sensor, TimeUnit.SECONDS.toMicros(1).toInt())
+            val registered = sensorManager.registerListener(this, sensor, TimeUnit.SECONDS.toMicros(2).toInt())
             if (!registered) {
                 Log.d(TAG, "error register sensor: $sensorId")
             }

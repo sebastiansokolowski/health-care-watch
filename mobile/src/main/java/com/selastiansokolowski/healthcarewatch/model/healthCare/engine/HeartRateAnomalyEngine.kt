@@ -2,9 +2,9 @@ package com.selastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.annotation.SuppressLint
 import android.hardware.Sensor
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
-import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEvent
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
@@ -15,8 +15,8 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
 
     private var anomalyState = false
 
-    override fun getHealthCareEventType(): HealthCareEvent.HealthCareEventType {
-        return HealthCareEvent.HealthCareEventType.HEARTH_RATE_ANOMALY
+    override fun getHealthCareEventType(): HealthCareEventType {
+        return HealthCareEventType.HEARTH_RATE_ANOMALY
     }
 
     @SuppressLint("CheckResult")
