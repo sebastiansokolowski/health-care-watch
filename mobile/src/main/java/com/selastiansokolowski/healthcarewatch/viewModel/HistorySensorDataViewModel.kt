@@ -83,7 +83,10 @@ class HistorySensorDataViewModel
         val stopTimestamp = startTimestamp + 24 * 60 * 60 * 1000
 
         val box = boxStore.boxFor(SensorEventData::class.java)
-        val query = box.query().build()
+        val query = box.query().apply {
+            equal(SensorEventData_.type, sensorType.toLong())
+            between(SensorEventData_.timestamp, startTimestamp, stopTimestamp)
+        }.build()
 
         var min = Float.MAX_VALUE
         var max = Float.MIN_VALUE
@@ -94,9 +97,6 @@ class HistorySensorDataViewModel
         var disposable: Disposable? = null
         disposable = RxQuery.observable(query)
                 .subscribeOn(Schedulers.io())
-                .map {
-                    it.filter { it.type == sensorType && it.timestamp!! in startTimestamp..stopTimestamp }
-                }
                 .map {
                     val result = mutableListOf<Entry>()
 
