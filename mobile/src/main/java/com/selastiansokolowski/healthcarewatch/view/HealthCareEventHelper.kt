@@ -11,7 +11,7 @@ import java.util.*
  */
 class HealthCareEventHelper(val context: Context) {
 
-    private val dtf = SimpleDateFormat("HH:mm yyy-MM-dd")
+    private val dtf = SimpleDateFormat("HH:mm:ss yyy-MM-dd")
 
     fun getTitle(healthCareEvent: HealthCareEvent): String {
         return when (healthCareEvent.careEvent) {
