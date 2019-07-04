@@ -8,8 +8,8 @@ import android.view.MenuItem
 import com.selastiansokolowski.healthcarewatch.service.MessageReceiverService
 import com.selastiansokolowski.healthcarewatch.ui.HistoryDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.HomeFragment
-import com.selastiansokolowski.healthcarewatch.ui.SettingsFragment
 import com.selastiansokolowski.healthcarewatch.ui.LiveDataFragment
+import com.selastiansokolowski.healthcarewatch.ui.SettingsFragment
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -28,8 +28,7 @@ class MainActivity : DaggerAppCompatActivity() {
         bottomNavigationView.setOnNavigationItemSelectedListener(bottomNavigationViewListener)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
-                    HomeFragment()).commit()
+            showFragment(HomeFragment())
         }
 
         startService(Intent(this, MessageReceiverService::class.java))
@@ -53,6 +52,22 @@ class MainActivity : DaggerAppCompatActivity() {
 
             return false
         }
+    }
+
+    private fun setBottomNavigationSelectedItem(fragment: Fragment) {
+        bottomNavigationView.selectedItemId = when (fragment.javaClass) {
+            HomeFragment::class.java -> R.id.nav_home
+            LiveDataFragment::class.java -> R.id.nav_data
+            HistoryDataFragment::class.java -> R.id.nav_history
+            SettingsFragment::class.java -> R.id.nav_settings
+            else -> R.id.nav_home
+        }
+    }
+
+    fun showFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
+                fragment).commit()
+        setBottomNavigationSelectedItem(fragment)
     }
 
 }

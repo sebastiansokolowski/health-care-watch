@@ -21,6 +21,22 @@ import javax.inject.Inject
  */
 class HistoryDataFragment : DaggerFragment() {
 
+
+    companion object {
+        const val HEALTH_CARE_EVENT_ID = "HEALTh_CARE_EVENT_ID"
+
+        fun newInstance(healthCareEventId: Long): HistoryDataFragment {
+            val fragment = HistoryDataFragment()
+
+            val bundle = Bundle()
+            bundle.putLong(HEALTH_CARE_EVENT_ID, healthCareEventId)
+
+            fragment.arguments = bundle
+
+            return fragment
+        }
+    }
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 

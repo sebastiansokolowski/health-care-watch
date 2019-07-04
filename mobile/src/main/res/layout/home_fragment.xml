@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/health_care_events_sv"
+        app:layout_constraintBottom_toTopOf="@id/health_care_events_lv"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -57,9 +57,8 @@
             android:layout_weight="1" />
     </LinearLayout>
 
-
     <ListView
-        android:id="@+id/health_care_events_sv"
+        android:id="@+id/health_care_events_lv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/colorPrimary"
@@ -69,5 +68,18 @@
         app:layout_constraintTop_toBottomOf="@id/heart_rate_container"
         app:layout_constraintVertical_weight="1"
         tools:listitem="@layout/health_care_event_item" />
+
+    <TextView
+        android:id="@+id/health_care_events_empty_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="No events"
+        android:textColor="@color/health_care_event_text_color"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/health_care_events_lv"
+        app:layout_constraintLeft_toLeftOf="@+id/health_care_events_lv"
+        app:layout_constraintRight_toRightOf="@+id/health_care_events_lv"
+        app:layout_constraintTop_toTopOf="@id/health_care_events_lv" />
 
 </android.support.constraint.ConstraintLayout>

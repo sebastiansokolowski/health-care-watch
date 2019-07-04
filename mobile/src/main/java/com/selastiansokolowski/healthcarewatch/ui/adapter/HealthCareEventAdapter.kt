@@ -19,6 +19,10 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEvents:
 
     private val healthCareEventHelper = HealthCareEventHelper(context)
 
+    fun setEmptyView(view: View) {
+        view.visibility = if (count > 0) View.INVISIBLE else View.VISIBLE
+    }
+
     override fun getItem(position: Int): Any {
         return healthCareEvents[position]
     }
@@ -39,6 +43,7 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEvents:
         val swipeLayout = LayoutInflater.from(context).inflate(R.layout.health_care_event_item, null) as SwipeLayout
 
         swipeLayout.showMode = SwipeLayout.ShowMode.LayDown
+        swipeLayout.addSwipeListener(this@HealthCareEventAdapter)
 
         return swipeLayout
     }
@@ -51,12 +56,14 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEvents:
             health_care_event_item_date.text = healthCareEventHelper.getDate(item)
             health_care_event_item_event_info.text = healthCareEventHelper.getEventInfo(item)
             health_care_event_item_message.text = healthCareEventHelper.getMessage(item)
-
-            swipe.addSwipeListener(this@HealthCareEventAdapter)
+            foreground_container.setOnClickListener {
+                healthCareEventAdapterItemListener.onClickItem(item)
+            }
         }
     }
 
     interface HealthCareEventAdapterItemListener {
+        fun onClickItem(healthCareEvent: HealthCareEvent)
         fun onDeleteItem(healthCareEvent: HealthCareEvent)
     }
 

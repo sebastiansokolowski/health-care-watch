@@ -11,6 +11,7 @@ import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.text.method.LinkMovementMethod
 import android.view.*
 import android.widget.TextView
+import com.selastiansokolowski.healthcarewatch.MainActivity
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
@@ -61,7 +62,8 @@ class HomeFragment : DaggerFragment() {
         homeViewModel.healthCareEvents.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
                 val adapter = HealthCareEventAdapter(context, list, homeViewModel)
-                health_care_events_sv.adapter = adapter
+                adapter.setEmptyView(health_care_events_empty_view)
+                health_care_events_lv.adapter = adapter
             }
         })
         homeViewModel.healthCareEventToRestore.observe(this, Observer {
@@ -74,6 +76,12 @@ class HomeFragment : DaggerFragment() {
         measurement_btn.setOnClickListener {
             homeViewModel.toggleMeasurementState()
         }
+
+        homeViewModel.healthCareEventSelected.observe(this, Observer {
+            it?.let {
+                showHealthCareEventInHistoryFragment(it)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -117,5 +125,10 @@ class HomeFragment : DaggerFragment() {
             }
             snackbar.show()
         }
+    }
+
+    private fun showHealthCareEventInHistoryFragment(healthCareEvent: HealthCareEvent) {
+        val mainActivity: MainActivity = activity as MainActivity
+        mainActivity.showFragment(HistoryDataFragment.newInstance(healthCareEvent.id))
     }
 }

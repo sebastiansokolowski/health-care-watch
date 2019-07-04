@@ -1,9 +1,10 @@
 package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent_
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData_
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import io.objectbox.BoxStore
 import io.objectbox.reactive.DataSubscriptionList
@@ -19,7 +20,7 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HistorySensorDataViewModel
-@Inject constructor(private val boxStore: BoxStore) : ViewModel() {
+@Inject constructor(boxStore: BoxStore) : HealthCareEventViewModel(boxStore) {
 
     private val disposables = CompositeDisposable()
     private val subscriptions = DataSubscriptionList()
@@ -33,9 +34,47 @@ class HistorySensorDataViewModel
 
     val liveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
 
-    fun initHistoryLiveData(sensorType: Int, date: Date = Date()) {
+    var currentDate = Date()
+
+    override fun initHealthCarEvents() {
+        val startCalendar = Calendar.getInstance()
+        startCalendar.time = currentDate
+        startCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        startCalendar.set(Calendar.MINUTE, 0)
+        startCalendar.set(Calendar.SECOND, 0)
+        startCalendar.set(Calendar.MILLISECOND, 0)
+
+        val endCalendar = Calendar.getInstance()
+        endCalendar.time = startCalendar.time
+        endCalendar.add(Calendar.DAY_OF_MONTH, 1)
+
+        val query = healthCareEventBox.query().apply {
+            link(HealthCareEvent_.sensorEventData)
+                    .between(SensorEventData_.timestamp, startCalendar.timeInMillis, endCalendar.timeInMillis)
+        }.build()
+
+        var disposable: Disposable? = null
+        disposable = RxQuery.observable(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    healthCareEvents.postValue(it)
+
+                    disposable?.dispose()
+                }
+        disposables.add(disposable)
+    }
+
+    fun refreshView(sensorType: Int, date: Date = Date()) {
+        currentDate = date
+
+        initHealthCarEvents()
+        initHistoryLiveData(sensorType)
+    }
+
+    private fun initHistoryLiveData(sensorType: Int) {
         val calendar = Calendar.getInstance()
-        calendar.time = date
+        calendar.time = currentDate
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
@@ -100,8 +139,8 @@ class HistorySensorDataViewModel
     }
 
     override fun onCleared() {
-        super.onCleared()
         disposables.clear()
         subscriptions.cancel()
+        super.onCleared()
     }
 }
