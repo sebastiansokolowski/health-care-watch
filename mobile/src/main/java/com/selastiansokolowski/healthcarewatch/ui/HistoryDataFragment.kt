@@ -5,6 +5,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.text.format.DateUtils
 import android.view.*
 import com.selastiansokolowski.healthcarewatch.MainActivity
 import com.selastiansokolowski.healthcarewatch.R
@@ -57,6 +58,8 @@ class HistoryDataFragment : DaggerFragment() {
             it?.let { date ->
                 val dateTimeFormatter = SimpleDateFormat("yyyy/MM/dd")
                 current_date_tv.text = dateTimeFormatter.format(date)
+
+                setCurrentDateNextBtnEnable(!DateUtils.isToday(date.time))
             }
         })
         current_date_prev_btn.setOnClickListener {
@@ -74,6 +77,11 @@ class HistoryDataFragment : DaggerFragment() {
                 }
             }
         })
+    }
+
+    private fun setCurrentDateNextBtnEnable(enable: Boolean) {
+        current_date_next_btn.isEnabled = enable
+        current_date_next_btn.alpha = if (enable) 1f else 0.2f
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
