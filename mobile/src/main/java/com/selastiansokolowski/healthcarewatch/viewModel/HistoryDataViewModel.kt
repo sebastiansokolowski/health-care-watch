@@ -2,6 +2,8 @@ package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.selastiansokolowski.healthcarewatch.ui.sensorData.SensorAdapterItem
 import java.util.*
 import javax.inject.Inject
 
@@ -12,6 +14,8 @@ class HistoryDataViewModel
 @Inject constructor() : ViewModel() {
 
     val currentDateLiveData: MutableLiveData<Date> = MutableLiveData()
+    val viewPagerToShow: MutableLiveData<Int> = MutableLiveData()
+    val healthCareEventToShow: MutableLiveData<HealthCareEvent> = MutableLiveData()
 
     init {
         val currentDate = Date()
@@ -32,5 +36,19 @@ class HistoryDataViewModel
 
     fun increaseCurrentDate() {
         changeCurrentDateDay(1)
+    }
+
+    fun showHealthCareEvent(healthCareEvent: HealthCareEvent) {
+        val sensorAdapterItem = SensorAdapterItem.values()
+                .find { it.sensorId == healthCareEvent.sensorEventData.target?.type }
+
+        sensorAdapterItem?.let {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = healthCareEvent.sensorEventData.target.timestamp!!
+
+            currentDateLiveData.postValue(calendar.time)
+            viewPagerToShow.postValue(sensorAdapterItem.ordinal)
+            healthCareEventToShow.postValue(healthCareEvent)
+        }
     }
 }

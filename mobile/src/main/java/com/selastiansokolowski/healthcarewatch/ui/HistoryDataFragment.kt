@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.*
+import com.selastiansokolowski.healthcarewatch.MainActivity
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.ui.sensorData.HistorySensorDataPageAdapter
 import com.selastiansokolowski.healthcarewatch.viewModel.HistoryDataViewModel
@@ -20,22 +21,6 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HistoryDataFragment : DaggerFragment() {
-
-
-    companion object {
-        const val HEALTH_CARE_EVENT_ID = "HEALTh_CARE_EVENT_ID"
-
-        fun newInstance(healthCareEventId: Long): HistoryDataFragment {
-            val fragment = HistoryDataFragment()
-
-            val bundle = Bundle()
-            bundle.putLong(HEALTH_CARE_EVENT_ID, healthCareEventId)
-
-            fragment.arguments = bundle
-
-            return fragment
-        }
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -58,6 +43,12 @@ class HistoryDataFragment : DaggerFragment() {
         sensor_vp.adapter = HistorySensorDataPageAdapter(childFragmentManager)
         sensor_data_tl.setupWithViewPager(sensor_vp)
 
+        historyDataViewModel.viewPagerToShow.observe(this, Observer {
+            it?.let {
+                sensor_vp.setCurrentItem(it, true)
+            }
+        })
+
         historyDataViewModel.currentDateLiveData.observe(this, Observer {
             it?.let { date ->
                 val dateTimeFormatter = SimpleDateFormat("yyyy/MM/dd")
@@ -70,6 +61,13 @@ class HistoryDataFragment : DaggerFragment() {
         current_date_next_btn.setOnClickListener {
             historyDataViewModel.increaseCurrentDate()
         }
+
+        val mainActivity: MainActivity = activity as MainActivity
+        mainActivity.healthCareEventSelected.observe(this, Observer {
+            it?.let {
+                historyDataViewModel.showHealthCareEvent(it)
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

@@ -129,6 +129,7 @@ class HomeFragment : DaggerFragment() {
 
     private fun showHealthCareEventInHistoryFragment(healthCareEvent: HealthCareEvent) {
         val mainActivity: MainActivity = activity as MainActivity
-        mainActivity.showFragment(HistoryDataFragment.newInstance(healthCareEvent.id))
+        mainActivity.showFragment(HistoryDataFragment())
+        mainActivity.healthCareEventSelected.postValue(healthCareEvent)
     }
 }

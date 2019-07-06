@@ -8,6 +8,8 @@ import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.selastiansokolowski.healthcarewatch.R
@@ -20,6 +22,7 @@ import com.selastiansokolowski.healthcarewatch.viewModel.HistoryDataViewModel
 import com.selastiansokolowski.healthcarewatch.viewModel.HistorySensorDataViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.sensor_data_fragment.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -59,7 +62,8 @@ class HistorySensorDataFragment : DaggerFragment() {
                 .get(HistorySensorDataViewModel::class.java)
         historyDataViewModel = ViewModelProviders.of(parentFragment!!, viewModelFactory)
                 .get(HistoryDataViewModel::class.java)
-        historySensorDataViewModel.refreshView(sensorAdapterItem.sensorId)
+        historySensorDataViewModel.sensorType = sensorAdapterItem.sensorId
+        historySensorDataViewModel.refreshView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -69,7 +73,13 @@ class HistorySensorDataFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         historyDataViewModel.currentDateLiveData.observe(this, Observer {
             it?.let {
-                historySensorDataViewModel.refreshView(sensorAdapterItem.sensorId, it)
+                historySensorDataViewModel.currentDate = it
+                historySensorDataViewModel.refreshView()
+            }
+        })
+        historyDataViewModel.healthCareEventToShow.observe(this, Observer {
+            it?.let {
+                historySensorDataViewModel.showHealthCareEvent(it)
             }
         })
         historySensorDataViewModel.showLoadingProgressBar.observe(this, Observer {
@@ -120,7 +130,26 @@ class HistorySensorDataFragment : DaggerFragment() {
                 historySensorDataViewModel.healthCareEventToRestore.postValue(null)
             }
         })
+        historySensorDataViewModel.healthCareEventSelected.observe(this, Observer {
+            it?.let {
+                historySensorDataViewModel.showHealthCareEvent(it)
+            }
+        })
+        historySensorDataViewModel.entryHighlighted.observe(this, Observer {
+            it?.let {
+                highlightValue(it)
+            }
+        })
         initChart(sensorAdapterItem)
+    }
+
+    private fun highlightValue(entry: Entry) {
+        chart_lc.data?.let { lineData ->
+            lineData.dataSets?.let {
+                chart_lc.centerViewToAnimated(entry.x, entry.y, YAxis.AxisDependency.LEFT, TimeUnit.SECONDS.toMillis(1))
+                chart_lc.highlightValue(entry.x, entry.y, 0)
+            }
+        }
     }
 
     private fun initChart(sensorAdapterItem: SensorAdapterItem) {
@@ -144,6 +173,10 @@ class HistorySensorDataFragment : DaggerFragment() {
             chart_lc.setVisibleXRangeMaximum(60 * 60 * 5 * 60f)
             chart_lc.notifyDataSetChanged()
             chart_lc.invalidate()
+
+            historySensorDataViewModel.entryHighlighted.value?.let {
+                highlightValue(it)
+            }
         })
     }
 
