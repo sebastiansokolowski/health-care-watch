@@ -8,6 +8,7 @@ import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import io.objectbox.Box
 import io.objectbox.BoxStore
+import java.util.*
 
 /**
  * Created by Sebastian Sokołowski on 28.06.19.
@@ -33,10 +34,12 @@ abstract class HealthCareEventViewModel(val boxStore: BoxStore) : ViewModel(), H
         val box = boxStore.boxFor(SensorEventData::class.java)
         val sensorEventDataList = box.all
 
-        for (i in 1..5) {
+        for (i in 1..10) {
+            val random = Random()
+            val index = random.nextInt(sensorEventDataList.size)
             val healthCareEvent = HealthCareEvent().apply {
                 careEvent = HealthCareEventType.HEARTH_RATE_ANOMALY
-                sensorEventData.target = sensorEventDataList[sensorEventDataList.size - i]
+                sensorEventData.target = sensorEventDataList[index]
             }
 
             healthCareEvents.add(healthCareEvent)

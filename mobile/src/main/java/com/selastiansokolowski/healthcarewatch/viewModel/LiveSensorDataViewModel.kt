@@ -4,7 +4,6 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
-import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -31,7 +30,8 @@ class LiveSensorDataViewModel
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
-        val startTimestamp = calendar.time.time
+
+        val startDayTimestamp = calendar.time.time
 
         var min = Float.MAX_VALUE
         var max = Float.MIN_VALUE
@@ -44,15 +44,12 @@ class LiveSensorDataViewModel
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == sensorType }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    SafeCall.safeLet(it.type, it.timestamp, it.values) { type, timestamp, values ->
-                        if (values.isEmpty()) {
-                            return@safeLet
-                        }
-                        val value = values[0]
+                .subscribe { sensorEventData ->
+                    if (sensorEventData.values.isNotEmpty()) {
+                        val value = sensorEventData.values[0]
 
-                        val timestampFromMidnight: Int = (timestamp - startTimestamp).toInt()
-                        val entry = Entry(timestampFromMidnight.toFloat(), value, it)
+                        val timestampFromMidnight: Int = (sensorEventData.timestamp - startDayTimestamp).toInt()
+                        val entry = Entry(timestampFromMidnight.toFloat(), value, sensorEventData)
 
                         postValueToLiveData(entry)
 
@@ -69,7 +66,6 @@ class LiveSensorDataViewModel
                         statisticMinValue.postValue(min)
                         statisticMaxValue.postValue(max)
                         statisticAverageValue.postValue(sum / count)
-
                     }
                 }
         disposables.add(disposable)

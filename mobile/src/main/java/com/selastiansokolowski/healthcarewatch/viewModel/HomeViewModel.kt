@@ -50,10 +50,10 @@ class HomeViewModel
     private fun initLiveData(): LiveData<String> {
         val sensorDataModelFlowable = sensorDataModel.heartRateObservable.toFlowable(BackpressureStrategy.LATEST)
         val sensorDataModelLiveData = LiveDataReactiveStreams.fromPublisher(sensorDataModelFlowable)
-        return Transformations.map(sensorDataModelLiveData) {
+        return Transformations.map(sensorDataModelLiveData) { sensorEventData ->
             var result = ""
-            it.values?.let {
-                result = it[0].toString()
+            if (sensorEventData.values.isNotEmpty()) {
+                result = sensorEventData.values[0].toString()
             }
             return@map result
         }

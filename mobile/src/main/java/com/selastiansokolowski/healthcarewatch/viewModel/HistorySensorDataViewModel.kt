@@ -6,7 +6,6 @@ import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent_
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData_
-import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import io.objectbox.BoxStore
 import io.objectbox.reactive.DataSubscriptionList
 import io.objectbox.rx.RxQuery
@@ -37,26 +36,16 @@ class HistorySensorDataViewModel
     val entryHighlighted: MutableLiveData<Entry> = MutableLiveData()
 
     var currentDate = Date()
-    var sensorType: Int? = null
+    var sensorType: Int = 0
 
     override fun initHealthCarEvents() {
-        val startCalendar = Calendar.getInstance()
-        startCalendar.time = currentDate
-        startCalendar.set(Calendar.HOUR_OF_DAY, 0)
-        startCalendar.set(Calendar.MINUTE, 0)
-        startCalendar.set(Calendar.SECOND, 0)
-        startCalendar.set(Calendar.MILLISECOND, 0)
-
-        val endCalendar = Calendar.getInstance()
-        endCalendar.time = startCalendar.time
-        endCalendar.add(Calendar.DAY_OF_MONTH, 1)
+        val startDayTimestamp = getStartDayTimestamp(currentDate.time)
+        val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
         val query = healthCareEventBox.query().apply {
-            val sensorQuery = link(HealthCareEvent_.sensorEventData)
-                    .between(SensorEventData_.timestamp, startCalendar.timeInMillis, endCalendar.timeInMillis)
-            sensorType?.let {
-                sensorQuery.equal(SensorEventData_.type, it.toLong())
-            }
+            link(HealthCareEvent_.sensorEventData)
+                    .between(SensorEventData_.timestamp, startDayTimestamp, endDayTimestamp)
+                    .equal(SensorEventData_.type, sensorType.toLong())
         }.build()
 
         var disposable: Disposable? = null
@@ -77,21 +66,13 @@ class HistorySensorDataViewModel
     }
 
     private fun initHistoryLiveData() {
-        val calendar = Calendar.getInstance()
-        calendar.time = currentDate
-        calendar.set(Calendar.HOUR_OF_DAY, 0)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-
-        val startTimestamp = calendar.time.time
-        val stopTimestamp = startTimestamp + 24 * 60 * 60 * 1000
+        val startDayTimestamp = getStartDayTimestamp(currentDate.time)
+        val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
         val box = boxStore.boxFor(SensorEventData::class.java)
         val query = box.query().apply {
-            sensorType?.let {
-                equal(SensorEventData_.type, it.toLong())
-            }
-            between(SensorEventData_.timestamp, startTimestamp, stopTimestamp)
+            equal(SensorEventData_.type, sensorType.toLong())
+            between(SensorEventData_.timestamp, startDayTimestamp, endDayTimestamp)
         }.build()
 
         var min = Float.MAX_VALUE
@@ -106,21 +87,22 @@ class HistorySensorDataViewModel
                 .map {
                     val result = mutableListOf<Entry>()
 
-                    it.forEach {
-                        SafeCall.safeLet(it.timestamp, it.values) { timestamp, values ->
-                            val value = values[0]
+                    it.forEach { sensorEventData ->
+                        if (sensorEventData.values.isNotEmpty()) {
+                            createEntry(sensorEventData, startDayTimestamp)?.let { entry ->
+                                val value = sensorEventData.values[0]
 
-                            if (value < min) {
-                                min = value
-                            }
-                            if (value > max) {
-                                max = value
-                            }
-                            sum += value
-                            count++
+                                if (value < min) {
+                                    min = value
+                                }
+                                if (value > max) {
+                                    max = value
+                                }
+                                sum += value
+                                count++
 
-                            val timestampFromMidnight: Int = (timestamp - startTimestamp).toInt()
-                            result.add(Entry(timestampFromMidnight.toFloat(), value, it))
+                                result.add(entry)
+                            }
                         }
                     }
                     return@map result
@@ -144,16 +126,42 @@ class HistorySensorDataViewModel
         disposables.add(disposable)
     }
 
-    fun showHealthCareEvent(healthCareEvent: HealthCareEvent) {
+    private fun getStartDayTimestamp(timestamp: Long): Long {
         val calendar = Calendar.getInstance()
-        calendar.time = currentDate
+        calendar.timeInMillis = timestamp
         calendar.set(Calendar.HOUR_OF_DAY, 0)
         calendar.set(Calendar.MINUTE, 0)
         calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
 
-        val timestampFromMidnight: Int = (healthCareEvent.sensorEventData.target.timestamp!! - calendar.timeInMillis).toInt()
+        return calendar.timeInMillis
+    }
 
-        entryHighlighted.postValue(Entry(timestampFromMidnight.toFloat(), healthCareEvent.sensorEventData.target!!.values!![0]))
+    private fun getEndDayTimestamp(startDayTimestamp: Long): Long {
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = startDayTimestamp
+        calendar.add(Calendar.DAY_OF_MONTH, 1)
+        return calendar.timeInMillis
+    }
+
+    private fun createEntry(sensorEventData: SensorEventData, lastMidnightTimestamp: Long): Entry? {
+        var entry: Entry? = null
+
+        if (sensorEventData.values.isNotEmpty()) {
+            val timestampFromMidnight: Int = (sensorEventData.timestamp - lastMidnightTimestamp).toInt()
+
+            entry = Entry(timestampFromMidnight.toFloat(), sensorEventData.values[0], sensorEventData.values)
+        }
+        return entry
+    }
+
+    fun showHealthCareEvent(healthCareEvent: HealthCareEvent) {
+        healthCareEvent.sensorEventData.target?.let { sensorEventData ->
+            val startDayTimestamp = getStartDayTimestamp(sensorEventData.timestamp)
+            createEntry(sensorEventData, startDayTimestamp)?.let { entry ->
+                entryHighlighted.postValue(entry)
+            }
+        }
     }
 
     override fun onCleared() {

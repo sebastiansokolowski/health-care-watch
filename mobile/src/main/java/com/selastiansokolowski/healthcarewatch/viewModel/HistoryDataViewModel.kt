@@ -44,7 +44,7 @@ class HistoryDataViewModel
 
         sensorAdapterItem?.let {
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = healthCareEvent.sensorEventData.target.timestamp!!
+            calendar.timeInMillis = healthCareEvent.sensorEventData.target.timestamp
 
             currentDateLiveData.postValue(calendar.time)
             viewPagerToShow.postValue(sensorAdapterItem.ordinal)
