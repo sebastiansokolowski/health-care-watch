@@ -16,6 +16,7 @@ import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
+import com.selastiansokolowski.healthcarewatch.util.SingleEvent
 import com.selastiansokolowski.healthcarewatch.viewModel.HomeViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.home_fragment.*
@@ -67,9 +68,10 @@ class HomeFragment : DaggerFragment() {
             }
         })
         homeViewModel.healthCareEventToRestore.observe(this, Observer {
-            it?.let {
-                showRestoreDeletedItemSnackBar(it)
-                homeViewModel.healthCareEventToRestore.postValue(null)
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    showRestoreDeletedItemSnackBar(it)
+                }
             }
         })
 
@@ -130,6 +132,6 @@ class HomeFragment : DaggerFragment() {
     private fun showHealthCareEventInHistoryFragment(healthCareEvent: HealthCareEvent) {
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.showFragment(HistoryDataFragment())
-        mainActivity.healthCareEventSelected.postValue(healthCareEvent)
+        mainActivity.healthCareEventSelected.postValue(SingleEvent(healthCareEvent))
     }
 }

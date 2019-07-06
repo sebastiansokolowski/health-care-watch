@@ -6,6 +6,7 @@ import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
+import com.selastiansokolowski.healthcarewatch.util.SingleEvent
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import java.util.*
@@ -23,7 +24,7 @@ abstract class HealthCareEventViewModel(val boxStore: BoxStore) : ViewModel(), H
 //        addHealthCareEvents()
     }
 
-    val healthCareEventToRestore: MutableLiveData<HealthCareEvent> = MutableLiveData()
+    val healthCareEventToRestore: MutableLiveData<SingleEvent<HealthCareEvent>> = MutableLiveData()
     val healthCareEvents: MutableLiveData<List<HealthCareEvent>> = MutableLiveData()
 
     abstract fun initHealthCarEvents()
@@ -60,6 +61,6 @@ abstract class HealthCareEventViewModel(val boxStore: BoxStore) : ViewModel(), H
 
     override fun onDeleteItem(healthCareEvent: HealthCareEvent) {
         healthCareEventBox.remove(healthCareEvent)
-        healthCareEventToRestore.postValue(healthCareEvent)
+        healthCareEventToRestore.postValue(SingleEvent(healthCareEvent))
     }
 }

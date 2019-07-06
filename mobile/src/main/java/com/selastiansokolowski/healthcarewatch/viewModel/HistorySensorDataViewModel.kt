@@ -35,8 +35,18 @@ class HistorySensorDataViewModel
     val liveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
     val entryHighlighted: MutableLiveData<Entry> = MutableLiveData()
 
-    var currentDate = Date()
-    var sensorType: Int = 0
+    private var currentDate = Date()
+    private var sensorType: Int = 0
+
+    fun setCurrentDate(date: Date) {
+        currentDate = date
+        entryHighlighted.postValue(null)
+        refreshView()
+    }
+
+    fun setSensorType(sensorType: Int) {
+        this.sensorType = sensorType
+    }
 
     override fun initHealthCarEvents() {
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)

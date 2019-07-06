@@ -44,8 +44,12 @@ class HistoryDataFragment : DaggerFragment() {
         sensor_data_tl.setupWithViewPager(sensor_vp)
 
         historyDataViewModel.viewPagerToShow.observe(this, Observer {
-            it?.let {
-                sensor_vp.setCurrentItem(it, true)
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    if (sensor_vp.currentItem != it) {
+                        sensor_vp.setCurrentItem(it, true)
+                    }
+                }
             }
         })
 
@@ -64,8 +68,10 @@ class HistoryDataFragment : DaggerFragment() {
 
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.healthCareEventSelected.observe(this, Observer {
-            it?.let {
-                historyDataViewModel.showHealthCareEvent(it)
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    historyDataViewModel.showHealthCareEvent(it)
+                }
             }
         })
     }

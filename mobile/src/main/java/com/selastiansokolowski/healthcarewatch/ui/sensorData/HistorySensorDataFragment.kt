@@ -12,6 +12,8 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
@@ -62,7 +64,7 @@ class HistorySensorDataFragment : DaggerFragment() {
                 .get(HistorySensorDataViewModel::class.java)
         historyDataViewModel = ViewModelProviders.of(parentFragment!!, viewModelFactory)
                 .get(HistoryDataViewModel::class.java)
-        historySensorDataViewModel.sensorType = sensorAdapterItem.sensorId
+        historySensorDataViewModel.setSensorType(sensorAdapterItem.sensorId)
         historySensorDataViewModel.refreshView()
     }
 
@@ -73,13 +75,15 @@ class HistorySensorDataFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         historyDataViewModel.currentDateLiveData.observe(this, Observer {
             it?.let {
-                historySensorDataViewModel.currentDate = it
-                historySensorDataViewModel.refreshView()
+                historySensorDataViewModel.setCurrentDate(it)
             }
         })
         historyDataViewModel.healthCareEventToShow.observe(this, Observer {
             it?.let {
-                historySensorDataViewModel.showHealthCareEvent(it)
+                if (it.sensorEventData.target.type == sensorAdapterItem.sensorId) {
+                    historySensorDataViewModel.showHealthCareEvent(it)
+                    historyDataViewModel.healthCareEventToShow.postValue(null)
+                }
             }
         })
         historySensorDataViewModel.showLoadingProgressBar.observe(this, Observer {
@@ -125,9 +129,10 @@ class HistorySensorDataFragment : DaggerFragment() {
             }
         })
         historySensorDataViewModel.healthCareEventToRestore.observe(this, Observer {
-            it?.let {
-                showRestoreDeletedItemSnackBar(it)
-                historySensorDataViewModel.healthCareEventToRestore.postValue(null)
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    showRestoreDeletedItemSnackBar(it)
+                }
             }
         })
         historySensorDataViewModel.healthCareEventSelected.observe(this, Observer {
@@ -141,6 +146,15 @@ class HistorySensorDataFragment : DaggerFragment() {
             }
         })
         initChart(sensorAdapterItem)
+        chart_lc.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            override fun onNothingSelected() {
+                historySensorDataViewModel.entryHighlighted.postValue(null)
+            }
+
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                historySensorDataViewModel.entryHighlighted.postValue(e)
+            }
+        })
     }
 
     private fun highlightValue(entry: Entry) {
@@ -182,7 +196,7 @@ class HistorySensorDataFragment : DaggerFragment() {
 
     private fun showRestoreDeletedItemSnackBar(healthCareEvent: HealthCareEvent) {
         view?.let {
-            val snackbar = Snackbar.make(it, "Event removed!", Snackbar.LENGTH_LONG)
+            val snackbar = Snackbar.make(it, "SingleEvent removed!", Snackbar.LENGTH_LONG)
             snackbar.setAction("UNDO") {
                 historySensorDataViewModel.restoreDeletedEvent(healthCareEvent)
             }

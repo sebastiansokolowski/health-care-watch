@@ -12,6 +12,7 @@ import com.selastiansokolowski.healthcarewatch.ui.HistoryDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.HomeFragment
 import com.selastiansokolowski.healthcarewatch.ui.LiveDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.SettingsFragment
+import com.selastiansokolowski.healthcarewatch.util.SingleEvent
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -21,7 +22,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
-    val healthCareEventSelected: MutableLiveData<HealthCareEvent> = MutableLiveData()
+    val healthCareEventSelected: MutableLiveData<SingleEvent<HealthCareEvent>> = MutableLiveData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
