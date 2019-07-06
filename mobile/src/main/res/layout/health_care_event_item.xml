@@ -33,7 +33,7 @@
         android:id="@+id/foreground_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/health_care_event_item_selector"
         android:orientation="vertical"
         android:padding="8dp"
         app:layout_constraintTop_toTopOf="parent">
