@@ -30,6 +30,12 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="Health care engines">
+        <com.selastiansokolowski.healthcarewatch.view.preference.HealthCareEnginesListPreference
+            android:key="health_care_engines"
+            android:title="Select engines" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="Alert notification">
 
         <SwitchPreference

@@ -16,6 +16,7 @@ import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.view.preference.ContactListPreference
+import com.selastiansokolowski.healthcarewatch.view.preference.HealthCareEnginesListPreference
 import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
 import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreferenceDialogFragment
 import com.selastiansokolowski.healthcarewatch.viewModel.SettingsViewModel
@@ -82,6 +83,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                 } else {
                     preference.loadContacts()
                 }
+            }
+            is HealthCareEnginesListPreference -> {
+                preference.loadEngines()
             }
         }
 

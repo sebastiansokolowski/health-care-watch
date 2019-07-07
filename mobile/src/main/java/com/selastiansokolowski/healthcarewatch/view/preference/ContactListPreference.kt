@@ -1,7 +1,6 @@
 package com.selastiansokolowski.healthcarewatch.view.preference
 
 import android.content.Context
-import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.support.v14.preference.MultiSelectListPreference
 import android.util.AttributeSet
@@ -20,7 +19,7 @@ class ContactListPreference : MultiSelectListPreference {
         setDefaultValues()
     }
 
-    fun setDefaultValues() {
+    private fun setDefaultValues() {
         val myEntries: MutableList<String> = mutableListOf("")
         val myValues: MutableList<String> = mutableListOf("")
 
@@ -33,7 +32,7 @@ class ContactListPreference : MultiSelectListPreference {
         val contactNumber = mutableListOf<String>()
 
         val contentReceiver = context.contentResolver
-        val cursor = contentReceiver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+        val cursor = contentReceiver.query(Phone.CONTENT_URI,
                 arrayOf(Phone.DISPLAY_NAME, Phone.NUMBER),
                 null,
                 null,
