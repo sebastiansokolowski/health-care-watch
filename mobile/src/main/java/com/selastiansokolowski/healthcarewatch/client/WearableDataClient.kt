@@ -58,6 +58,18 @@ class WearableDataClient(context: Context) {
         }).start()
     }
 
+    fun sendSettings(settings: Settings) {
+        Log.d(TAG, "sendSettings settings=$settings")
+
+        val putDataMapReq = PutDataMapRequest.create(DataClientPaths.SETTINGS_MAP_PATH)
+        putDataMapReq.dataMap.apply {
+            putInt(DataClientPaths.SETTINGS_MAP_SAMPLING_US, settings.samplingUs)
+            putIntegerArrayList(DataClientPaths.SETTINGS_MAP_SENSORS, ArrayList(settings.sensorsIds))
+        }
+
+        sendData(putDataMapReq)
+    }
+
     private fun sendData(request: PutDataMapRequest) {
         val putDataReq = request
                 .asPutDataRequest()
@@ -74,4 +86,6 @@ class WearableDataClient(context: Context) {
             }
         }
     }
+
+    data class Settings(val samplingUs: Int, val sensorsIds: MutableList<Int>)
 }

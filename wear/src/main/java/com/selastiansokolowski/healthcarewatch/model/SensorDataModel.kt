@@ -8,21 +8,17 @@ import android.util.Log
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
  */
-class SensorDataModel(private val wearableDataClient: WearableDataClient, private val sensorManager: SensorManager) : SensorEventListener {
+class SensorDataModel(private val settingsModel: SettingsModel, private val wearableDataClient: WearableDataClient, private val sensorManager: SensorManager) : SensorEventListener {
     private val TAG = javaClass.canonicalName
 
-    private val sensors = listOf(
-            Sensor.TYPE_HEART_RATE,
-            Sensor.TYPE_STEP_COUNTER,
-            Sensor.TYPE_PRESSURE,
-            Sensor.TYPE_GRAVITY,
-            Sensor.TYPE_LINEAR_ACCELERATION
-    )
+    init {
+        settingsModel.sensorDataModel = this
+    }
 
     val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
@@ -59,6 +55,10 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
             return
         }
         changeMeasurementState(true)
+
+        val samplingUs = settingsModel.getSamplingUs()
+        val sensors = settingsModel.getSensors()
+
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
             if (sensor == null) {
@@ -67,12 +67,23 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
                 continue
             }
 
-            val registered = sensorManager.registerListener(this, sensor, TimeUnit.SECONDS.toMicros(2).toInt())
+            val registered = sensorManager.registerListener(this, sensor, samplingUs)
             if (!registered) {
                 Log.d(TAG, "error register sensor: $sensorId")
+            } else {
+                Log.d(TAG, "error register sensor: $sensorId")
             }
+            Log.d(TAG, "register sensor id:$sensorId registered:$registered samplingUs:$samplingUs")
             wearableDataClient.sendSensorSupportedInfo(sensorId, registered)
         }
+    }
+
+    fun refreshSettings() {
+        if (!measurementRunning) {
+            return
+        }
+        stopMeasurement()
+        startMeasurement()
     }
 
     fun stopMeasurement() {
@@ -95,7 +106,7 @@ class SensorDataModel(private val wearableDataClient: WearableDataClient, privat
                 Sensor.TYPE_HEART_RATE -> {
                     val sensorValue = values[0]
 
-                    val heartRate = Math.round(sensorValue)
+                    val heartRate = sensorValue.roundToInt()
                     heartRateObservable.onNext(heartRate)
                 }
             }

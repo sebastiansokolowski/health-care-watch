@@ -4,6 +4,7 @@ import android.Manifest
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -14,9 +15,9 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
 import com.selastiansokolowski.healthcarewatch.R
-import com.selastiansokolowski.healthcarewatch.view.ContactListPreference
-import com.selastiansokolowski.healthcarewatch.view.TimePickerPreference
-import com.selastiansokolowski.healthcarewatch.view.TimePickerPreferenceDialogFragment
+import com.selastiansokolowski.healthcarewatch.view.preference.ContactListPreference
+import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
+import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreferenceDialogFragment
 import com.selastiansokolowski.healthcarewatch.viewModel.SettingsViewModel
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -28,7 +29,8 @@ import javax.inject.Inject
 /**
  * Created by Sebastian Sokołowski on 10.03.19.
  */
-class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector {
+class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector, SharedPreferences.OnSharedPreferenceChangeListener {
+    private val TAG = javaClass.canonicalName
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -41,6 +43,16 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
     override fun onAttach(context: Context?) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
@@ -84,7 +96,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
         }
     }
 
-    fun checkPermissions(): Boolean {
+    private fun checkPermissions(): Boolean {
         activity?.let {
             if (ContextCompat.checkSelfPermission(it, Manifest.permission.READ_CONTACTS)
                     != PackageManager.PERMISSION_GRANTED) {
@@ -99,9 +111,17 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector 
         return false
     }
 
-    fun requestPermissions() {
+    private fun requestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.SEND_SMS), 0)
+        }
+    }
+
+    //SharedPreferences.OnSharedPreferenceChangeListener
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        key?.let {
+            settingsViewModel.onSharedPreferenceChanged(key)
         }
     }
 }

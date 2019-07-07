@@ -24,5 +24,9 @@ class DataClientPaths {
         const val ACCURACY_MAP_PATH = "/accuracy"
         const val ACCURACY_MAP_SENSOR_TYPE = "type"
         const val ACCURACY_MAP_SENSOR_ACCURACY = "accuracy"
+
+        const val SETTINGS_MAP_PATH = "/settings"
+        const val SETTINGS_MAP_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
+        const val SETTINGS_MAP_SENSORS = SettingsSharedPreferences.SENSORS
     }
 }
