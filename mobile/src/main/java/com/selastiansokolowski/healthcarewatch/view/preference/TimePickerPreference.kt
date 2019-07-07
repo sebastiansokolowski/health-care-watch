@@ -1,4 +1,4 @@
-package com.selastiansokolowski.healthcarewatch.view
+package com.selastiansokolowski.healthcarewatch.view.preference
 
 import android.content.Context
 import android.content.res.TypedArray

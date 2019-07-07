@@ -8,13 +8,13 @@
             android:key="nighttime_enabled"
             android:title="Nighttime" />
 
-        <com.selastiansokolowski.healthcarewatch.view.TimePickerPreference
+        <com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
             android:defaultValue="00:00"
             android:dependency="nighttime_enabled"
             android:key="nighttime_start"
             android:title="Start" />
 
-        <com.selastiansokolowski.healthcarewatch.view.TimePickerPreference
+        <com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
             android:defaultValue="06:00"
             android:dependency="nighttime_enabled"
             android:key="nighttime_stop"
@@ -22,11 +22,11 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Refresh rate">
+    <PreferenceCategory android:title="Watch">
 
-        <SeekBarPreference
-            android:key="refresh_rate"
-            android:max="10" />
+        <com.selastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
+            android:key="sampling_us"
+            android:title="Sampling time in seconds" />
 
     </PreferenceCategory>
 
@@ -37,7 +37,7 @@
             android:key="sms_notification_enabled"
             android:title="SMS notification" />
 
-        <com.selastiansokolowski.healthcarewatch.view.ContactListPreference
+        <com.selastiansokolowski.healthcarewatch.view.preference.ContactListPreference
             android:dependency="sms_notification_enabled"
             android:key="contacts"
             android:title="Select contacts" />
