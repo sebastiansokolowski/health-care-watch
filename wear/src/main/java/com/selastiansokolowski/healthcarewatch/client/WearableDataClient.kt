@@ -92,18 +92,6 @@ class WearableDataClient(context: Context) {
         send(putDataMapReq)
     }
 
-    fun sendSensorSupportedInfo(type: Int, supported: Boolean) {
-        Log.d(TAG, "sendSensorSupportedInfo type=$type supported=$supported")
-
-        val putDataMapReq = PutDataMapRequest.create(SUPPORTED_MAP_PATH)
-        putDataMapReq.dataMap.apply {
-            putInt(SUPPORTED_MAP_SENSOR_TYPE, type)
-            putBoolean(SUPPORTED_MAP_SENSOR_SUPPORTED, supported)
-        }
-
-        send(putDataMapReq)
-    }
-
     private fun send(request: PutDataMapRequest) {
         val putDataReq = request
                 .asPutDataRequest()

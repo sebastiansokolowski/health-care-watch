@@ -61,11 +61,6 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
 
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
-            if (sensor == null) {
-                Log.d(TAG, "unavailable sensorId: $sensorId")
-                wearableDataClient.sendSensorSupportedInfo(sensorId, false)
-                continue
-            }
 
             val registered = sensorManager.registerListener(this, sensor, samplingUs)
             if (!registered) {
@@ -73,8 +68,6 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
             } else {
                 Log.d(TAG, "error register sensor: $sensorId")
             }
-            Log.d(TAG, "register sensor id:$sensorId registered:$registered samplingUs:$samplingUs")
-            wearableDataClient.sendSensorSupportedInfo(sensorId, registered)
         }
     }
 

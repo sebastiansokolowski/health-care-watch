@@ -8,7 +8,6 @@ import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventAccuracy
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
-import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventSupportedInfo
 import com.selastiansokolowski.healthcarewatch.service.MeasurementService
 import com.selastiansokolowski.shared.DataClientPaths
 import io.objectbox.BoxStore
@@ -147,22 +146,6 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         }
 
                         val eventBox = boxStore.boxFor(SensorEventAccuracy::class.java)
-                        eventBox.put(sensorEvent)
-
-                        Log.d(TAG, "$sensorEvent")
-                    }
-                }
-                DataClientPaths.SUPPORTED_MAP_PATH -> {
-                    DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val type = getInt(DataClientPaths.SUPPORTED_MAP_SENSOR_TYPE)
-                        val supported = getBoolean(DataClientPaths.SUPPORTED_MAP_SENSOR_SUPPORTED)
-
-                        val sensorEvent = SensorEventSupportedInfo().apply {
-                            this.type = type
-                            this.supported = supported
-                        }
-
-                        val eventBox = boxStore.boxFor(SensorEventSupportedInfo::class.java)
                         eventBox.put(sensorEvent)
 
                         Log.d(TAG, "$sensorEvent")
