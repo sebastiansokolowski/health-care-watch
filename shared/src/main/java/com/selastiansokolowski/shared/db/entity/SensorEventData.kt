@@ -1,6 +1,6 @@
-package com.selastiansokolowski.healthcarewatch.db.entity
+package com.selastiansokolowski.shared.db.entity
 
-import com.selastiansokolowski.healthcarewatch.db.converter.FloatArrayConverter
+import com.selastiansokolowski.shared.db.converter.FloatArrayConverter
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id

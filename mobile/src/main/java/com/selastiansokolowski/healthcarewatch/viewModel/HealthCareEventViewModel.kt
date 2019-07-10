@@ -2,9 +2,9 @@ package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
-import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
+import com.selastiansokolowski.shared.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.selastiansokolowski.healthcarewatch.util.SingleEvent
 import io.objectbox.Box

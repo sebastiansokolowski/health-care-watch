@@ -1,4 +1,4 @@
-package com.selastiansokolowski.healthcarewatch.db.entity
+package com.selastiansokolowski.shared.db.entity
 
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id

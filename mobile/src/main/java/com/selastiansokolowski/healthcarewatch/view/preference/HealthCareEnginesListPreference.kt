@@ -3,7 +3,7 @@ package com.selastiansokolowski.healthcarewatch.view.preference
 import android.content.Context
 import android.support.v14.preference.MultiSelectListPreference
 import android.util.AttributeSet
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.db.entity.HealthCareEventType
 
 
 /**

@@ -1,4 +1,4 @@
-package com.selastiansokolowski.healthcarewatch.db.entity
+package com.selastiansokolowski.shared.db.entity
 
 /**
  * Created by Sebastian Sokołowski on 24.06.19.

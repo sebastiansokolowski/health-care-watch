@@ -1,8 +1,8 @@
 package com.selastiansokolowski.healthcarewatch.view
 
 import android.content.Context
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
+import com.selastiansokolowski.shared.db.entity.HealthCareEventType
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -2,8 +2,8 @@ package com.selastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.annotation.SuppressLint
 import android.hardware.Sensor
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
-import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.selastiansokolowski.shared.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject

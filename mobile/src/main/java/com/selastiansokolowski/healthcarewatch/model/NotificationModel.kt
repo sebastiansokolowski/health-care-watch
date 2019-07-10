@@ -2,8 +2,8 @@ package com.selastiansokolowski.healthcarewatch.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
+import com.selastiansokolowski.shared.db.entity.HealthCareEventType
 import com.selastiansokolowski.healthcarewatch.model.notification.AndroidNotification
 import com.selastiansokolowski.healthcarewatch.model.notification.SmsNotification
 

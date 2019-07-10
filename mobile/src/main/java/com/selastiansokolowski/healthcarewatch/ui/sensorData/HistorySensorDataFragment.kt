@@ -15,7 +15,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.selastiansokolowski.healthcarewatch.R
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import com.selastiansokolowski.healthcarewatch.view.CustomMarkerView

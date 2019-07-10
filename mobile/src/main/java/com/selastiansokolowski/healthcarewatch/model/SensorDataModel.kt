@@ -6,8 +6,8 @@ import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventAccuracy
-import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.selastiansokolowski.shared.db.entity.SensorEventAccuracy
+import com.selastiansokolowski.shared.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.service.MeasurementService
 import com.selastiansokolowski.shared.DataClientPaths
 import io.objectbox.BoxStore

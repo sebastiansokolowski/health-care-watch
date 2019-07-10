@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.view.MenuItem
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.service.MessageReceiverService
 import com.selastiansokolowski.healthcarewatch.ui.HistoryDataFragment
 import com.selastiansokolowski.healthcarewatch.ui.HomeFragment

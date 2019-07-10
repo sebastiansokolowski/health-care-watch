@@ -13,7 +13,7 @@ import android.view.*
 import android.widget.TextView
 import com.selastiansokolowski.healthcarewatch.MainActivity
 import com.selastiansokolowski.healthcarewatch.R
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import com.selastiansokolowski.healthcarewatch.util.SingleEvent

@@ -1,6 +1,6 @@
-package com.selastiansokolowski.healthcarewatch.db.converter
+package com.selastiansokolowski.shared.db.converter
 
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.db.entity.HealthCareEventType
 import io.objectbox.converter.PropertyConverter
 
 /**

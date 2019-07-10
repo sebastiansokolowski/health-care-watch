@@ -1,4 +1,4 @@
-package com.selastiansokolowski.healthcarewatch.db.converter
+package com.selastiansokolowski.shared.db.converter
 
 import io.objectbox.converter.PropertyConverter
 

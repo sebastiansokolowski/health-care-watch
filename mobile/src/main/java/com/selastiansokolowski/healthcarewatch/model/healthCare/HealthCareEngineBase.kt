@@ -1,8 +1,8 @@
 package com.selastiansokolowski.healthcarewatch.model.healthCare
 
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
-import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
+import com.selastiansokolowski.shared.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.db.entity.SensorEventData
 import io.reactivex.subjects.PublishSubject
 
 /**
