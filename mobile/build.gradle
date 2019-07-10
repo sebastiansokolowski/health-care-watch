@@ -58,10 +58,6 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
 
-    // ObjectBox
-    implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
-    implementation "io.objectbox:objectbox-rxjava:$objectboxVersion"
-
     // Swipe to delete
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
 }
