@@ -16,9 +16,10 @@ import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_VALUES_KEY
-import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_MAP_PATH
-import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_MAP_SENSOR_SUPPORTED
-import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_MAP_SENSOR_TYPE
+import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_EVENT_DATA
+import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_PATH
+import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_TYPE
+import com.selastiansokolowski.shared.db.entity.HealthCareEvent
 
 
 /**
@@ -66,18 +67,35 @@ class WearableDataClient(context: Context) {
         }).start()
     }
 
+    fun sendHealthCareEvent(event: HealthCareEvent) {
+        Log.d(TAG, "sendHealthCareEvent event=${event.careEvent}")
+
+        val putDataMapReq = PutDataMapRequest.create(HEALTH_CARE_MAP_PATH)
+        putDataMapReq.dataMap.apply {
+            putString(HEALTH_CARE_TYPE, event.careEvent.name)
+            putDataMap(HEALTH_CARE_EVENT_DATA, DataMap())
+        }
+
+        send(putDataMapReq)
+    }
+
     fun sendSensorEvent(event: SensorEvent) {
         Log.d(TAG, "sendSensorEvent event=${event.sensor.name}")
 
         val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
         putDataMapReq.dataMap.apply {
+            setSensorEventDataMap(this, event)
+        }
+        send(putDataMapReq)
+    }
+
+    private fun setSensorEventDataMap(dataMap: DataMap, event: SensorEvent): DataMap {
+        return dataMap.apply {
             putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, event.values)
             putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, event.sensor.type)
             putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, event.accuracy)
             putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, System.currentTimeMillis())
         }
-
-        send(putDataMapReq)
     }
 
     fun sendSensorAccuracy(sensor: Sensor, accuracy: Int) {

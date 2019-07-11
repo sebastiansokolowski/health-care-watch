@@ -6,10 +6,9 @@ import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.selastiansokolowski.shared.db.entity.SensorEventAccuracy
-import com.selastiansokolowski.shared.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.service.MeasurementService
 import com.selastiansokolowski.shared.DataClientPaths
+import com.selastiansokolowski.shared.db.entity.*
 import io.objectbox.BoxStore
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -21,7 +20,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
+class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val boxStore: BoxStore, private val notificationModel: NotificationModel) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
     private var measurementRunning: Boolean = false
@@ -115,19 +114,9 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
             when (event.dataItem.uri.path) {
                 DataClientPaths.DATA_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val type = getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE)
-                        val accuracy = getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY)
-                        val timestamp = getLong(DataClientPaths.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY)
-                        val values = getFloatArray(DataClientPaths.DATA_MAP_SENSOR_EVENT_VALUES_KEY)
+                        val sensorEvent = createSensorEventData(this)
 
-                        val sensorEvent = SensorEventData().apply {
-                            this.type = type
-                            this.accuracy = accuracy
-                            this.timestamp = timestamp
-                            this.values = values
-                        }
-
-                        if (type == Sensor.TYPE_HEART_RATE) {
+                        if (sensorEvent.type == Sensor.TYPE_HEART_RATE) {
                             notifyHeartRateObservable(sensorEvent)
                         }
                         notifySensorsObservable(sensorEvent)
@@ -151,7 +140,42 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         Log.d(TAG, "$sensorEvent")
                     }
                 }
+                DataClientPaths.HEALTH_CARE_MAP_PATH -> {
+                    DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
+                        val type = getString(DataClientPaths.HEALTH_CARE_TYPE)
+                        val eventDataMap = getDataMap(DataClientPaths.HEALTH_CARE_EVENT_DATA)
+                        val sensorEventData = createSensorEventData(eventDataMap)
+
+                        //todo:
+                        val eventBox = boxStore.boxFor(SensorEventData::class.java)
+                        val sensorEventDataFromDatabase = eventBox.query()
+                                .equal(SensorEventData_.type, sensorEventData.type.toLong())
+                                .equal(SensorEventData_.timestamp, sensorEventData.timestamp)
+                                .build().findFirst()
+
+                        val healthCareEvent = HealthCareEvent().apply {
+                            this.careEvent = HealthCareEventType.valueOf(type)
+                            this.sensorEventData.target = sensorEventDataFromDatabase
+                        }
+
+                        notificationModel.notifyHealthCareEvent(healthCareEvent)
+                    }
+                }
             }
+        }
+    }
+
+    private fun createSensorEventData(dataMap: DataMap): SensorEventData {
+        val type = dataMap.getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE)
+        val accuracy = dataMap.getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY)
+        val timestamp = dataMap.getLong(DataClientPaths.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY)
+        val values = dataMap.getFloatArray(DataClientPaths.DATA_MAP_SENSOR_EVENT_VALUES_KEY)
+
+        return SensorEventData().apply {
+            this.type = type
+            this.accuracy = accuracy
+            this.timestamp = timestamp
+            this.values = values
         }
     }
 }

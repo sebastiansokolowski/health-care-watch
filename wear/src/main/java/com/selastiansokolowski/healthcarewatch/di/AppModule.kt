@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.hardware.SensorManager
 import android.preference.PreferenceManager
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
+import com.selastiansokolowski.healthcarewatch.model.HealthCareModel
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.selastiansokolowski.healthcarewatch.model.SettingsModel
 import dagger.Module
@@ -49,4 +50,8 @@ class AppModule {
         return SensorDataModel(settingsModel, wearableDataClient, sensorManager)
     }
 
+    @Provides
+    @Singleton
+    fun provideHealthCareModel(sensorDataModel: SensorDataModel, wearableDataClient: WearableDataClient, sharedPreferences: SharedPreferences): HealthCareModel =
+            HealthCareModel(sensorDataModel, wearableDataClient, sharedPreferences)
 }

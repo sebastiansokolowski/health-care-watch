@@ -12,7 +12,7 @@ import javax.inject.Inject
 class App : DaggerApplication() {
 
     @Inject
-    lateinit var healthCareModel: HealthCareModel
+    lateinit var healthCareModel: com.selastiansokolowski.healthcarewatch.model.HealthCareModel
 
     override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
         return DaggerAppComponent.builder()
