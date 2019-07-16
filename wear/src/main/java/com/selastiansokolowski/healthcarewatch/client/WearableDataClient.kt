@@ -16,9 +16,6 @@ import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_VALUES_KEY
-import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_MAP_PATH
-import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_MAP_SENSOR_SUPPORTED
-import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_MAP_SENSOR_TYPE
 
 
 /**
@@ -30,6 +27,8 @@ class WearableDataClient(context: Context) {
     private val dataClient: DataClient = Wearable.getDataClient(context)
     private val messageClient: MessageClient = Wearable.getMessageClient(context)
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
+
+    var urgentData = false
 
     fun sendMeasurementEvent(state: Boolean) {
         Log.d(TAG, "sendMeasurementEvent state: $state")
@@ -93,15 +92,17 @@ class WearableDataClient(context: Context) {
     }
 
     private fun send(request: PutDataMapRequest) {
-        val putDataReq = request
+        var putDataReq = request
                 .asPutDataRequest()
-                .setUrgent()
+        if (urgentData) {
+            putDataReq = putDataReq.setUrgent()
+        }
 
         val dataItemTask = dataClient.putDataItem(putDataReq)
 
         if (BuildConfig.DEBUG) {
             dataItemTask.addOnSuccessListener {
-                Log.d(TAG, "Success sent data")
+                Log.d(TAG, "Success sent data urgent:$urgentData")
             }
             dataItemTask.addOnFailureListener { ex ->
                 Log.d(TAG, "Error sending data $ex")
