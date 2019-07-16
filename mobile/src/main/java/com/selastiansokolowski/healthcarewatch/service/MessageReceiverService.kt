@@ -2,6 +2,7 @@ package com.selastiansokolowski.healthcarewatch.service
 
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.WearableListenerService
+import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.selastiansokolowski.shared.DataClientPaths
 import dagger.android.AndroidInjection
@@ -14,6 +15,9 @@ class MessageReceiverService : WearableListenerService() {
 
     @Inject
     lateinit var sensorDataModel: SensorDataModel
+
+    @Inject
+    lateinit var wearableDataClient: WearableDataClient
 
     override fun onCreate() {
         AndroidInjection.inject(this)

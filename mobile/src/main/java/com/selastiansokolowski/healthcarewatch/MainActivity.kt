@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.view.MenuItem
+import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.service.MessageReceiverService
 import com.selastiansokolowski.healthcarewatch.ui.HistoryDataFragment
@@ -16,6 +17,7 @@ import com.selastiansokolowski.healthcarewatch.util.SingleEvent
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import javax.inject.Inject
 
 
 class MainActivity : DaggerAppCompatActivity() {
@@ -23,6 +25,9 @@ class MainActivity : DaggerAppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
 
     val healthCareEventSelected: MutableLiveData<SingleEvent<HealthCareEvent>> = MutableLiveData()
+
+    @Inject
+    lateinit var wearableDataClient: WearableDataClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +42,16 @@ class MainActivity : DaggerAppCompatActivity() {
         }
 
         startService(Intent(this, MessageReceiverService::class.java))
+    }
+
+    override fun onResume() {
+        super.onResume()
+        wearableDataClient.sendLiveData(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        wearableDataClient.sendLiveData(false)
     }
 
     private var bottomNavigationViewListener = object : BottomNavigationView.OnNavigationItemSelectedListener {
