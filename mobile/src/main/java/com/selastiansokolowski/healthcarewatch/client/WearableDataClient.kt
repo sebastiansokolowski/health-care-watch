@@ -27,6 +27,14 @@ class WearableDataClient(context: Context) {
         }
     }
 
+    fun sendLiveData(enabled: Boolean) {
+        if (enabled) {
+            sendMessage(DataClientPaths.START_LIVE_DATA)
+        } else {
+            sendMessage(DataClientPaths.STOP_LIVE_DATA)
+        }
+    }
+
     fun getMeasurementState() {
         Log.d(TAG, "getMeasurementState")
 
