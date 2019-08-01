@@ -1,9 +1,13 @@
 package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.ViewModel
+import android.content.ContentResolver
 import android.content.SharedPreferences
+import android.provider.ContactsContract
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
 import com.selastiansokolowski.healthcarewatch.ui.sensorData.SensorAdapterItem
+import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.selastiansokolowski.shared.SettingsSharedPreferences
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -12,7 +16,7 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class SettingsViewModel
-@Inject constructor(private val sharedPreferences: SharedPreferences, private val wearableDataClient: WearableDataClient) : ViewModel() {
+@Inject constructor(private val sharedPreferences: SharedPreferences, private val wearableDataClient: WearableDataClient, private val contentResolver: ContentResolver) : ViewModel() {
     fun onSharedPreferenceChanged(key: String) {
         when (key) {
             SettingsSharedPreferences.SAMPLING_US -> {
@@ -34,5 +38,57 @@ class SettingsViewModel
 
         val settings = WearableDataClient.Settings(sampleUs, sensors)
         wearableDataClient.sendSettings(settings)
+    }
+
+    fun setupPreference(preference: CustomMultiSelectListPreference) {
+        when (preference.key) {
+            SettingsSharedPreferences.CONTACTS -> {
+                setContacts(preference)
+            }
+            SettingsSharedPreferences.HEALTH_CARE_ENGINES -> {
+                setSupportedEngines(preference)
+            }
+        }
+    }
+
+    private fun setContacts(preference: CustomMultiSelectListPreference) {
+        val contactName = mutableListOf<String>()
+        val contactNumber = mutableListOf<String>()
+
+        val cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER),
+                null,
+                null,
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC")
+
+        if (cursor != null && cursor.moveToFirst() && cursor.count > 0) {
+            do {
+                val name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+                var number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                number = number.replace(" ", "")
+                number = number.replace("-", "")
+
+                if (!contactName.contains(name)) {
+                    contactName.add("$name\n\t$number")
+                    contactNumber.add(number)
+                }
+            } while (cursor.moveToNext())
+
+            cursor.close()
+        }
+
+        preference.setValues(contactName.toTypedArray(), contactNumber.toTypedArray())
+    }
+
+    private fun setSupportedEngines(preference: CustomMultiSelectListPreference) {
+        val engineName = mutableListOf<String>()
+        val engineValue = mutableListOf<String>()
+
+        HealthCareEventType.values().forEach {
+            engineName.add(it.title)
+            engineValue.add(it.name)
+        }
+
+        preference.setValues(engineName.toTypedArray(), engineValue.toTypedArray())
     }
 }

@@ -31,7 +31,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Health care engines">
-        <com.selastiansokolowski.healthcarewatch.view.preference.HealthCareEnginesListPreference
+        <com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
             android:key="health_care_engines"
             android:title="Select engines" />
     </PreferenceCategory>
@@ -43,7 +43,7 @@
             android:key="sms_notification_enabled"
             android:title="SMS notification" />
 
-        <com.selastiansokolowski.healthcarewatch.view.preference.ContactListPreference
+        <com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
             android:dependency="sms_notification_enabled"
             android:key="contacts"
             android:title="Select contacts" />

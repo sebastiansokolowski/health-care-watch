@@ -1,6 +1,7 @@
 package com.selastiansokolowski.healthcarewatch.di
 
 import android.app.Application
+import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
@@ -27,6 +28,10 @@ class AppModule {
     @Provides
     @Singleton
     fun provideContext(app: Application): Context = app
+
+    @Provides
+    @Singleton
+    fun provideContentResolver(context: Context): ContentResolver = context.contentResolver
 
     @Provides
     @Singleton

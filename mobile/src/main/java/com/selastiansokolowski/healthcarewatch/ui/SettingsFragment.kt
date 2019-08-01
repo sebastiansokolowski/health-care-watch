@@ -15,11 +15,11 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
 import com.selastiansokolowski.healthcarewatch.R
-import com.selastiansokolowski.healthcarewatch.view.preference.ContactListPreference
-import com.selastiansokolowski.healthcarewatch.view.preference.HealthCareEnginesListPreference
+import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
 import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreferenceDialogFragment
 import com.selastiansokolowski.healthcarewatch.viewModel.SettingsViewModel
+import com.selastiansokolowski.shared.SettingsSharedPreferences
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -76,16 +76,20 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
             is TimePickerPreference -> {
                 dialogFragment = TimePickerPreferenceDialogFragment()
             }
-            is ContactListPreference -> {
-                if (!checkPermissions()) {
-                    requestPermissions()
-                    return
-                } else {
-                    preference.loadContacts()
+            is CustomMultiSelectListPreference -> {
+                when (preference.key) {
+                    SettingsSharedPreferences.CONTACTS -> {
+                        if (!checkPermissions()) {
+                            requestPermissions()
+                            return
+                        } else {
+                            settingsViewModel.setupPreference(preference)
+                        }
+                    }
+                    SettingsSharedPreferences.HEALTH_CARE_ENGINES -> {
+                        settingsViewModel.setupPreference(preference)
+                    }
                 }
-            }
-            is HealthCareEnginesListPreference -> {
-                preference.loadEngines()
             }
         }
 
