@@ -6,7 +6,6 @@ import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventAccuracy
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.service.MeasurementService
 import com.selastiansokolowski.shared.DataClientPaths
@@ -131,22 +130,6 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                             notifyHeartRateObservable(sensorEvent)
                         }
                         notifySensorsObservable(sensorEvent)
-
-                        Log.d(TAG, "$sensorEvent")
-                    }
-                }
-                DataClientPaths.ACCURACY_MAP_PATH -> {
-                    DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val type = getInt(DataClientPaths.ACCURACY_MAP_SENSOR_TYPE)
-                        val accuracy = getInt(DataClientPaths.ACCURACY_MAP_SENSOR_ACCURACY)
-
-                        val sensorEvent = SensorEventAccuracy().apply {
-                            this.type = type
-                            this.accuracy = accuracy
-                        }
-
-                        val eventBox = boxStore.boxFor(SensorEventAccuracy::class.java)
-                        eventBox.put(sensorEvent)
 
                         Log.d(TAG, "$sensorEvent")
                     }

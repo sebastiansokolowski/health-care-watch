@@ -8,9 +8,6 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.BuildConfig
 import com.selastiansokolowski.shared.DataClientPaths
-import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_PATH
-import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_SENSOR_ACCURACY
-import com.selastiansokolowski.shared.DataClientPaths.Companion.ACCURACY_MAP_SENSOR_TYPE
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_PATH
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE
@@ -74,18 +71,6 @@ class WearableDataClient(context: Context) {
             putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, event.sensor.type)
             putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, event.accuracy)
             putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, System.currentTimeMillis())
-        }
-
-        send(putDataMapReq)
-    }
-
-    fun sendSensorAccuracy(sensor: Sensor, accuracy: Int) {
-        Log.d(TAG, "sendSensorAccuracy sensor=$sensor accuracy=$accuracy")
-
-        val putDataMapReq = PutDataMapRequest.create(ACCURACY_MAP_PATH)
-        putDataMapReq.dataMap.apply {
-            putInt(ACCURACY_MAP_SENSOR_TYPE, sensor.type)
-            putInt(ACCURACY_MAP_SENSOR_ACCURACY, accuracy)
         }
 
         send(putDataMapReq)

@@ -88,9 +88,7 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        sensor?.apply {
-            wearableDataClient.sendSensorAccuracy(sensor, accuracy)
-        }
+        Log.d(TAG, "onAccuracyChanged sensor=$sensor accuracy=$accuracy")
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
