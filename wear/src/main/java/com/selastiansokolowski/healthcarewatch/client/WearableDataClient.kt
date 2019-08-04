@@ -28,7 +28,7 @@ class WearableDataClient(context: Context) {
     private val messageClient: MessageClient = Wearable.getMessageClient(context)
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
 
-    var urgentData = false
+    var liveData = false
 
     fun sendMeasurementEvent(state: Boolean) {
         Log.d(TAG, "sendMeasurementEvent state: $state")
@@ -74,7 +74,7 @@ class WearableDataClient(context: Context) {
             putDataMap(HEALTH_CARE_EVENT_DATA, setSensorEventDataMap(DataMap(), healthCareEvent.sensorEvent))
         }
 
-        send(putDataMapReq)
+        send(putDataMapReq, true)
     }
 
     fun sendSensorEvent(event: SensorEvent) {
@@ -85,7 +85,7 @@ class WearableDataClient(context: Context) {
             setSensorEventDataMap(this, event)
         }
 
-        send(putDataMapReq)
+        send(putDataMapReq, liveData)
     }
 
     private fun setSensorEventDataMap(dataMap: DataMap, event: SensorEvent): DataMap {
@@ -97,10 +97,10 @@ class WearableDataClient(context: Context) {
         }
     }
 
-    private fun send(request: PutDataMapRequest) {
+    private fun send(request: PutDataMapRequest, urgent: Boolean) {
         var putDataReq = request
                 .asPutDataRequest()
-        if (urgentData) {
+        if (urgent) {
             putDataReq = putDataReq.setUrgent()
         }
 
@@ -108,7 +108,7 @@ class WearableDataClient(context: Context) {
 
         if (BuildConfig.DEBUG) {
             dataItemTask.addOnSuccessListener {
-                Log.d(TAG, "Success sent data urgent:$urgentData")
+                Log.d(TAG, "Success sent data urgent:$urgent")
             }
             dataItemTask.addOnFailureListener { ex ->
                 Log.d(TAG, "Error sending data $ex")

@@ -36,10 +36,10 @@ class MessageReceiverService : WearableListenerService() {
                 sensorDataModel.notifyMeasurementState()
             }
             DataClientPaths.START_LIVE_DATA -> {
-                wearableDataClient.urgentData = true
+                wearableDataClient.liveData = true
             }
             DataClientPaths.STOP_LIVE_DATA -> {
-                wearableDataClient.urgentData = false
+                wearableDataClient.liveData = false
             }
             else -> super.onMessageReceived(event)
         }
