@@ -5,7 +5,7 @@ import android.content.ContentResolver
 import android.content.SharedPreferences
 import android.provider.ContactsContract
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEventType
+import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 import com.selastiansokolowski.healthcarewatch.ui.sensorData.SensorAdapterItem
 import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.selastiansokolowski.shared.SettingsSharedPreferences

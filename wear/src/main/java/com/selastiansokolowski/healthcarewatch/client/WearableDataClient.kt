@@ -7,6 +7,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.BuildConfig
+import com.selastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
 import com.selastiansokolowski.shared.DataClientPaths
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_PATH
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY

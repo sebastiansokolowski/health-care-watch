@@ -1,6 +1,7 @@
 package com.selastiansokolowski.healthcarewatch.db.entity
 
 import com.selastiansokolowski.healthcarewatch.db.converter.HealthCareEventConverter
+import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id

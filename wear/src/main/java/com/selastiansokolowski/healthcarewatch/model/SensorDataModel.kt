@@ -20,6 +20,7 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
         settingsModel.sensorDataModel = this
     }
 
+    val sensorsObservable: PublishSubject<SensorEvent> = PublishSubject.create()
     val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
@@ -36,6 +37,10 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
 
     fun notifyMeasurementState() {
         wearableDataClient.sendMeasurementEvent(measurementRunning)
+    }
+
+    private fun notifySensorsObservable(sensorEvent: SensorEvent) {
+        sensorsObservable.onNext(sensorEvent)
     }
 
     fun toggleMeasurementState() {
@@ -64,9 +69,9 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
 
             val registered = sensorManager.registerListener(this, sensor, samplingUs)
             if (!registered) {
-                Log.d(TAG, "error register sensor: $sensorId")
+                Log.d(TAG, "error register sensorEvent: $sensorId")
             } else {
-                Log.d(TAG, "error register sensor: $sensorId")
+                Log.d(TAG, "error register sensorEvent: $sensorId")
             }
         }
     }
@@ -88,7 +93,7 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        Log.d(TAG, "onAccuracyChanged sensor=$sensor accuracy=$accuracy")
+        Log.d(TAG, "onAccuracyChanged sensorEvent=$sensor accuracy=$accuracy")
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -101,6 +106,8 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
                     heartRateObservable.onNext(heartRate)
                 }
             }
+
+            notifySensorsObservable(event)
 
             wearableDataClient.sendSensorEvent(this)
         }
