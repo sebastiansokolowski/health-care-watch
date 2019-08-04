@@ -47,7 +47,7 @@ class HealthCareModel(private val sensorDataModel: SensorDataModel, private val 
     }
 
     private fun notifyAlert(healthCareEvent: HealthCareEvent) {
-        //TODO:
+        wearableDataClient.sendHealthCareEvent(healthCareEvent)
     }
 
 }

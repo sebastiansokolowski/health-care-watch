@@ -3,9 +3,9 @@ package com.selastiansokolowski.healthcarewatch.model
 import android.content.Context
 import android.content.SharedPreferences
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 import com.selastiansokolowski.healthcarewatch.model.notification.AndroidNotification
 import com.selastiansokolowski.healthcarewatch.model.notification.SmsNotification
+import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
@@ -34,13 +34,14 @@ class NotificationModel(context: Context, private val prefs: SharedPreferences) 
     }
 
     private fun createMessage(healthCareEvent: HealthCareEvent): String? {
-        return when (healthCareEvent.careEvent ?: return "null") {
+        return when (healthCareEvent.careEvent) {
             HealthCareEventType.EPILEPSY -> {
                 ""
             }
             HealthCareEventType.HEARTH_RATE_ANOMALY -> {
                 ""
             }
+            else -> null
         }
     }
 }

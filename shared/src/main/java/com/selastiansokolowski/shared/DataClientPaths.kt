@@ -23,6 +23,10 @@ class DataClientPaths {
         const val DATA_MAP_SENSOR_EVENT_ACCURACY_KEY = "accuracy"
         const val DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY = "timestamp"
 
+        const val HEALTH_CARE_MAP_PATH = "/health_care"
+        const val HEALTH_CARE_TYPE = "type"
+        const val HEALTH_CARE_EVENT_DATA = "event_data"
+
         const val SETTINGS_MAP_PATH = "/settings"
         const val SETTINGS_MAP_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
         const val SETTINGS_MAP_SENSORS = SettingsSharedPreferences.SENSORS

@@ -17,4 +17,9 @@ class HealthCareEvent {
     lateinit var sensorEventData: ToOne<SensorEventData>
     @Convert(converter = HealthCareEventConverter::class, dbType = String::class)
     lateinit var careEvent: HealthCareEventType
+
+    override fun toString(): String {
+        return "HealthCareEvent(id=$id, sensorEventData=$sensorEventData, careEvent=$careEvent)"
+    }
+
 }

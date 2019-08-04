@@ -6,9 +6,11 @@ import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.service.MeasurementService
 import com.selastiansokolowski.shared.DataClientPaths
+import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 import io.objectbox.BoxStore
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -20,7 +22,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
+class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val notificationModel: NotificationModel, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
     private var measurementRunning: Boolean = false
@@ -131,10 +133,43 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         }
                         notifySensorsObservable(sensorEvent)
 
-                        Log.d(TAG, "$sensorEvent")
+                        Log.d(TAG, "sensorEvent=$sensorEvent")
+                    }
+                }
+                DataClientPaths.HEALTH_CARE_MAP_PATH -> {
+                    DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
+                        val type = getString(DataClientPaths.HEALTH_CARE_TYPE)
+                        val eventDataMap = getDataMap(DataClientPaths.HEALTH_CARE_EVENT_DATA)
+                        val sensorEventData = createSensorEventData(eventDataMap)
+
+                        val healthCareEvent = HealthCareEvent().apply {
+                            this.careEvent = HealthCareEventType.valueOf(type)
+                            this.sensorEventData.target = sensorEventData
+                        }
+
+                        val eventBox = boxStore.boxFor(HealthCareEvent::class.java)
+                        eventBox.put(healthCareEvent)
+
+                        notificationModel.notifyHealthCareEvent(healthCareEvent)
+
+                        Log.d(TAG, "healthCareEvent=$healthCareEvent")
                     }
                 }
             }
+        }
+    }
+
+    private fun createSensorEventData(dataMap: DataMap): SensorEventData {
+        val type = dataMap.getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE)
+        val accuracy = dataMap.getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY)
+        val timestamp = dataMap.getLong(DataClientPaths.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY)
+        val values = dataMap.getFloatArray(DataClientPaths.DATA_MAP_SENSOR_EVENT_VALUES_KEY)
+
+        return SensorEventData().apply {
+            this.type = type
+            this.accuracy = accuracy
+            this.timestamp = timestamp
+            this.values = values
         }
     }
 }
