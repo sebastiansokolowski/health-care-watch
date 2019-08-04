@@ -40,8 +40,7 @@ class AndroidNotification(val context: Context) {
     }
 
     private fun showNotification(notification: Notification) {
-        notificationManagerCompat.notify(NOTIFICATION_ID, notification)
-        NOTIFICATION_ID++
+        notificationManagerCompat.notify(++NOTIFICATION_ID, notification)
     }
 
     fun buildNotification(title: String, message: String): Notification {
