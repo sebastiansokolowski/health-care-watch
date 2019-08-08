@@ -15,9 +15,13 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
 
     private var anomalyState = false
 
+    override fun requiredSensors(): Set<Int> {
+        return setOf(Sensor.TYPE_HEART_RATE)
+    }
+
     @SuppressLint("CheckResult")
     override fun setSensorEventObservable(sensorObservable: PublishSubject<SensorEvent>) {
-                sensorObservable
+        sensorObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.sensor.type == Sensor.TYPE_HEART_RATE }
                 .subscribe { sensorEventData ->

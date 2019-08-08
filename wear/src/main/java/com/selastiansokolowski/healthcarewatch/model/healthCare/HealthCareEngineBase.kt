@@ -16,6 +16,8 @@ abstract class HealthCareEngineBase {
 
     abstract fun getHealthCareEventType(): HealthCareEventType
 
+    abstract fun requiredSensors(): Set<Int>
+
     fun setNotifyObservable(sensorObservable: PublishSubject<HealthCareEvent>) {
         this.sensorObservable = sensorObservable
     }
