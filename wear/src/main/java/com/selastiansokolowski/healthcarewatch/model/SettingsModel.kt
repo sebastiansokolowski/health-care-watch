@@ -6,7 +6,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.util.Log
 import com.google.android.gms.wearable.*
-import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
+import com.selastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
 import com.selastiansokolowski.shared.DataClientPaths
 import com.selastiansokolowski.shared.SettingsSharedPreferences
 import java.util.concurrent.TimeUnit
@@ -37,8 +37,8 @@ class SettingsModel(context: Context, private val sensorManager: SensorManager, 
 
     private fun getDefaultSensors(): Set<String> {
         val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
-        val sensorsId = sensors.map { it.type }
-        return sensorsId.map { it.toString() }.toSet()
+        val sensorsIds = sensors.map { it.type }
+        return sensorsIds.map { it.toString() }.toSet()
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
@@ -51,11 +51,14 @@ class SettingsModel(context: Context, private val sensorManager: SensorManager, 
                 DataClientPaths.SETTINGS_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
                         val samplingUs = getInt(DataClientPaths.SETTINGS_MAP_SAMPLING_US)
-                        val sensors = getIntegerArrayList(DataClientPaths.SETTINGS_MAP_HEALTH_CARE_EVENTS)
+
+                        val healthCareEvents = getStringArrayList(DataClientPaths.SETTINGS_MAP_HEALTH_CARE_EVENTS)
+                        val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(healthCareEvents)
+                        val sensors = healthCareEngines.flatMap { it.requiredSensors() }
 
                         sharedPreferences.edit().apply {
                             putInt(SettingsSharedPreferences.SAMPLING_US, samplingUs)
-                            putIntegerArrayList(SettingsSharedPreferences.SENSORS, sensors)
+                            putIntegerArrayList(SettingsSharedPreferences.SENSORS, ArrayList(sensors))
                             commit()
                         }
 

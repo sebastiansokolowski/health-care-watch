@@ -26,7 +26,7 @@ class HealthCareEnginesUtils {
             return supportedHealthCareEngines
         }
 
-        fun getHealthCareEngines(healthCareEventTypeNames: Set<String>): Set<HealthCareEngineBase> {
+        fun getHealthCareEngines(healthCareEventTypeNames: List<String>): Set<HealthCareEngineBase> {
             val healthCareEngines = mutableSetOf<HealthCareEngineBase>()
 
             healthCareEventTypeNames.forEach { healthCareEventTypeName ->
