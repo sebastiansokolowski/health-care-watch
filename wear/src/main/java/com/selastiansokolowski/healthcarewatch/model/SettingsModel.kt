@@ -2,8 +2,11 @@ package com.selastiansokolowski.healthcarewatch.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.util.Log
 import com.google.android.gms.wearable.*
+import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.selastiansokolowski.shared.DataClientPaths
 import com.selastiansokolowski.shared.SettingsSharedPreferences
 import java.util.concurrent.TimeUnit
@@ -11,7 +14,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 06.07.19.
  */
-class SettingsModel(context: Context, private val sharedPreferences: SharedPreferences) : DataClient.OnDataChangedListener {
+class SettingsModel(context: Context, private val sensorManager: SensorManager, private val sharedPreferences: SharedPreferences) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
     var sensorDataModel: SensorDataModel? = null
@@ -26,9 +29,16 @@ class SettingsModel(context: Context, private val sharedPreferences: SharedPrefe
     }
 
     fun getSensors(): List<Int> {
-        val sensors = sharedPreferences.getStringSet(SettingsSharedPreferences.SENSORS, emptySet())
+        val sensors = sharedPreferences.getStringSet(SettingsSharedPreferences.SENSORS,
+                getDefaultSensors())
 
         return sensors?.map { sensor -> sensor.toInt() } ?: emptyList()
+    }
+
+    private fun getDefaultSensors(): Set<String> {
+        val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
+        val sensorsId = sensors.map { it.type }
+        return sensorsId.map { it.toString() }.toSet()
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {

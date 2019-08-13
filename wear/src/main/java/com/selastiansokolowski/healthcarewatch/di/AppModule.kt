@@ -40,8 +40,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSettingsModel(context: Context, sharedPreferences: SharedPreferences): SettingsModel {
-        return SettingsModel(context, sharedPreferences)
+    fun provideSettingsModel(context: Context, sensorsManager: SensorManager, sharedPreferences: SharedPreferences): SettingsModel {
+        return SettingsModel(context, sensorsManager, sharedPreferences)
     }
 
     @Provides
