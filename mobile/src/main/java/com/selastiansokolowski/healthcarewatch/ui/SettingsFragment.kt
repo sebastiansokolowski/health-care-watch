@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
+import android.widget.Toast
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
@@ -87,7 +88,11 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         }
                     }
                     SettingsSharedPreferences.HEALTH_CARE_ENGINES -> {
-                        settingsViewModel.setupPreference(preference)
+                        if (settingsViewModel.setupModel.setupComplete.value != true) {
+                            Toast.makeText(context, "Please setup watch earlier.", Toast.LENGTH_LONG).show()
+                        } else {
+                            settingsViewModel.setupPreference(preference)
+                        }
                     }
                 }
             }

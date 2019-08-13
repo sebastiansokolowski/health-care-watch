@@ -31,6 +31,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
+    val supportedHealthCareEventsObservable: PublishSubject<List<HealthCareEventType>> = PublishSubject.create()
 
     init {
         Wearable.getDataClient(context).addListener(this)
@@ -43,6 +44,11 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     private fun notifySensorsObservable(sensorEventData: SensorEventData) {
         sensorsObservable.onNext(sensorEventData)
+    }
+
+    private fun notifySupportedHealthCareEventsObservable(healthCareEvents: List<HealthCareEventType>) {
+        supportedHealthCareEventsObservable.onNext(healthCareEvents)
+        supportedHealthCareEventsObservable.onComplete()
     }
 
     private fun changeMeasurementState(state: Boolean) {
@@ -143,7 +149,11 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         val sensorEventData = createSensorEventData(eventDataMap)
 
                         val healthCareEvent = HealthCareEvent().apply {
-                            this.careEvent = HealthCareEventType.valueOf(type)
+                            try {
+                                this.careEvent = HealthCareEventType.valueOf(type)
+                            } catch (e: IllegalArgumentException) {
+                                return@forEach
+                            }
                             this.sensorEventData.target = sensorEventData
                         }
 
@@ -153,6 +163,21 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         notificationModel.notifyHealthCareEvent(healthCareEvent)
 
                         Log.d(TAG, "healthCareEvent=$healthCareEvent")
+                    }
+                }
+                DataClientPaths.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH -> {
+                    DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
+                        val supportedHealthCareEventsNames = getStringArrayList(DataClientPaths.SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES)
+                        val supportedHealthCareEvents = supportedHealthCareEventsNames.mapNotNull {
+                            try {
+                                HealthCareEventType.valueOf(it)
+                            } catch (e: IllegalArgumentException) {
+                                null
+                            }
+                        }
+                        notifySupportedHealthCareEventsObservable(supportedHealthCareEvents)
+
+                        Log.d(TAG, "supported health care events :$supportedHealthCareEventsNames")
                     }
                 }
             }

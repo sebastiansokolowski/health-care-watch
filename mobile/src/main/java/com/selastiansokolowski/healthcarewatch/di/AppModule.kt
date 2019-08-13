@@ -9,6 +9,7 @@ import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.MyObjectBox
 import com.selastiansokolowski.healthcarewatch.model.NotificationModel
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
+import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import dagger.Module
 import dagger.Provides
 import io.objectbox.BoxStore
@@ -19,6 +20,7 @@ import javax.inject.Singleton
  */
 @Module(includes = [ViewModelModule::class])
 class AppModule {
+
     @Provides
     @Singleton
     fun provideSharedPreference(app: Application): SharedPreferences =
@@ -27,6 +29,11 @@ class AppModule {
     @Provides
     @Singleton
     fun provideContext(app: Application): Context = app
+
+    @Provides
+    @Singleton
+    fun provideSetupModel(prefs: SharedPreferences, wearableDataClient: WearableDataClient, sensorDataModel: SensorDataModel): SetupModel =
+            SetupModel(prefs, wearableDataClient, sensorDataModel)
 
     @Provides
     @Singleton

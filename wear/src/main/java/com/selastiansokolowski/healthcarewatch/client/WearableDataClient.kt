@@ -16,6 +16,9 @@ import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_
 import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_EVENT_DATA
 import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_PATH
 import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_TYPE
+import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH
+import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES
+import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 
 
 /**
@@ -38,6 +41,18 @@ class WearableDataClient(context: Context) {
         } else {
             sendMessage(DataClientPaths.STOP_MEASUREMENT)
         }
+    }
+
+    fun sendSupportedHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
+        Log.d(TAG, "sendSupportedHealthCareEvents healthCareEvents: $healthCareEvents")
+
+        val healthCareEventNames = healthCareEvents.map { it.name }
+        val putDataMapReq = PutDataMapRequest.create(SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH)
+        putDataMapReq.dataMap.apply {
+            putStringArrayList(SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES, healthCareEventNames.toCollection(ArrayList()))
+        }
+
+        send(putDataMapReq, true)
     }
 
     private fun sendMessage(message: String) {

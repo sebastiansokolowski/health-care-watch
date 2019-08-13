@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.Transformations
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
+import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import io.objectbox.BoxStore
 import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
@@ -17,12 +18,16 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HomeViewModel
-@Inject constructor(private val sensorDataModel: SensorDataModel, boxStore: BoxStore) : HealthCareEventViewModel(boxStore) {
+@Inject constructor(private val setupModel: SetupModel, private val sensorDataModel: SensorDataModel, boxStore: BoxStore) : HealthCareEventViewModel(boxStore) {
 
     private val disposables = CompositeDisposable()
 
     init {
         initHealthCarEvents()
+    }
+
+    val setupState: LiveData<Boolean> by lazy {
+        initSetupState()
     }
 
     val measurementState: LiveData<Boolean> by lazy {
@@ -57,6 +62,11 @@ class HomeViewModel
             }
             return@map result
         }
+    }
+
+    private fun initSetupState(): LiveData<Boolean> {
+        val setupStateFlowable = setupModel.setupComplete.toFlowable(BackpressureStrategy.LATEST)
+        return LiveDataReactiveStreams.fromPublisher(setupStateFlowable)
     }
 
     private fun initMeasurementStateLiveData(): LiveData<Boolean> {

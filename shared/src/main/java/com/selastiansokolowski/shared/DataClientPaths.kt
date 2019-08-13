@@ -12,10 +12,10 @@ class DataClientPaths {
         const val GET_MEASUREMENT = "/get_measurement"
         const val START_LIVE_DATA = "/start_live_data"
         const val STOP_LIVE_DATA = "/stop_live_data"
+        const val GET_SUPPORTED_HEALTH_CARE_EVENTS = "/get_supported_health_care_engines"
 
-        const val SUPPORTED_MAP_PATH = "/sensor_supported"
-        const val SUPPORTED_MAP_SENSOR_TYPE = "type"
-        const val SUPPORTED_MAP_SENSOR_SUPPORTED = "supported"
+        const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH = "/supported_health_care_events"
+        const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES = "types"
 
         const val DATA_MAP_PATH = "/sensor"
         const val DATA_MAP_SENSOR_EVENT_VALUES_KEY = "values"
@@ -29,6 +29,6 @@ class DataClientPaths {
 
         const val SETTINGS_MAP_PATH = "/settings"
         const val SETTINGS_MAP_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
-        const val SETTINGS_MAP_SENSORS = SettingsSharedPreferences.SENSORS
+        const val SETTINGS_MAP_HEALTH_CARE_EVENTS = SettingsSharedPreferences.SENSORS
     }
 }

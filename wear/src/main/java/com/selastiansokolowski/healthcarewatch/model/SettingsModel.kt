@@ -2,7 +2,6 @@ package com.selastiansokolowski.healthcarewatch.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.shared.DataClientPaths
@@ -14,14 +13,6 @@ import java.util.concurrent.TimeUnit
  */
 class SettingsModel(context: Context, private val sharedPreferences: SharedPreferences) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
-
-    private val sensorsDefault = listOf(
-            Sensor.TYPE_HEART_RATE,
-            Sensor.TYPE_STEP_COUNTER,
-            Sensor.TYPE_PRESSURE,
-            Sensor.TYPE_GRAVITY,
-            Sensor.TYPE_LINEAR_ACCELERATION
-    )
 
     var sensorDataModel: SensorDataModel? = null
 
@@ -35,20 +26,9 @@ class SettingsModel(context: Context, private val sharedPreferences: SharedPrefe
     }
 
     fun getSensors(): List<Int> {
-        val sensors = sharedPreferences.getStringSet(SettingsSharedPreferences.SENSORS, null)
+        val sensors = sharedPreferences.getStringSet(SettingsSharedPreferences.SENSORS, emptySet())
 
-        return if (sensors != null) {
-            val result = mutableListOf<Int>()
-
-            sensors.forEach {
-                val value = it.toInt()
-                result.add(value)
-            }
-
-            result
-        } else {
-            sensorsDefault
-        }
+        return sensors?.map { sensor -> sensor.toInt() } ?: emptyList()
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
@@ -61,7 +41,7 @@ class SettingsModel(context: Context, private val sharedPreferences: SharedPrefe
                 DataClientPaths.SETTINGS_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
                         val samplingUs = getInt(DataClientPaths.SETTINGS_MAP_SAMPLING_US)
-                        val sensors = getIntegerArrayList(DataClientPaths.SETTINGS_MAP_SENSORS)
+                        val sensors = getIntegerArrayList(DataClientPaths.SETTINGS_MAP_HEALTH_CARE_EVENTS)
 
                         sharedPreferences.edit().apply {
                             putInt(SettingsSharedPreferences.SAMPLING_US, samplingUs)

@@ -41,6 +41,12 @@ class WearableDataClient(context: Context) {
         sendMessage(DataClientPaths.GET_MEASUREMENT)
     }
 
+    fun getSupportedHealthCareEvents() {
+        Log.d(TAG, "getSupportedHealthCareEvents")
+
+        sendMessage(DataClientPaths.GET_SUPPORTED_HEALTH_CARE_EVENTS)
+    }
+
     private fun sendMessage(message: String) {
         Thread(Runnable {
             val task = capabilityClient.getCapability(
@@ -72,7 +78,7 @@ class WearableDataClient(context: Context) {
         val putDataMapReq = PutDataMapRequest.create(DataClientPaths.SETTINGS_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putInt(DataClientPaths.SETTINGS_MAP_SAMPLING_US, settings.samplingUs)
-            putIntegerArrayList(DataClientPaths.SETTINGS_MAP_SENSORS, ArrayList(settings.sensorsIds))
+            putStringArrayList(DataClientPaths.SETTINGS_MAP_HEALTH_CARE_EVENTS, ArrayList(settings.healthCareEvents))
         }
 
         sendData(putDataMapReq)
@@ -95,5 +101,5 @@ class WearableDataClient(context: Context) {
         }
     }
 
-    data class Settings(val samplingUs: Int, val sensorsIds: MutableList<Int>)
+    data class Settings(val samplingUs: Int, val healthCareEvents: Set<String>)
 }

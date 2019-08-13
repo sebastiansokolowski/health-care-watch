@@ -84,6 +84,17 @@ class HomeFragment : DaggerFragment() {
                 showHealthCareEventInHistoryFragment(it)
             }
         })
+        homeViewModel.setupState.observe(this, Observer {
+            it?.let {
+                if (it) {
+                    measurement_btn.isEnabled = true
+                    measurement_btn.text = "Start measurement"
+                } else {
+                    measurement_btn.isEnabled = false
+                    measurement_btn.text = "Connecting"
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {

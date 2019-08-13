@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
+import com.selastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.math.roundToInt
@@ -51,8 +52,11 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
         }
     }
 
-    private fun getAllSensors(): List<Sensor> {
-        return sensorManager.getSensorList(Sensor.TYPE_ALL)
+    fun notifySupportedHealthCareEvents() {
+        val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
+        val supportedHealthCareEngines = HealthCareEnginesUtils.getSupportedHealthCareEngines(sensors)
+        val supportedHealthCareEvents = supportedHealthCareEngines.map { it.getHealthCareEventType() }
+        wearableDataClient.sendSupportedHealthCareEvents(supportedHealthCareEvents)
     }
 
     fun startMeasurement() {
