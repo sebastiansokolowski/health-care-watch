@@ -73,9 +73,9 @@ class SensorDataModel(private val settingsModel: SettingsModel, private val wear
 
             val registered = sensorManager.registerListener(this, sensor, samplingUs)
             if (!registered) {
-                Log.d(TAG, "error register sensorEvent: $sensorId")
+                Log.e(TAG, "error register sensorEvent: $sensorId")
             } else {
-                Log.d(TAG, "error register sensorEvent: $sensorId")
+                Log.d(TAG, "registered sensorEvent: $sensorId")
             }
         }
     }

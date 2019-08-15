@@ -43,6 +43,7 @@ class SettingsModel(context: Context, private val sensorManager: SensorManager, 
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
         dataEvent.forEach { event ->
+            Log.d(TAG, "onDataChanged path:${event.dataItem.uri.path}")
             if (event.type != DataEvent.TYPE_CHANGED) {
                 Log.d(TAG, "type not changed")
                 return
@@ -54,14 +55,15 @@ class SettingsModel(context: Context, private val sensorManager: SensorManager, 
 
                         val healthCareEvents = getStringArrayList(DataClientPaths.SETTINGS_MAP_HEALTH_CARE_EVENTS)
                         val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(healthCareEvents)
-                        val sensors = healthCareEngines.flatMap { it.requiredSensors() }
+                        val sensors = healthCareEngines.flatMap { it.requiredSensors() }.map { it.toString() }.toSet()
 
                         sharedPreferences.edit().apply {
                             putInt(SettingsSharedPreferences.SAMPLING_US, samplingUs)
-                            putIntegerArrayList(SettingsSharedPreferences.SENSORS, ArrayList(sensors))
+                            putStringSet(SettingsSharedPreferences.SENSORS, sensors)
                             commit()
                         }
 
+                        Log.d(TAG, "settings samplingUs=$samplingUs healthCareEvents=$healthCareEvents")
                         sensorDataModel?.refreshSettings()
                     }
                 }

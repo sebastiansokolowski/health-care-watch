@@ -19,7 +19,8 @@ class SettingsViewModel
 @Inject constructor(private val sharedPreferences: SharedPreferences, private val wearableDataClient: WearableDataClient, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
     fun onSharedPreferenceChanged(key: String) {
         when (key) {
-            SettingsSharedPreferences.SAMPLING_US -> {
+            SettingsSharedPreferences.SAMPLING_US,
+            SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
                 updatedSettings()
             }
         }
@@ -29,7 +30,7 @@ class SettingsViewModel
         val refreshRate = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
 
         val sampleUs = TimeUnit.SECONDS.toMicros(refreshRate.toLong()).toInt()
-        val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, emptySet())
+        val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
                 ?: emptySet()
 
         val settings = WearableDataClient.Settings(sampleUs, healthCareEvents)
