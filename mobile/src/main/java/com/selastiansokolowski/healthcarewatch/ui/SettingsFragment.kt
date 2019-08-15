@@ -87,7 +87,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                             settingsViewModel.setupPreference(preference)
                         }
                     }
-                    SettingsSharedPreferences.HEALTH_CARE_ENGINES -> {
+                    SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
                         if (settingsViewModel.setupModel.setupComplete.value != true) {
                             Toast.makeText(context, "Please setup watch earlier.", Toast.LENGTH_LONG).show()
                         } else {

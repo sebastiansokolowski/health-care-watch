@@ -30,10 +30,10 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Health care engines">
+    <PreferenceCategory android:title="Health care events">
         <com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
-            android:key="health_care_engines"
-            android:title="Select engines" />
+            android:key="health_care_events"
+            android:title="Select events" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Alert notification">

@@ -41,7 +41,7 @@ class SettingsViewModel
             SettingsSharedPreferences.CONTACTS -> {
                 setContacts(preference)
             }
-            SettingsSharedPreferences.HEALTH_CARE_ENGINES -> {
+            SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
                 setSupportedHealthCareEvents(preference)
             }
         }

@@ -7,7 +7,7 @@ class SettingsSharedPreferences {
     companion object {
         // mobile
         const val CONTACTS = "contacts"
-        const val HEALTH_CARE_ENGINES = "health_care_engines"
+        const val HEALTH_CARE_EVENTS = "health_care_events"
         const val SUPPORTED_HEALTH_CARE_EVENTS = "supported_health_care_events"
         // mobile and wear
         const val SAMPLING_US = "sampling_us"
