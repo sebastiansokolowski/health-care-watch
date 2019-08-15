@@ -17,7 +17,16 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
     val setupComplete: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
 
     init {
-        getSupportedHealthCareEvents()
+        if (!isHealthCareEventsSynced()) {
+            getSupportedHealthCareEvents()
+        }
+    }
+
+    private fun isHealthCareEventsSynced(): Boolean {
+        val healthCareEvents = prefs.getStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, emptySet())
+                ?: emptySet()
+
+        return healthCareEvents.isNotEmpty()
     }
 
     @SuppressLint("CheckResult")
