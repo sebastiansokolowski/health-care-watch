@@ -7,6 +7,7 @@ import com.selastiansokolowski.shared.SettingsSharedPreferences
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Sokołowski on 08.07.19.
@@ -23,10 +24,14 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
     private fun getSupportedHealthCareEvents() {
         sensorDataModel.supportedHealthCareEventsObservable
                 .subscribeOn(Schedulers.io())
+                .timeout(5, TimeUnit.SECONDS) {
+                    getSupportedHealthCareEvents()
+                }
                 .subscribe {
                     saveSupportedHealthCareEvents(it)
                     setupComplete.onNext(true)
                 }
+
         wearableDataClient.getSupportedHealthCareEvents()
     }
 
