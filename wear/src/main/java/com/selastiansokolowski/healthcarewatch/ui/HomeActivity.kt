@@ -43,6 +43,7 @@ class HomeActivity : WearableFragmentActivity() {
         homeViewModel.measurementState.observe(this, Observer {
             it?.let {
                 setMeasurementButtonView(it)
+                homeViewModel.requestPermissions(this)
             }
         })
         homeViewModel.heartRate.observe(this, Observer {
@@ -94,5 +95,10 @@ class HomeActivity : WearableFragmentActivity() {
             tv_heart_rate.setTextColor(ContextCompat.getColor(this, android.R.color.black))
             tv_heart_rate.paint.isAntiAlias = true
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        homeViewModel.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }
