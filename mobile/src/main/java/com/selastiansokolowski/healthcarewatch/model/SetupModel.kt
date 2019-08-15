@@ -19,6 +19,8 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
     init {
         if (!isHealthCareEventsSynced()) {
             getSupportedHealthCareEvents()
+        } else {
+            setupComplete.onNext(true)
         }
     }
 
