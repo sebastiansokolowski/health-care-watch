@@ -6,6 +6,8 @@ import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.BuildConfig
 import com.selastiansokolowski.shared.DataClientPaths
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by Sebastian Sokołowski on 17.03.19.
@@ -79,6 +81,7 @@ class WearableDataClient(context: Context) {
         putDataMapReq.dataMap.apply {
             putInt(DataClientPaths.SETTINGS_MAP_SAMPLING_US, settings.samplingUs)
             putStringArrayList(DataClientPaths.SETTINGS_MAP_HEALTH_CARE_EVENTS, ArrayList(settings.healthCareEvents))
+            putLong(DataClientPaths.SETTINGS_MAP_TIMESTAMP, Date().time)
         }
 
         sendData(putDataMapReq)

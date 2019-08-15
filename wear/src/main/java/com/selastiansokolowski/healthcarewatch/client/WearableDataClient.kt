@@ -15,10 +15,14 @@ import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_
 import com.selastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_VALUES_KEY
 import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_EVENT_DATA
 import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_PATH
+import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_TIMESTAMP
 import com.selastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_TYPE
 import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH
+import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_TIMESTAMP
 import com.selastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -50,9 +54,43 @@ class WearableDataClient(context: Context) {
         val putDataMapReq = PutDataMapRequest.create(SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putStringArrayList(SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES, healthCareEventNames.toCollection(ArrayList()))
+            putLong(SUPPORTED_HEALTH_CARE_EVENTS_MAP_TIMESTAMP, Date().time)
         }
 
         send(putDataMapReq, true)
+    }
+
+    fun sendHealthCareEvent(healthCareEvent: HealthCareEvent) {
+        Log.d(TAG, "sendHealthCareEvent sensorEvent=${healthCareEvent.sensorEvent}")
+
+        val putDataMapReq = PutDataMapRequest.create(HEALTH_CARE_MAP_PATH)
+        putDataMapReq.dataMap.apply {
+            putString(HEALTH_CARE_TYPE, healthCareEvent.healthCareEventType.name)
+            putDataMap(HEALTH_CARE_EVENT_DATA, setSensorEventDataMap(DataMap(), healthCareEvent.sensorEvent))
+            putLong(HEALTH_CARE_TIMESTAMP, Date().time)
+        }
+
+        send(putDataMapReq, true)
+    }
+
+    fun sendSensorEvent(event: SensorEvent) {
+        Log.d(TAG, "sendSensorEvent event=${event.sensor.name}")
+
+        val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
+        putDataMapReq.dataMap.apply {
+            setSensorEventDataMap(this, event)
+        }
+
+        send(putDataMapReq, liveData)
+    }
+
+    private fun setSensorEventDataMap(dataMap: DataMap, event: SensorEvent): DataMap {
+        return dataMap.apply {
+            putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, event.values)
+            putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, event.sensor.type)
+            putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, event.accuracy)
+            putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, System.currentTimeMillis())
+        }
     }
 
     private fun sendMessage(message: String) {
@@ -80,38 +118,6 @@ class WearableDataClient(context: Context) {
         }).start()
     }
 
-    fun sendHealthCareEvent(healthCareEvent: HealthCareEvent) {
-        Log.d(TAG, "sendHealthCareEvent sensorEvent=${healthCareEvent.sensorEvent}")
-
-        val putDataMapReq = PutDataMapRequest.create(HEALTH_CARE_MAP_PATH)
-        putDataMapReq.dataMap.apply {
-            putString(HEALTH_CARE_TYPE, healthCareEvent.healthCareEventType.name)
-            putDataMap(HEALTH_CARE_EVENT_DATA, setSensorEventDataMap(DataMap(), healthCareEvent.sensorEvent))
-        }
-
-        send(putDataMapReq, true)
-    }
-
-    fun sendSensorEvent(event: SensorEvent) {
-        Log.d(TAG, "sendSensorEvent event=${event.sensor.name}")
-
-        val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
-        putDataMapReq.dataMap.apply {
-            setSensorEventDataMap(this, event)
-        }
-
-        send(putDataMapReq, liveData)
-    }
-
-    private fun setSensorEventDataMap(dataMap: DataMap, event: SensorEvent): DataMap {
-        return dataMap.apply {
-            putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, event.values)
-            putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, event.sensor.type)
-            putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, event.accuracy)
-            putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, System.currentTimeMillis())
-        }
-    }
-
     private fun send(request: PutDataMapRequest, urgent: Boolean) {
         var putDataReq = request
                 .asPutDataRequest()
@@ -123,7 +129,7 @@ class WearableDataClient(context: Context) {
 
         if (BuildConfig.DEBUG) {
             dataItemTask.addOnSuccessListener {
-                Log.d(TAG, "Success sent data urgent:$urgent")
+                Log.d(TAG, "Success sent data path:${request.uri} urgent:$urgent")
             }
             dataItemTask.addOnFailureListener { ex ->
                 Log.d(TAG, "Error sending data $ex")

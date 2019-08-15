@@ -118,7 +118,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 Log.d(TAG, "type not changed")
                 return
             }
-
+            Log.d(TAG, "onDataChanged path:${event.dataItem.uri.path}")
             when (event.dataItem.uri.path) {
                 DataClientPaths.DATA_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
