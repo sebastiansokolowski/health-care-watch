@@ -16,6 +16,7 @@ import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
 import android.widget.Toast
 import com.selastiansokolowski.healthcarewatch.R
+import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
 import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreferenceDialogFragment
@@ -88,7 +89,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         }
                     }
                     SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
-                        if (settingsViewModel.setupModel.setupComplete.value != true) {
+                        if (settingsViewModel.setupModel.setupComplete.value != SetupModel.SETUP_STEP.COMPLETED) {
                             Toast.makeText(context, "Please setup watch earlier.", Toast.LENGTH_LONG).show()
                         } else {
                             settingsViewModel.setupPreference(preference)

@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.selastiansokolowski.healthcarewatch.MainActivity
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
 import com.selastiansokolowski.healthcarewatch.util.SingleEvent
@@ -86,12 +87,18 @@ class HomeFragment : DaggerFragment() {
         })
         homeViewModel.setupState.observe(this, Observer {
             it?.let {
-                if (it) {
-                    measurement_btn.isEnabled = true
-                    measurement_btn.text = "Start measurement"
-                } else {
-                    measurement_btn.isEnabled = false
-                    measurement_btn.text = "Connecting"
+                when (it) {
+                    SetupModel.SETUP_STEP.CONNECTING -> {
+                        measurement_btn.isEnabled = false
+                        measurement_btn.text = "Connecting"
+                    }
+                    SetupModel.SETUP_STEP.SYNC_HEALTH_CARE_EVENTS -> {
+                        measurement_btn.text = "Sync data"
+                    }
+                    SetupModel.SETUP_STEP.COMPLETED -> {
+                        measurement_btn.isEnabled = true
+                        measurement_btn.text = "Start measurement"
+                    }
                 }
             }
         })

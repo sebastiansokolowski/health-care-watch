@@ -35,7 +35,6 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     init {
         Wearable.getDataClient(context).addListener(this)
-        wearableDataClient.getMeasurementState()
     }
 
     private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
@@ -44,6 +43,10 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     private fun notifySensorsObservable(sensorEventData: SensorEventData) {
         sensorsObservable.onNext(sensorEventData)
+    }
+
+    private fun notifyMeasurementStateObservable(measurementState: Boolean) {
+        measurementStateObservable.onNext(measurementState)
     }
 
     private fun notifySupportedHealthCareEventsObservable(healthCareEvents: List<HealthCareEventType>) {
@@ -77,6 +80,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     }
 
     fun startMeasurement() {
+        notifyMeasurementStateObservable(true)
         synchronized(this) {
             if (measurementRunning) {
                 return
@@ -87,6 +91,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     }
 
     fun stopMeasurement() {
+        notifyMeasurementStateObservable(false)
         synchronized(this) {
             if (!measurementRunning) {
                 return

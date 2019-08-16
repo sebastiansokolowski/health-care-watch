@@ -26,7 +26,7 @@ class HomeViewModel
         initHealthCarEvents()
     }
 
-    val setupState: LiveData<Boolean> by lazy {
+    val setupState: LiveData<SetupModel.SETUP_STEP> by lazy {
         initSetupState()
     }
 
@@ -64,7 +64,7 @@ class HomeViewModel
         }
     }
 
-    private fun initSetupState(): LiveData<Boolean> {
+    private fun initSetupState(): LiveData<SetupModel.SETUP_STEP> {
         val setupStateFlowable = setupModel.setupComplete.toFlowable(BackpressureStrategy.LATEST)
         return LiveDataReactiveStreams.fromPublisher(setupStateFlowable)
     }

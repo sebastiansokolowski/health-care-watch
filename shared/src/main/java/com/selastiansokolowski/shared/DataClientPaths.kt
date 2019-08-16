@@ -14,7 +14,6 @@ class DataClientPaths {
         const val STOP_LIVE_DATA = "/stop_live_data"
         const val GET_SUPPORTED_HEALTH_CARE_EVENTS = "/get_supported_health_care_engines"
 
-
         const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH = "/supported_health_care_events"
         const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES = "types"
         const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_TIMESTAMP = "timestamp"

@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModel
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import io.reactivex.BackpressureStrategy
 import javax.inject.Inject
@@ -17,7 +18,7 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 09.07.18.
  */
 class HomeViewModel
-@Inject constructor(private val sensorDataModel: SensorDataModel) : ViewModel() {
+@Inject constructor(private val sensorDataModel: SensorDataModel, private val wearableDataClient: WearableDataClient) : ViewModel() {
 
     private val MY_PERMISSIONS_REQUEST_BODY_SENSORS = 12
 

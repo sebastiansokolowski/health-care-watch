@@ -34,8 +34,11 @@ class HomeActivity : WearableFragmentActivity() {
         startService(Intent(this, SensorService::class.java))
         startService(Intent(this, MessageReceiverService::class.java))
 
+
         homeViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(HomeViewModel::class.java)
+        homeViewModel.requestPermissions(this)
+
         btn_measurement_start.setOnClickListener {
             homeViewModel.toggleMeasurementState()
         }
@@ -43,7 +46,6 @@ class HomeActivity : WearableFragmentActivity() {
         homeViewModel.measurementState.observe(this, Observer {
             it?.let {
                 setMeasurementButtonView(it)
-                homeViewModel.requestPermissions(this)
             }
         })
         homeViewModel.heartRate.observe(this, Observer {
