@@ -2,10 +2,12 @@ package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.ViewModel
 import android.content.ContentResolver
+import android.content.Context
 import android.content.SharedPreferences
 import android.provider.ContactsContract
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.model.SetupModel
+import com.selastiansokolowski.healthcarewatch.util.HealthCareEventHelper
 import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.selastiansokolowski.shared.SettingsSharedPreferences
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
@@ -16,7 +18,10 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class SettingsViewModel
-@Inject constructor(private val sharedPreferences: SharedPreferences, private val wearableDataClient: WearableDataClient, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
+@Inject constructor(context: Context, private val sharedPreferences: SharedPreferences, private val wearableDataClient: WearableDataClient, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
+
+    private val healthCareEventHelper = HealthCareEventHelper(context)
+
     fun onSharedPreferenceChanged(key: String) {
         when (key) {
             SettingsSharedPreferences.SAMPLING_US,
@@ -93,7 +98,7 @@ class SettingsViewModel
         }
 
         healthCareEvents.forEach {
-            names.add(it.title)
+            names.add(healthCareEventHelper.getTitle(it))
             values.add(it.name)
         }
 

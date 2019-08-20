@@ -8,7 +8,7 @@ import com.daimajia.swipe.SwipeLayout
 import com.daimajia.swipe.adapters.BaseSwipeAdapter
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.selastiansokolowski.healthcarewatch.view.HealthCareEventHelper
+import com.selastiansokolowski.healthcarewatch.util.HealthCareEventHelper
 import kotlinx.android.synthetic.main.health_care_event_item.view.*
 
 /**

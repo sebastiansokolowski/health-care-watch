@@ -3,6 +3,7 @@ package com.selastiansokolowski.healthcarewatch.service
 import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
+import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.selastiansokolowski.healthcarewatch.model.notification.AndroidNotification
 import dagger.android.DaggerService
@@ -34,7 +35,7 @@ class MeasurementService : DaggerService() {
 
     private fun startForegroundService() {
         val androidNotification = AndroidNotification(this)
-        val notification = androidNotification.buildNotification("Health Care Watch running", "Measurement running")
+        val notification = androidNotification.buildNotification(getString(R.string.notification_measurement_title), getString(R.string.notification_measurement_message))
         val notificationId = androidNotification.FOREGROUND_NOTIFICATION_ID
         startForeground(notificationId, notification)
     }

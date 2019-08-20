@@ -18,6 +18,7 @@ import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
+import com.selastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
 import com.selastiansokolowski.healthcarewatch.view.CustomMarkerView
 import com.selastiansokolowski.healthcarewatch.view.DateValueFormatter
 import com.selastiansokolowski.healthcarewatch.viewModel.HistoryDataViewModel
@@ -180,7 +181,8 @@ class HistorySensorDataFragment : DaggerFragment() {
                 return@Observer
             }
 
-            val lineDataSet = LineDataSet(it, sensorAdapterItem.title)
+            val title = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
+            val lineDataSet = LineDataSet(it, title)
 
             chart_lc.xAxis.valueFormatter = DateValueFormatter()
             chart_lc.data = LineData(lineDataSet)
@@ -196,8 +198,8 @@ class HistorySensorDataFragment : DaggerFragment() {
 
     private fun showRestoreDeletedItemSnackBar(healthCareEvent: HealthCareEvent) {
         view?.let {
-            val snackbar = Snackbar.make(it, "SingleEvent removed!", Snackbar.LENGTH_LONG)
-            snackbar.setAction("UNDO") {
+            val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
+            snackbar.setAction(getString(R.string.action_undo)) {
                 historySensorDataViewModel.restoreDeletedEvent(healthCareEvent)
             }
             snackbar.show()

@@ -49,7 +49,7 @@
             android:id="@+id/measurement_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start measurement" />
+            android:text="@string/measurement_start_btn" />
 
         <Space
             android:layout_width="match_parent"
@@ -74,7 +74,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="No events"
+        android:text="@string/event_list_empty"
         android:textColor="@color/health_care_event_text_color"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/health_care_events_lv"

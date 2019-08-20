@@ -41,7 +41,7 @@ class HistoryDataFragment : DaggerFragment() {
         historyDataViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(HistoryDataViewModel::class.java)
 
-        sensor_vp.adapter = HistorySensorDataPageAdapter(childFragmentManager)
+        sensor_vp.adapter = HistorySensorDataPageAdapter(context, childFragmentManager)
         sensor_data_tl.setupWithViewPager(sensor_vp)
 
         historyDataViewModel.viewPagerToShow.observe(this, Observer {

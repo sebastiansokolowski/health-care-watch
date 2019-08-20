@@ -1,9 +1,44 @@
 <resources>
     <string name="app_name">Health Care Watch</string>
-    <string name="licences"><![CDATA[
-    <ul>
-    <li>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a></li>
-    <li>Heart beat animation <a href="https://github.com/IhorKlimov/Android-Animations">Android-Animations</a></li>
-    </ul>
-]]></string>
+    <string name="licences"><![CDATA[     <ul>     <li>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a></li>     <li>Heart beat animation <a href="https://github.com/IhorKlimov/Android-Animations">Android-Animations</a></li>     </ul> ]]></string>
+    <string name="notification_alert_title">Alert!</string>
+    <string name="notification_measurement_title">Health Care Watch running</string>
+    <string name="notification_measurement_message">Measurement running</string>
+    <string name="restore_deleted_item_title">Event removed!</string>
+    <string name="measurement_stop_btn">Stop measurement</string>
+    <string name="measurement_start_btn">Start measurement</string>
+    <string name="setup_connecting_btn">Connecting</string>
+    <string name="measurement_sync_data_btn">Sync data</string>
+    <string name="dialog_licences_title">About</string>
+    <string name="action_ok" translatable="false">Ok</string>
+    <string name="action_undo">UNDO</string>
+    <string name="settings_health_care_events_not_synced">Please connect to watch earlier.</string>
+    <string name="health_care_event_epilepsy_title">Epilepsy</string>
+    <string name="health_care_event_hearth_rate_anomaly_title">Hearth rate anomaly</string>
+    <string name="health_care_event_epilepsy_message">Detected motion was very high.</string>
+    <string name="health_care_event_hearth_rate_anomaly_message">Detected hearth rate didn\'t looks normal.</string>
+    <string name="unit_hearth_rate" translatable="false">bpm</string>
+    <string name="unit_gravity" translatable="false">gravity</string>
+    <string name="event_list_empty">No events</string>
+    <string name="sensor_data_min">MIN</string>
+    <string name="sensor_data_max">MAX</string>
+    <string name="sensor_data_average">AVERAGE</string>
+    <string name="bottom_navigation_home">Home</string>
+    <string name="bottom_navigation_watch">Watch</string>
+    <string name="bottom_navigation_history">History</string>
+    <string name="bottom_navigation_settings">Settings</string>
+    <string name="settings_watch_category">Watch</string>
+    <string name="settings_health_care_events_category">Health care events</string>
+    <string name="settings_alert_notification_category">Alert notification</string>
+    <string name="settings_android_notification_title">Android notification</string>
+    <string name="settings_select_contacts">Select contacts</string>
+    <string name="settings_select_events">Select events</string>
+    <string name="settings_sms_notification">SMS message</string>
+    <string name="settings_sampling_time">Sampling time (s)</string>
+    <string name="sensor_data_chart_no_data">No chart data available</string>
+    <string name="sensor_adapter_heart_rate_title">HEART RATE</string>
+    <string name="sensor_adapter_step_counter_title">STEP COUNTER</string>
+    <string name="sensor_adapter_pressure_title">PRESSURE</string>
+    <string name="sensor_adapter_gravity_title">GRAVITY</string>
+    <string name="sensor_adapter_linear_acceleration">LINEAR ACCELERATION</string>
 </resources>

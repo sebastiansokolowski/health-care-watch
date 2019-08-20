@@ -55,9 +55,9 @@ class HomeFragment : DaggerFragment() {
             heart_rate_tv.text = "---"
             it?.let {
                 if (it) {
-                    measurement_btn.text = "Stop measurement"
+                    measurement_btn.text = getString(R.string.measurement_stop_btn)
                 } else {
-                    measurement_btn.text = "Start measurement"
+                    measurement_btn.text = getString(R.string.measurement_start_btn)
                 }
             }
         })
@@ -90,14 +90,14 @@ class HomeFragment : DaggerFragment() {
                 when (it) {
                     SetupModel.SETUP_STEP.CONNECTING -> {
                         measurement_btn.isEnabled = false
-                        measurement_btn.text = "Connecting"
+                        measurement_btn.text = getString(R.string.setup_connecting_btn)
                     }
                     SetupModel.SETUP_STEP.SYNC_HEALTH_CARE_EVENTS -> {
-                        measurement_btn.text = "Sync data"
+                        measurement_btn.text = getString(R.string.measurement_sync_data_btn)
                     }
                     SetupModel.SETUP_STEP.COMPLETED -> {
                         measurement_btn.isEnabled = true
-                        measurement_btn.text = "Start measurement"
+                        measurement_btn.text = getString(R.string.measurement_start_btn)
                     }
                 }
             }
@@ -128,9 +128,9 @@ class HomeFragment : DaggerFragment() {
             }
 
             val dialog: AlertDialog = AlertDialog.Builder(it)
-                    .setTitle("About")
+                    .setTitle(getString(R.string.dialog_licences_title))
                     .setMessage(message)
-                    .setPositiveButton("Ok", null)
+                    .setPositiveButton(getString(R.string.action_ok), null)
                     .show()
 
             dialog.findViewById<TextView>(android.R.id.message)?.movementMethod = LinkMovementMethod.getInstance()
@@ -139,8 +139,8 @@ class HomeFragment : DaggerFragment() {
 
     private fun showRestoreDeletedItemSnackBar(healthCareEvent: HealthCareEvent) {
         view?.let {
-            val snackbar = Snackbar.make(it, "Event removed!", Snackbar.LENGTH_LONG)
-            snackbar.setAction("UNDO") {
+            val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
+            snackbar.setAction(getString(R.string.action_undo)) {
                 homeViewModel.restoreDeletedEvent(healthCareEvent)
             }
             snackbar.show()

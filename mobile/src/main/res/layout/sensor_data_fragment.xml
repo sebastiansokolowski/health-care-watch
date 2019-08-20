@@ -48,7 +48,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MIN" />
+                android:text="@string/sensor_data_min" />
 
             <TextView
                 android:id="@+id/statistic_min_tv"
@@ -66,7 +66,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MAX" />
+                android:text="@string/sensor_data_max" />
 
             <TextView
                 android:id="@+id/statistic_max_tv"
@@ -84,7 +84,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AVERAGE" />
+                android:text="@string/sensor_data_average" />
 
             <TextView
                 android:id="@+id/statistic_avg_tv"
@@ -109,7 +109,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="No events"
+        android:text="@string/event_list_empty"
         android:textColor="@color/health_care_event_text_color"
         app:layout_constraintBottom_toBottomOf="@+id/health_care_events_lv"
         app:layout_constraintLeft_toLeftOf="@+id/health_care_events_lv"

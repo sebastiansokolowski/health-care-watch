@@ -22,35 +22,35 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Watch">
+    <PreferenceCategory android:title="@string/settings_watch_category">
 
         <com.selastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
             android:key="sampling_us"
-            android:title="Sampling time in seconds" />
+            android:title="@string/settings_sampling_time" />
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Health care events">
+    <PreferenceCategory android:title="@string/settings_health_care_events_category">
         <com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
             android:key="health_care_events"
-            android:title="Select events" />
+            android:title="@string/settings_select_events" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="Alert notification">
+    <PreferenceCategory android:title="@string/settings_alert_notification_category">
 
         <SwitchPreference
             android:defaultValue="false"
             android:key="sms_notification_enabled"
-            android:title="SMS notification" />
+            android:title="@string/settings_sms_notification" />
 
         <com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
             android:dependency="sms_notification_enabled"
             android:key="contacts"
-            android:title="Select contacts" />
+            android:title="@string/settings_select_contacts" />
 
         <SwitchPreference
             android:key="android_notification_enabled"
-            android:title="Android notification" />
+            android:title="@string/settings_android_notification_title" />
 
     </PreferenceCategory>
 

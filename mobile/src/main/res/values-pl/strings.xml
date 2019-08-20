@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Zegarek - Opieka Zdrowotna</string>
+    <string name="notification_alert_title">Ostrzeżenie!</string>
+    <string name="dialog_licences_title">O aplikacji</string>
+    <string name="event_list_empty">Brak zdarzeń</string>
+    <string name="health_care_event_epilepsy_message">Wykryty ruch był za wysoki</string>
+    <string name="health_care_event_epilepsy_title">Epilepsja</string>
+    <string name="health_care_event_hearth_rate_anomaly_title">Anomalia bicia serca</string>
+    <string name="measurement_start_btn">Zacznij pomiary</string>
+    <string name="measurement_stop_btn">Zakończ pomiary</string>
+    <string name="measurement_sync_data_btn">Synchronizacja danych</string>
+    <string name="notification_measurement_message">Pomiary w trakcie</string>
+    <string name="restore_deleted_item_title">Zdarzenie usunięte!</string>
+    <string name="sensor_data_average">ŚREDNIA</string>
+    <string name="sensor_data_max">MAKSYMALNA</string>
+    <string name="sensor_data_min">MINIMALNA</string>
+    <string name="setup_connecting_btn">Łączenie</string>
+    <string name="settings_health_care_events_not_synced">Połącz się z zegarkiem wcześniej.</string>
+    <string name="notification_measurement_title">Opieka zdrowotna uruchomiona</string>
+    <string name="health_care_event_hearth_rate_anomaly_message">Częstotliwość bicia serca znacznie wzrosła</string>
+    <string name="action_undo">COFNIJ</string>
+    <string name="bottom_navigation_history">Historia</string>
+    <string name="bottom_navigation_home">Dom</string>
+    <string name="bottom_navigation_settings">Ustawienia</string>
+    <string name="bottom_navigation_watch">Zegarek</string>
+    <string name="licences"><![CDATA[     <ul>     <li>Ikony zrobione przez <a href="http://www.freepik.com" title="Freepik">Freepik</a> z <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a></li>     <li>Animacja bicia serca <a href="https://github.com/IhorKlimov/Android-Animations">Android-Animations</a></li>     </ul> ]]></string>
+    <string name="settings_select_events">Wybierz zdarzenia</string>
+    <string name="settings_watch_category">Zegarek</string>
+    <string name="settings_select_contacts">Wybierz kontakty</string>
+    <string name="settings_alert_notification_category">Powiadomienia alertu</string>
+    <string name="settings_android_notification_title">Powiadomienia Android</string>
+    <string name="settings_sms_notification">Wiadomość SMS</string>
+    <string name="settings_sampling_time">Czas próbki (s)</string>
+    <string name="settings_health_care_events_category">Zdarzenia</string>
+    <string name="sensor_data_chart_no_data">Brak danych</string>
+    <string name="sensor_adapter_gravity_title">GRAWITACJA</string>
+    <string name="sensor_adapter_heart_rate_title">BICIE SERCA</string>
+    <string name="sensor_adapter_pressure_title">CIŚNIENIE</string>
+    <string name="sensor_adapter_step_counter_title">LICZNIK KROKÓW</string>
+    <string name="sensor_adapter_linear_acceleration">PRZYŚPIESZENIE LINIOWE</string>
+</resources>

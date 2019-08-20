@@ -48,14 +48,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="TITLE"
                 android:textColor="@color/health_care_event_text_color" />
 
             <TextView
                 android:id="@+id/health_care_event_item_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView"
                 android:textColor="@color/health_care_event_text_color" />
         </LinearLayout>
 
@@ -69,14 +67,12 @@
                 android:id="@+id/health_care_event_item_event_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="sensor event"
                 android:textColor="@color/health_care_event_text_color" />
 
             <TextView
                 android:id="@+id/health_care_event_item_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="message"
                 android:textColor="@color/health_care_event_text_color" />
         </LinearLayout>
 

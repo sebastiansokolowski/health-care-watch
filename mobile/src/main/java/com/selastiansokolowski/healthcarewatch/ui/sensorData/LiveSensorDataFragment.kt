@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.selastiansokolowski.healthcarewatch.R
+import com.selastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
 import com.selastiansokolowski.healthcarewatch.view.CustomMarkerView
 import com.selastiansokolowski.healthcarewatch.view.DateValueFormatter
 import com.selastiansokolowski.healthcarewatch.viewModel.LiveSensorDataViewModel
@@ -104,7 +105,8 @@ class LiveSensorDataFragment : DaggerFragment() {
                 return@Observer
             }
 
-            val lineDataSet = LineDataSet(it, sensorAdapterItem.title)
+            val title = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
+            val lineDataSet = LineDataSet(it, title)
 
             chart_lc.xAxis.valueFormatter = DateValueFormatter()
             chart_lc.data = LineData(lineDataSet)

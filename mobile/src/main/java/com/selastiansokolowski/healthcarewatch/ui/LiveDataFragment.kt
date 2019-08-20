@@ -25,7 +25,7 @@ class LiveDataFragment : DaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sensor_vp.adapter = LiveSensorDataPageAdapter(childFragmentManager)
+        sensor_vp.adapter = LiveSensorDataPageAdapter(context, childFragmentManager)
         sensor_data_tl.setupWithViewPager(sensor_vp)
     }
 

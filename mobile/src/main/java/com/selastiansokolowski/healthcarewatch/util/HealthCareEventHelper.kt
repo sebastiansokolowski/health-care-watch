@@ -1,6 +1,7 @@
-package com.selastiansokolowski.healthcarewatch.view
+package com.selastiansokolowski.healthcarewatch.util
 
 import android.content.Context
+import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 import java.text.SimpleDateFormat
@@ -14,9 +15,13 @@ class HealthCareEventHelper(val context: Context) {
     private val dtf = SimpleDateFormat("HH:mm:ss yyy-MM-dd")
 
     fun getTitle(healthCareEvent: HealthCareEvent): String {
-        return when (healthCareEvent.careEvent) {
-            HealthCareEventType.EPILEPSY -> "Epilepsy"
-            HealthCareEventType.HEARTH_RATE_ANOMALY -> "Hearth rate anomaly"
+        return getTitle(healthCareEvent.careEvent)
+    }
+
+    fun getTitle(healthCareEventType: HealthCareEventType): String {
+        return when (healthCareEventType) {
+            HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_title)
+            HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_title)
             else -> "null"
         }
     }
@@ -33,16 +38,16 @@ class HealthCareEventHelper(val context: Context) {
     fun getEventInfo(healthCareEvent: HealthCareEvent): String {
         val value = healthCareEvent.sensorEventData.target?.values?.get(0) ?: return "null"
         return when (healthCareEvent.careEvent) {
-            HealthCareEventType.EPILEPSY -> "$value gravity"
-            HealthCareEventType.HEARTH_RATE_ANOMALY -> "$value bpm"
+            HealthCareEventType.EPILEPSY -> value.toString() + context.getString(R.string.unit_gravity)
+            HealthCareEventType.HEARTH_RATE_ANOMALY -> value.toString() + context.getString(R.string.unit_hearth_rate)
             else -> "null"
         }
     }
 
     fun getMessage(healthCareEvent: HealthCareEvent): String {
         return when (healthCareEvent.careEvent) {
-            HealthCareEventType.EPILEPSY -> "Detected motion was very high."
-            HealthCareEventType.HEARTH_RATE_ANOMALY -> "Detected hearth rate didn't looks normal."
+            HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_message)
+            HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_message)
             else -> "null"
         }
     }

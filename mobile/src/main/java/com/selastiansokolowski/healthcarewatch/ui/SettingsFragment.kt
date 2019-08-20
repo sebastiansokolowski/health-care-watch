@@ -90,7 +90,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                     }
                     SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
                         if (settingsViewModel.setupModel.setupComplete.value != SetupModel.SETUP_STEP.COMPLETED) {
-                            Toast.makeText(context, "Please setup watch earlier.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, getString(R.string.settings_health_care_events_not_synced), Toast.LENGTH_LONG).show()
                         } else {
                             settingsViewModel.setupPreference(preference)
                         }

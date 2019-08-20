@@ -61,7 +61,7 @@ class AndroidNotification(val context: Context) {
     }
 
     fun showAlertNotification(message: String) {
-        val notification = buildNotification("Alert!!", message)
+        val notification = buildNotification(context.getString(R.string.notification_alert_title), message)
 
         showNotification(notification)
     }
