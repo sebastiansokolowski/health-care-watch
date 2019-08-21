@@ -27,13 +27,6 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
         getMeasurementState()
     }
 
-    private fun isHealthCareEventsSynced(): Boolean {
-        val healthCareEvents = prefs.getStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, emptySet())
-                ?: emptySet()
-
-        return healthCareEvents.isNotEmpty()
-    }
-
     @SuppressLint("CheckResult")
     private fun getSupportedHealthCareEvents() {
         var disposable: Disposable? = null
@@ -48,8 +41,8 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
                     disposable?.dispose()
                 }
 
-        wearableDataClient.getSupportedHealthCareEvents()
         setupComplete.onNext(SETUP_STEP.SYNC_HEALTH_CARE_EVENTS)
+        wearableDataClient.getSupportedHealthCareEvents()
     }
 
     @SuppressLint("CheckResult")
@@ -61,16 +54,12 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
                     getMeasurementState()
                 }
                 .subscribe {
-                    if (!isHealthCareEventsSynced()) {
-                        getSupportedHealthCareEvents()
-                    } else {
-                        setupComplete.onNext(SETUP_STEP.COMPLETED)
-                    }
+                    getSupportedHealthCareEvents()
                     disposable?.dispose()
                 }
 
-        wearableDataClient.getMeasurementState()
         setupComplete.onNext(SETUP_STEP.CONNECTING)
+        wearableDataClient.getMeasurementState()
     }
 
     private fun saveSupportedHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
