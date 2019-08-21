@@ -22,7 +22,7 @@ class HealthCareEventHelper(val context: Context) {
         return when (healthCareEventType) {
             HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_title)
             HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_title)
-            else -> "null"
+            else -> healthCareEventType.name
         }
     }
 
