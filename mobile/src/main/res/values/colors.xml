@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="health_care_event_text_color">#FFF</color>
+    <color name="chart_no_data_info_color">#000</color>
 </resources>
