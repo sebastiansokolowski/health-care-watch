@@ -58,14 +58,11 @@ class HistorySensorDataViewModel
                     .equal(SensorEventData_.type, sensorType.toLong())
         }.build()
 
-        var disposable: Disposable? = null
-        disposable = RxQuery.observable(query)
+        val disposable = RxQuery.observable(query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     healthCareEvents.postValue(it)
-
-                    disposable?.dispose()
                 }
         disposables.add(disposable)
     }

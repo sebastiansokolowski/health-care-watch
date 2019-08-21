@@ -10,7 +10,6 @@ import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -40,14 +39,11 @@ class HomeViewModel
     override fun initHealthCarEvents() {
         val query = healthCareEventBox.query().build()
 
-        var disposable: Disposable? = null
-        disposable = RxQuery.observable(query)
+        val disposable = RxQuery.observable(query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     healthCareEvents.postValue(it)
-
-                    disposable?.dispose()
                 }
         disposables.add(disposable)
     }
