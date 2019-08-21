@@ -2,26 +2,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="Settings">
 
-    <PreferenceCategory android:title="Nighttime">
-
-        <SwitchPreference
-            android:key="nighttime_enabled"
-            android:title="Nighttime" />
-
-        <com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
-            android:defaultValue="00:00"
-            android:dependency="nighttime_enabled"
-            android:key="nighttime_start"
-            android:title="Start" />
-
-        <com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
-            android:defaultValue="06:00"
-            android:dependency="nighttime_enabled"
-            android:key="nighttime_stop"
-            android:title="Stop" />
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/settings_watch_category">
 
         <com.selastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference

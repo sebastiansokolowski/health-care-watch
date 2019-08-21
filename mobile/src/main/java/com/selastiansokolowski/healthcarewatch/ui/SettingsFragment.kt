@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.preference.Preference
@@ -18,8 +17,6 @@ import android.widget.Toast
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
-import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreference
-import com.selastiansokolowski.healthcarewatch.view.preference.TimePickerPreferenceDialogFragment
 import com.selastiansokolowski.healthcarewatch.viewModel.SettingsViewModel
 import com.selastiansokolowski.shared.SettingsSharedPreferences
 import dagger.android.AndroidInjector
@@ -73,11 +70,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {
-        var dialogFragment: DialogFragment? = null
         when (preference) {
-            is TimePickerPreference -> {
-                dialogFragment = TimePickerPreferenceDialogFragment()
-            }
             is CustomMultiSelectListPreference -> {
                 when (preference.key) {
                     SettingsSharedPreferences.CONTACTS -> {
@@ -99,15 +92,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
             }
         }
 
-        if (dialogFragment != null && preference != null) {
-            val bundle = Bundle(1)
-            bundle.putString("key", preference.key)
-            dialogFragment.arguments = bundle
-            dialogFragment.setTargetFragment(this, 0)
-            dialogFragment.show(fragmentManager, null)
-        } else {
-            super.onDisplayPreferenceDialog(preference)
-        }
+        super.onDisplayPreferenceDialog(preference)
     }
 
     private fun checkPermissions(): Boolean {
