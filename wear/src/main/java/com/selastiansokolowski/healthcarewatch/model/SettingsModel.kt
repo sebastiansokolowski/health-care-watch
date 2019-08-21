@@ -37,8 +37,8 @@ class SettingsModel(context: Context, private val sensorManager: SensorManager, 
 
     private fun getDefaultSensors(): Set<String> {
         val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
-        val sensorsIds = sensors.map { it.type }
-        return sensorsIds.map { it.toString() }.toSet()
+        val supportedHealthCareEngines = HealthCareEnginesUtils.getSupportedHealthCareEngines(sensors)
+        return supportedHealthCareEngines.flatMap { it.requiredSensors() }.map { it.toString() }.toSet()
     }
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
