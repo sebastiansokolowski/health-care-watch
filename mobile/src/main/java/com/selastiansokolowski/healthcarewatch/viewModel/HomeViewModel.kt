@@ -37,7 +37,9 @@ class HomeViewModel
     }
 
     override fun initHealthCarEvents() {
-        val query = healthCareEventBox.query().build()
+        val query = healthCareEventBox.query()
+                .orderDesc(HealthCareEvent_.__ID_PROPERTY)
+                .build()
 
         val disposable = RxQuery.observable(query)
                 .subscribeOn(Schedulers.io())

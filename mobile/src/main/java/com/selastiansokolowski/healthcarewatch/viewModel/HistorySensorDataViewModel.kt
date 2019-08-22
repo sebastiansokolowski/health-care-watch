@@ -52,11 +52,13 @@ class HistorySensorDataViewModel
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
         val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
-        val query = healthCareEventBox.query().apply {
-            link(HealthCareEvent_.sensorEventData)
-                    .between(SensorEventData_.timestamp, startDayTimestamp, endDayTimestamp)
-                    .equal(SensorEventData_.type, sensorType.toLong())
-        }.build()
+        val query = healthCareEventBox.query()
+                .orderDesc(HealthCareEvent_.__ID_PROPERTY)
+                .apply {
+                    link(HealthCareEvent_.sensorEventData)
+                            .between(SensorEventData_.timestamp, startDayTimestamp, endDayTimestamp)
+                            .equal(SensorEventData_.type, sensorType.toLong())
+                }.build()
 
         val disposable = RxQuery.observable(query)
                 .subscribeOn(Schedulers.io())
