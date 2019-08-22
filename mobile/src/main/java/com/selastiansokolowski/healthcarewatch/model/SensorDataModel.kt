@@ -29,7 +29,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     private var saveDataDisposable: Disposable? = null
 
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
-    val heartRateObservable: PublishSubject<SensorEventData> = PublishSubject.create()
+    val heartRateObservable: BehaviorSubject<SensorEventData> = BehaviorSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
     val supportedHealthCareEventsObservable: PublishSubject<List<HealthCareEventType>> = PublishSubject.create()
 
