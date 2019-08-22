@@ -2,6 +2,7 @@ package com.selastiansokolowski.healthcarewatch.utils
 
 import android.hardware.Sensor
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
+import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.AllSensorsEngine
 import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.EpilepsyCareEngine
 import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.HeartRateAnomalyEngine
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
@@ -47,6 +48,7 @@ class HealthCareEnginesUtils {
             return when (healthCareEventType) {
                 HealthCareEventType.EPILEPSY -> EpilepsyCareEngine()
                 HealthCareEventType.HEARTH_RATE_ANOMALY -> HeartRateAnomalyEngine()
+                HealthCareEventType.ALL_SENSORS -> AllSensorsEngine()
                 else -> null
             }
         }
