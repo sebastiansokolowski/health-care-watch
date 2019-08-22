@@ -46,11 +46,6 @@ class HomeFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         homeViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(HomeViewModel::class.java)
-
-        homeViewModel.heartRate.observe(this, Observer {
-            heart_rate_tv.text = it
-            heart_rate_iv.startAnimation()
-        })
         homeViewModel.measurementState.observe(this, Observer {
             heart_rate_tv.text = "---"
             it?.let {
@@ -60,6 +55,10 @@ class HomeFragment : DaggerFragment() {
                     measurement_btn.text = getString(R.string.measurement_start_btn)
                 }
             }
+        })
+        homeViewModel.heartRate.observe(this, Observer {
+            heart_rate_tv.text = it
+            heart_rate_iv.startAnimation()
         })
         homeViewModel.healthCareEvents.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
@@ -88,16 +87,15 @@ class HomeFragment : DaggerFragment() {
         homeViewModel.setupState.observe(this, Observer {
             it?.let {
                 when (it) {
-                    SetupModel.SETUP_STEP.CONNECTING -> {
+                    SetupModel.SetupStep.CONNECTING -> {
                         measurement_btn.isEnabled = false
                         measurement_btn.text = getString(R.string.setup_connecting_btn)
                     }
-                    SetupModel.SETUP_STEP.SYNC_HEALTH_CARE_EVENTS -> {
+                    SetupModel.SetupStep.SYNC_DATA -> {
                         measurement_btn.text = getString(R.string.measurement_sync_data_btn)
                     }
-                    SetupModel.SETUP_STEP.COMPLETED -> {
+                    SetupModel.SetupStep.COMPLETED -> {
                         measurement_btn.isEnabled = true
-                        measurement_btn.text = getString(R.string.measurement_start_btn)
                     }
                 }
             }

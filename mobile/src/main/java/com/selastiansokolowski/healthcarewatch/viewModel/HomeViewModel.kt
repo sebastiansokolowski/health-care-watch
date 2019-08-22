@@ -3,6 +3,7 @@ package com.selastiansokolowski.healthcarewatch.viewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.Transformations
+import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent_
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import io.objectbox.BoxStore
@@ -25,7 +26,7 @@ class HomeViewModel
         initHealthCarEvents()
     }
 
-    val setupState: LiveData<SetupModel.SETUP_STEP> by lazy {
+    val setupState: LiveData<SetupModel.SetupStep> by lazy {
         initSetupState()
     }
 
@@ -33,7 +34,7 @@ class HomeViewModel
         initMeasurementStateLiveData()
     }
     val heartRate: LiveData<String> by lazy {
-        initLiveData()
+        initHeartRateLiveData()
     }
 
     override fun initHealthCarEvents() {
@@ -50,7 +51,7 @@ class HomeViewModel
         disposables.add(disposable)
     }
 
-    private fun initLiveData(): LiveData<String> {
+    private fun initHeartRateLiveData(): LiveData<String> {
         val sensorDataModelFlowable = sensorDataModel.heartRateObservable.toFlowable(BackpressureStrategy.LATEST)
         val sensorDataModelLiveData = LiveDataReactiveStreams.fromPublisher(sensorDataModelFlowable)
         return Transformations.map(sensorDataModelLiveData) { sensorEventData ->
@@ -62,7 +63,7 @@ class HomeViewModel
         }
     }
 
-    private fun initSetupState(): LiveData<SetupModel.SETUP_STEP> {
+    private fun initSetupState(): LiveData<SetupModel.SetupStep> {
         val setupStateFlowable = setupModel.setupComplete.toFlowable(BackpressureStrategy.LATEST)
         return LiveDataReactiveStreams.fromPublisher(setupStateFlowable)
     }

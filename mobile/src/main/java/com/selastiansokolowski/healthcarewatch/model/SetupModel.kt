@@ -15,16 +15,16 @@ import java.util.concurrent.TimeUnit
  */
 class SetupModel(private val prefs: SharedPreferences, private val wearableDataClient: WearableDataClient, private val sensorDataModel: SensorDataModel) {
 
-    val setupComplete: BehaviorSubject<SETUP_STEP> = BehaviorSubject.createDefault(SETUP_STEP.CONNECTING)
+    val setupComplete: BehaviorSubject<SetupStep> = BehaviorSubject.createDefault(SetupStep.CONNECTING)
 
-    enum class SETUP_STEP {
+    enum class SetupStep {
         CONNECTING,
-        SYNC_HEALTH_CARE_EVENTS,
+        SYNC_DATA,
         COMPLETED
     }
 
     init {
-        getMeasurementState()
+        getSupportedHealthCareEvents()
     }
 
     @SuppressLint("CheckResult")
@@ -37,11 +37,11 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
                 }
                 .subscribe {
                     saveSupportedHealthCareEvents(it)
-                    setupComplete.onNext(SETUP_STEP.COMPLETED)
+                    getMeasurementState()
                     disposable?.dispose()
                 }
 
-        setupComplete.onNext(SETUP_STEP.SYNC_HEALTH_CARE_EVENTS)
+        setupComplete.onNext(SetupStep.CONNECTING)
         wearableDataClient.getSupportedHealthCareEvents()
     }
 
@@ -54,11 +54,11 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
                     getMeasurementState()
                 }
                 .subscribe {
-                    getSupportedHealthCareEvents()
                     disposable?.dispose()
+                    setupComplete.onNext(SetupStep.COMPLETED)
                 }
 
-        setupComplete.onNext(SETUP_STEP.CONNECTING)
+        setupComplete.onNext(SetupStep.SYNC_DATA)
         wearableDataClient.getMeasurementState()
     }
 
