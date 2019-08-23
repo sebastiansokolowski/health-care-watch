@@ -1,10 +1,7 @@
 package com.selastiansokolowski.healthcarewatch.model
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.selastiansokolowski.shared.SettingsSharedPreferences
-import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
@@ -13,7 +10,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 08.07.19.
  */
-class SetupModel(private val prefs: SharedPreferences, private val wearableDataClient: WearableDataClient, private val sensorDataModel: SensorDataModel) {
+class SetupModel(private val wearableDataClient: WearableDataClient, private val sensorDataModel: SensorDataModel, private val settingsModel: SettingsModel) {
 
     val setupComplete: BehaviorSubject<SetupStep> = BehaviorSubject.createDefault(SetupStep.CONNECTING)
 
@@ -36,7 +33,8 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
                     getSupportedHealthCareEvents()
                 }
                 .subscribe {
-                    saveSupportedHealthCareEvents(it)
+                    settingsModel.saveSupportedHealthCareEvents(it)
+                    setDefaultHealthCateEvents()
                     getMeasurementState()
                     disposable?.dispose()
                 }
@@ -62,12 +60,11 @@ class SetupModel(private val prefs: SharedPreferences, private val wearableDataC
         wearableDataClient.getMeasurementState()
     }
 
-    private fun saveSupportedHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
-        prefs.edit()?.apply {
-            val values = healthCareEvents.map { sensor -> sensor.name }.toSet()
-            putStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, values)
-            apply()
+    private fun setDefaultHealthCateEvents() {
+        if (!settingsModel.isFirstSetupCompleted()) {
+            val supportedHealthCareEvents = settingsModel.getSupportedHealthCareEventTypes()
+            settingsModel.saveHealthCareEvents(supportedHealthCareEvents)
+            settingsModel.setFirstSetupCompleted()
         }
     }
-
 }

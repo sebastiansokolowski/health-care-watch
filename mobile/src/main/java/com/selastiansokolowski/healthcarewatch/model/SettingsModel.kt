@@ -1,5 +1,6 @@
 package com.selastiansokolowski.healthcarewatch.model
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.selastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.selastiansokolowski.shared.SettingsSharedPreferences
@@ -31,6 +32,36 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
             } catch (e: IllegalArgumentException) {
                 null
             }
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    fun saveSupportedHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
+        sharedPreferences.edit()?.apply {
+            val values = healthCareEvents.map { sensor -> sensor.name }.toSet()
+            putStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, values)
+            commit()
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    fun saveHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
+        sharedPreferences.edit()?.apply {
+            val values = healthCareEvents.map { sensor -> sensor.name }.toSet()
+            putStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, values)
+            commit()
+        }
+    }
+
+    fun isFirstSetupCompleted(): Boolean {
+        return sharedPreferences.getBoolean(SettingsSharedPreferences.FIRST_SETUP_COMPLETED, false)
+    }
+
+    @SuppressLint("ApplySharedPref")
+    fun setFirstSetupCompleted() {
+        sharedPreferences.edit()?.apply {
+            putBoolean(SettingsSharedPreferences.FIRST_SETUP_COMPLETED, true)
+            commit()
         }
     }
 }

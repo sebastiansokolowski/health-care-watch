@@ -32,9 +32,15 @@ class AppModule {
     fun provideContext(app: Application): Context = app
 
     @Provides
+    fun provideSettingsModel(app: Application): SettingsModel {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
+        return SettingsModel(sharedPreferences)
+    }
+
+    @Provides
     @Singleton
-    fun provideSetupModel(prefs: SharedPreferences, wearableDataClient: WearableDataClient, sensorDataModel: SensorDataModel): SetupModel =
-            SetupModel(prefs, wearableDataClient, sensorDataModel)
+    fun provideSetupModel(wearableDataClient: WearableDataClient, sensorDataModel: SensorDataModel, settingsModel: SettingsModel): SetupModel =
+            SetupModel(wearableDataClient, sensorDataModel, settingsModel)
 
     @Provides
     @Singleton
@@ -49,10 +55,6 @@ class AppModule {
     @Singleton
     fun provideSensorDataModel(context: Context, wearableDataClient: WearableDataClient, notificationModel: NotificationModel, boxStore: BoxStore, settingsModel: SettingsModel): SensorDataModel =
             SensorDataModel(context, wearableDataClient, notificationModel, boxStore, settingsModel)
-
-    @Provides
-    fun provideSettingsModel(sharedPreferences: SharedPreferences): SettingsModel =
-            SettingsModel(sharedPreferences)
 
     @Provides
     @Singleton
