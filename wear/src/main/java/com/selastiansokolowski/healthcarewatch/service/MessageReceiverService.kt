@@ -26,9 +26,6 @@ class MessageReceiverService : WearableListenerService() {
 
     override fun onMessageReceived(event: MessageEvent?) {
         when (event?.path) {
-            DataClientPaths.START_MEASUREMENT -> {
-                sensorDataModel.startMeasurement()
-            }
             DataClientPaths.STOP_MEASUREMENT -> {
                 sensorDataModel.stopMeasurement()
             }

@@ -10,6 +10,7 @@ class DataClientPaths {
         const val START_MEASUREMENT = "/start_measurement"
         const val STOP_MEASUREMENT = "/stop_measurement"
         const val GET_MEASUREMENT = "/get_measurement"
+        const val REQUEST_START_MEASUREMENT = "/request_start_measurement"
         const val START_LIVE_DATA = "/start_live_data"
         const val STOP_LIVE_DATA = "/stop_live_data"
         const val GET_SUPPORTED_HEALTH_CARE_EVENTS = "/get_supported_health_care_engines"
@@ -29,9 +30,9 @@ class DataClientPaths {
         const val HEALTH_CARE_EVENT_DATA = "event_data"
         const val HEALTH_CARE_TIMESTAMP = "timestamp"
 
-        const val SETTINGS_MAP_PATH = "/settings"
-        const val SETTINGS_MAP_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
-        const val SETTINGS_MAP_HEALTH_CARE_EVENTS = SettingsSharedPreferences.SENSORS
-        const val SETTINGS_MAP_TIMESTAMP = "timestamp"
+        const val MEASUREMENT_START_DATA = "/measurement_start_data"
+        const val MEASUREMENT_START_DATA_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
+        const val MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS = SettingsSharedPreferences.SENSORS
+        const val MEASUREMENT_START_DATA_TIMESTAMP = "timestamp"
     }
 }

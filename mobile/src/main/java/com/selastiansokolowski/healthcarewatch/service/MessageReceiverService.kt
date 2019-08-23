@@ -36,6 +36,9 @@ class MessageReceiverService : WearableListenerService() {
             DataClientPaths.STOP_MEASUREMENT -> {
                 sensorDataModel.stopMeasurement()
             }
+            DataClientPaths.REQUEST_START_MEASUREMENT -> {
+                sensorDataModel.requestStartMeasurement()
+            }
             else -> super.onMessageReceived(event)
         }
     }

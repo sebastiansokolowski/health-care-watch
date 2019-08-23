@@ -58,6 +58,7 @@ class HomeViewModel
             ActivityCompat.requestPermissions(activity,
                     arrayOf(Manifest.permission.BODY_SENSORS),
                     MY_PERMISSIONS_REQUEST_BODY_SENSORS)
+            sensorDataModel.stopMeasurement()
         }
     }
 
@@ -65,10 +66,7 @@ class HomeViewModel
         when (requestCode) {
             MY_PERMISSIONS_REQUEST_BODY_SENSORS -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    sensorDataModel.stopMeasurement()
-                    sensorDataModel.startMeasurement()
-                } else {
-                    sensorDataModel.stopMeasurement()
+                    wearableDataClient.requestStartMeasurement()
                 }
             }
         }

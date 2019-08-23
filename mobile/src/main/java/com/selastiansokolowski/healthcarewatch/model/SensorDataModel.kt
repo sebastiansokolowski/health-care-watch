@@ -22,10 +22,10 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val notificationModel: NotificationModel, private val boxStore: BoxStore) : DataClient.OnDataChangedListener {
+class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val notificationModel: NotificationModel, private val boxStore: BoxStore, private val settingsModel: SettingsModel) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
-    private var measurementRunning: Boolean = false
+    var measurementRunning: Boolean = false
     private var saveDataDisposable: Disposable? = null
 
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
@@ -60,7 +60,6 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
         }
         measurementRunning = state
         measurementStateObservable.onNext(measurementRunning)
-        wearableDataClient.sendMeasurementEvent(state)
         val serviceIntent = Intent(context, MeasurementService::class.java)
         if (state) {
             context.startService(serviceIntent)
@@ -72,11 +71,16 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     fun toggleMeasurementState() {
         synchronized(this) {
             if (measurementRunning) {
-                stopMeasurement()
+                wearableDataClient.sendStopMeasurementEvent()
             } else {
-                startMeasurement()
+                requestStartMeasurement()
             }
         }
+    }
+
+    fun requestStartMeasurement() {
+        val measurementSettings = settingsModel.getMeasurementSettings()
+        wearableDataClient.sendStartMeasurementEvent(measurementSettings)
     }
 
     fun startMeasurement() {

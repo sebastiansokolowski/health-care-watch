@@ -9,6 +9,7 @@ import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.db.entity.MyObjectBox
 import com.selastiansokolowski.healthcarewatch.model.NotificationModel
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
+import com.selastiansokolowski.healthcarewatch.model.SettingsModel
 import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import dagger.Module
 import dagger.Provides
@@ -46,8 +47,12 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(context: Context, wearableDataClient: WearableDataClient, notificationModel: NotificationModel, boxStore: BoxStore): SensorDataModel =
-            SensorDataModel(context, wearableDataClient, notificationModel, boxStore)
+    fun provideSensorDataModel(context: Context, wearableDataClient: WearableDataClient, notificationModel: NotificationModel, boxStore: BoxStore, settingsModel: SettingsModel): SensorDataModel =
+            SensorDataModel(context, wearableDataClient, notificationModel, boxStore, settingsModel)
+
+    @Provides
+    fun provideSettingsModel(sharedPreferences: SharedPreferences): SettingsModel =
+            SettingsModel(sharedPreferences)
 
     @Provides
     @Singleton

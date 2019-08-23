@@ -7,8 +7,8 @@ import android.hardware.SensorManager
 import android.preference.PreferenceManager
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.model.HealthCareModel
+import com.selastiansokolowski.healthcarewatch.model.MeasurementModel
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
-import com.selastiansokolowski.healthcarewatch.model.SettingsModel
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -39,15 +39,14 @@ class AppModule {
     }
 
     @Provides
-    @Singleton
-    fun provideSettingsModel(context: Context, sensorsManager: SensorManager, sharedPreferences: SharedPreferences): SettingsModel {
-        return SettingsModel(context, sensorsManager, sharedPreferences)
+    fun provideMeasurementModel(context: Context): MeasurementModel {
+        return MeasurementModel(context)
     }
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(settingsModel: SettingsModel, wearableDataClient: WearableDataClient, sensorManager: SensorManager): SensorDataModel {
-        return SensorDataModel(settingsModel, wearableDataClient, sensorManager)
+    fun provideSensorDataModel(measurementModel: MeasurementModel, wearableDataClient: WearableDataClient, sensorManager: SensorManager): SensorDataModel {
+        return SensorDataModel(measurementModel, wearableDataClient, sensorManager)
     }
 
     @Provides

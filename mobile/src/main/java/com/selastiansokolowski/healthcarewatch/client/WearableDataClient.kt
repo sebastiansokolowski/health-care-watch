@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.selastiansokolowski.healthcarewatch.BuildConfig
+import com.selastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.selastiansokolowski.shared.DataClientPaths
 import java.util.*
 import kotlin.collections.ArrayList
@@ -19,14 +20,23 @@ class WearableDataClient(context: Context) {
     private val messageClient: MessageClient = Wearable.getMessageClient(context)
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
 
-    fun sendMeasurementEvent(state: Boolean) {
-        Log.d(TAG, "sendMeasurementEvent state: $state")
+    fun sendStopMeasurementEvent() {
+        Log.d(TAG, "sendStopMeasurementEvent")
 
-        if (state) {
-            sendMessage(DataClientPaths.START_MEASUREMENT)
-        } else {
-            sendMessage(DataClientPaths.STOP_MEASUREMENT)
+        sendMessage(DataClientPaths.STOP_MEASUREMENT)
+    }
+
+    fun sendStartMeasurementEvent(measurementSettings: MeasurementSettings){
+        Log.d(TAG, "sendStartMeasurementEvent measurementSettings: $measurementSettings")
+
+        val putDataMapReq = PutDataMapRequest.create(DataClientPaths.MEASUREMENT_START_DATA)
+        putDataMapReq.dataMap.apply {
+            putInt(DataClientPaths.MEASUREMENT_START_DATA_SAMPLING_US, measurementSettings.samplingUs)
+            putStringArrayList(DataClientPaths.MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS, measurementSettings.healthCareEvents)
+            putLong(DataClientPaths.MEASUREMENT_START_DATA_TIMESTAMP, Date().time)
         }
+
+        sendData(putDataMapReq)
     }
 
     fun sendLiveData(enabled: Boolean) {
@@ -72,19 +82,6 @@ class WearableDataClient(context: Context) {
                 Log.d(TAG, "missing node!")
             }
         }).start()
-    }
-
-    fun sendSettings(settings: Settings) {
-        Log.d(TAG, "sendSettings settings=$settings")
-
-        val putDataMapReq = PutDataMapRequest.create(DataClientPaths.SETTINGS_MAP_PATH)
-        putDataMapReq.dataMap.apply {
-            putInt(DataClientPaths.SETTINGS_MAP_SAMPLING_US, settings.samplingUs)
-            putStringArrayList(DataClientPaths.SETTINGS_MAP_HEALTH_CARE_EVENTS, ArrayList(settings.healthCareEvents))
-            putLong(DataClientPaths.SETTINGS_MAP_TIMESTAMP, Date().time)
-        }
-
-        sendData(putDataMapReq)
     }
 
     private fun sendData(request: PutDataMapRequest) {

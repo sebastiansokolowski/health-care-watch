@@ -3,22 +3,20 @@ package com.selastiansokolowski.healthcarewatch.viewModel
 import android.arch.lifecycle.ViewModel
 import android.content.ContentResolver
 import android.content.Context
-import android.content.SharedPreferences
 import android.provider.ContactsContract
-import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
+import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
+import com.selastiansokolowski.healthcarewatch.model.SettingsModel
 import com.selastiansokolowski.healthcarewatch.model.SetupModel
 import com.selastiansokolowski.healthcarewatch.util.HealthCareEventHelper
 import com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.selastiansokolowski.shared.SettingsSharedPreferences
-import com.selastiansokolowski.shared.healthCare.HealthCareEventType
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class SettingsViewModel
-@Inject constructor(context: Context, private val sharedPreferences: SharedPreferences, private val wearableDataClient: WearableDataClient, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
+@Inject constructor(context: Context, private val settingsModel: SettingsModel, private val sensorDataModel: SensorDataModel, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
 
     private val healthCareEventHelper = HealthCareEventHelper(context)
 
@@ -26,20 +24,12 @@ class SettingsViewModel
         when (key) {
             SettingsSharedPreferences.SAMPLING_US,
             SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
-                updatedSettings()
+                if (sensorDataModel.measurementRunning) {
+                    sensorDataModel.stopMeasurement()
+                    sensorDataModel.requestStartMeasurement()
+                }
             }
         }
-    }
-
-    private fun updatedSettings() {
-        val refreshRate = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
-
-        val sampleUs = TimeUnit.SECONDS.toMicros(refreshRate.toLong()).toInt()
-        val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
-                ?: emptySet()
-
-        val settings = WearableDataClient.Settings(sampleUs, healthCareEvents)
-        wearableDataClient.sendSettings(settings)
     }
 
     fun setupPreference(preference: CustomMultiSelectListPreference) {
@@ -86,18 +76,9 @@ class SettingsViewModel
         val names = mutableListOf<String>()
         val values = mutableListOf<String>()
 
-        val healthCareEventsName = sharedPreferences
-                .getStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, emptySet())
-                ?: emptySet()
-        val healthCareEvents = healthCareEventsName.mapNotNull {
-            try {
-                HealthCareEventType.valueOf(it)
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-        }
+        val healthCareEventTypesName = settingsModel.getSupportedHealthCareEventTypes()
 
-        healthCareEvents.forEach {
+        healthCareEventTypesName.forEach {
             names.add(healthCareEventHelper.getTitle(it))
             values.add(it.name)
         }

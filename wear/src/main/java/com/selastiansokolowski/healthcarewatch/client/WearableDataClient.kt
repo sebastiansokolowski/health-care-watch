@@ -47,6 +47,12 @@ class WearableDataClient(context: Context) {
         }
     }
 
+    fun requestStartMeasurement() {
+        Log.d(TAG, "requestStartMeasurement")
+
+        sendMessage(DataClientPaths.REQUEST_START_MEASUREMENT)
+    }
+
     fun sendSupportedHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
         Log.d(TAG, "sendSupportedHealthCareEvents healthCareEvents: $healthCareEvents")
 
