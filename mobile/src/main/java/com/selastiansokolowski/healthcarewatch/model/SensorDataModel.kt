@@ -69,12 +69,10 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     }
 
     fun toggleMeasurementState() {
-        synchronized(this) {
-            if (measurementRunning) {
-                wearableDataClient.sendStopMeasurementEvent()
-            } else {
-                requestStartMeasurement()
-            }
+        if (measurementRunning) {
+            wearableDataClient.sendStopMeasurementEvent()
+        } else {
+            requestStartMeasurement()
         }
     }
 
@@ -85,23 +83,19 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     fun startMeasurement() {
         notifyMeasurementStateObservable(true)
-        synchronized(this) {
-            if (measurementRunning) {
-                return
-            }
-            changeMeasurementState(true)
-            saveDataToDatabase()
+        if (measurementRunning) {
+            return
         }
+        changeMeasurementState(true)
+        saveDataToDatabase()
     }
 
     fun stopMeasurement() {
         notifyMeasurementStateObservable(false)
-        synchronized(this) {
-            if (!measurementRunning) {
-                return
-            }
-            changeMeasurementState(false)
+        if (!measurementRunning) {
+            return
         }
+        changeMeasurementState(false)
     }
 
     private fun saveDataToDatabase() {

@@ -35,8 +35,8 @@ class HomeViewModel
         val sensorDataModelLiveData = LiveDataReactiveStreams.fromPublisher(sensorDataModelFlowable)
         return Transformations.map(sensorDataModelLiveData) {
             var result = ""
-            it?.let { heartRate ->
-                result = heartRate.toString()
+            if (it != null && sensorDataModel.measurementRunning) {
+                result = it.toString()
             }
             return@map result
         }

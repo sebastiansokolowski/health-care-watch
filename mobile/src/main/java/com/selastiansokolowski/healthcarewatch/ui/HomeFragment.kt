@@ -57,8 +57,12 @@ class HomeFragment : DaggerFragment() {
             }
         })
         homeViewModel.heartRate.observe(this, Observer {
-            heart_rate_tv.text = it
-            heart_rate_iv.startAnimation()
+            if (it.isNullOrEmpty()) {
+                heart_rate_tv.text = "---"
+            } else {
+                heart_rate_tv.text = it
+                heart_rate_iv.startAnimation()
+            }
         })
         homeViewModel.healthCareEvents.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->

@@ -56,7 +56,7 @@ class HomeViewModel
         val sensorDataModelLiveData = LiveDataReactiveStreams.fromPublisher(sensorDataModelFlowable)
         return Transformations.map(sensorDataModelLiveData) { sensorEventData ->
             var result = ""
-            if (sensorEventData.values.isNotEmpty()) {
+            if (sensorEventData.values.isNotEmpty() && sensorDataModel.measurementRunning) {
                 result = sensorEventData.values[0].toString()
             }
             return@map result
