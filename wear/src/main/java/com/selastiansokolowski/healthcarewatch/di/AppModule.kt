@@ -22,10 +22,6 @@ class AppModule {
     @Singleton
     fun provideContext(app: Application): Context = app
 
-    @Provides
-    @Singleton
-    fun provideSharedPreference(app: Application): SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(app)
 
     @Provides
     @Singleton
@@ -51,6 +47,6 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideHealthCareModel(sensorDataModel: SensorDataModel, wearableDataClient: WearableDataClient, sharedPreferences: SharedPreferences): HealthCareModel =
-            HealthCareModel(sensorDataModel, wearableDataClient, sharedPreferences)
+    fun provideHealthCareModel(sensorDataModel: SensorDataModel, wearableDataClient: WearableDataClient): HealthCareModel =
+            HealthCareModel(sensorDataModel, wearableDataClient)
 }

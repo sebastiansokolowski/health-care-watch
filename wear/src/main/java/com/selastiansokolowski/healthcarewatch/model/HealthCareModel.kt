@@ -1,7 +1,6 @@
 package com.selastiansokolowski.healthcarewatch.model
 
 import android.annotation.SuppressLint
-import android.content.SharedPreferences
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
@@ -13,7 +12,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class HealthCareModel(private val sensorDataModel: SensorDataModel, private val wearableDataClient: WearableDataClient, val pref: SharedPreferences) {
+class HealthCareModel(private val sensorDataModel: SensorDataModel, private val wearableDataClient: WearableDataClient) {
 
     private val healthCareEngines = mutableListOf<HealthCareEngineBase>()
     private val notifyObservable: PublishSubject<HealthCareEvent> = PublishSubject.create()
