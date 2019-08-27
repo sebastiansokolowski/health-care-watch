@@ -13,7 +13,7 @@ import com.selastiansokolowski.shared.DataClientPaths
 class MeasurementModel(context: Context) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
-    var sensorDataModel: SensorDataModel? = null
+    lateinit var sensorDataModel: SensorDataModel
 
     init {
         Wearable.getDataClient(context).addListener(this)
@@ -35,14 +35,13 @@ class MeasurementModel(context: Context) : DataClient.OnDataChangedListener {
                         val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(healthCareEvents)
                         val sensors = healthCareEngines.flatMap { it.requiredSensors() }.toSet()
 
-                        Log.d(TAG, "settings samplingUs=$samplingUs sensors=$healthCareEvents")
-                        val measurementSettings = MeasurementSettings(samplingUs, sensors)
-                        sensorDataModel?.let {
-                            if (it.measurementRunning) {
-                                it.stopMeasurement()
-                            }
-                            sensorDataModel?.startMeasurement(measurementSettings)
+                        Log.d(TAG, "settings samplingUs=$samplingUs sensors=$healthCareEvents engines=$healthCareEngines")
+                        val measurementSettings = MeasurementSettings(samplingUs, sensors, healthCareEngines)
+
+                        if (sensorDataModel.measurementRunning) {
+                            sensorDataModel.stopMeasurement()
                         }
+                        sensorDataModel.startMeasurement(measurementSettings)
                     }
                 }
             }

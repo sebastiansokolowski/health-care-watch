@@ -3,6 +3,7 @@ package com.selastiansokolowski.healthcarewatch.model.healthCare
 import android.hardware.SensorEvent
 import com.selastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 
 /**
@@ -11,6 +12,8 @@ import io.reactivex.subjects.PublishSubject
 abstract class HealthCareEngineBase {
 
     private var sensorObservable: PublishSubject<HealthCareEvent>? = null
+
+    var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     abstract fun setSensorEventObservable(sensorObservable: PublishSubject<SensorEvent>)
 
@@ -26,4 +29,5 @@ abstract class HealthCareEngineBase {
         val healthCareEvent = HealthCareEvent(sensorEvent, getHealthCareEventType())
         sensorObservable?.onNext(healthCareEvent)
     }
+
 }

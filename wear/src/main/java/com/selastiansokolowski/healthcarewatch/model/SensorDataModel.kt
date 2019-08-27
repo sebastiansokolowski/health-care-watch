@@ -15,11 +15,12 @@ import kotlin.math.roundToInt
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
  */
-class SensorDataModel(private val measurementModel: MeasurementModel, private val wearableDataClient: WearableDataClient, private val sensorManager: SensorManager) : SensorEventListener {
+class SensorDataModel(measurementModel: MeasurementModel, private val wearableDataClient: WearableDataClient, private val sensorManager: SensorManager, private val healthCareModel: HealthCareModel) : SensorEventListener {
     private val TAG = javaClass.canonicalName
 
     init {
         measurementModel.sensorDataModel = this
+        healthCareModel.sensorDataModel = this
     }
 
     val sensorsObservable: PublishSubject<SensorEvent> = PublishSubject.create()
@@ -66,6 +67,8 @@ class SensorDataModel(private val measurementModel: MeasurementModel, private va
         }
         changeMeasurementState(true)
 
+        healthCareModel.startEngines(measurementSettings)
+
         for (sensorId: Int in measurementSettings.sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
 
@@ -83,6 +86,9 @@ class SensorDataModel(private val measurementModel: MeasurementModel, private va
             return
         }
         changeMeasurementState(false)
+
+        healthCareModel.stopEngines()
+
         sensorManager.unregisterListener(this)
     }
 

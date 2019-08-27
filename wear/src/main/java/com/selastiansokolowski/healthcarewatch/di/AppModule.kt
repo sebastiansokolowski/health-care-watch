@@ -2,9 +2,7 @@ package com.selastiansokolowski.healthcarewatch.di
 
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import android.hardware.SensorManager
-import android.preference.PreferenceManager
 import com.selastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.selastiansokolowski.healthcarewatch.model.HealthCareModel
 import com.selastiansokolowski.healthcarewatch.model.MeasurementModel
@@ -41,12 +39,12 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(measurementModel: MeasurementModel, wearableDataClient: WearableDataClient, sensorManager: SensorManager): SensorDataModel {
-        return SensorDataModel(measurementModel, wearableDataClient, sensorManager)
+    fun provideSensorDataModel(measurementModel: MeasurementModel, wearableDataClient: WearableDataClient, sensorManager: SensorManager, healthCareModel: HealthCareModel): SensorDataModel {
+        return SensorDataModel(measurementModel, wearableDataClient, sensorManager, healthCareModel)
     }
 
     @Provides
     @Singleton
-    fun provideHealthCareModel(sensorDataModel: SensorDataModel, wearableDataClient: WearableDataClient): HealthCareModel =
-            HealthCareModel(sensorDataModel, wearableDataClient)
+    fun provideHealthCareModel(wearableDataClient: WearableDataClient): HealthCareModel =
+            HealthCareModel(wearableDataClient)
 }

@@ -36,6 +36,8 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
                             anomalyState = false
                         }
                     }
+                }.let {
+                    compositeDisposable.add(it)
                 }
     }
 
