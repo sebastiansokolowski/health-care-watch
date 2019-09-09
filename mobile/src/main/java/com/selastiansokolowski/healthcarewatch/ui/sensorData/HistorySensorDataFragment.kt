@@ -12,8 +12,6 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.selastiansokolowski.healthcarewatch.R
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
@@ -147,15 +145,6 @@ class HistorySensorDataFragment : DaggerFragment() {
             }
         })
         initChart(sensorAdapterItem)
-        chart_lc.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-            override fun onNothingSelected() {
-                historySensorDataViewModel.entryHighlighted.postValue(null)
-            }
-
-            override fun onValueSelected(e: Entry?, h: Highlight?) {
-                historySensorDataViewModel.entryHighlighted.postValue(e)
-            }
-        })
     }
 
     private fun highlightValue(entry: Entry) {
