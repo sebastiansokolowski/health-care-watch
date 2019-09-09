@@ -71,6 +71,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     fun toggleMeasurementState() {
         if (measurementRunning) {
             wearableDataClient.sendStopMeasurementEvent()
+            stopMeasurement()
         } else {
             requestStartMeasurement()
         }
