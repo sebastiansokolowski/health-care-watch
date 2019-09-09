@@ -175,7 +175,6 @@ class HistorySensorDataFragment : DaggerFragment() {
 
             chart_lc.xAxis.valueFormatter = DateValueFormatter()
             chart_lc.data = LineData(lineDataSet)
-            chart_lc.setVisibleXRangeMaximum(60 * 60 * 5 * 60f)
             chart_lc.notifyDataSetChanged()
             chart_lc.invalidate()
 
