@@ -2,7 +2,11 @@ package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
+import com.selastiansokolowski.healthcarewatch.dataModel.ChartData
+import com.selastiansokolowski.healthcarewatch.dataModel.StatisticData
+import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.selastiansokolowski.healthcarewatch.model.SensorDataModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -19,11 +23,8 @@ class LiveSensorDataViewModel
     private val disposables = CompositeDisposable()
 
     val showStatisticsContainer: MutableLiveData<Boolean> = MutableLiveData()
-    val statisticMinValue: MutableLiveData<Float> = MutableLiveData()
-    val statisticMaxValue: MutableLiveData<Float> = MutableLiveData()
-    val statisticAverageValue: MutableLiveData<Float> = MutableLiveData()
 
-    val liveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
+    val chartLiveData: MutableLiveData<ChartData> = MutableLiveData()
 
     fun initLiveData(sensorType: Int) {
         val calendar = Calendar.getInstance()
@@ -34,48 +35,61 @@ class LiveSensorDataViewModel
 
         val startDayTimestamp = calendar.time.time
 
-        var min = Float.MAX_VALUE
-        var max = Float.MIN_VALUE
-
-        var sum = 0f
-        var count = 0
-
         val disposable = sensorDataModel
                 .sensorsObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == sensorType }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { sensorEventData ->
-                    if (sensorEventData.values.isNotEmpty()) {
-                        val value = sensorEventData.values[0]
+                    val chartData = chartLiveData.value ?: ChartData()
 
-                        val timestampFromMidnight: Int = (sensorEventData.timestamp - startDayTimestamp).toInt()
-                        val entry = Entry(timestampFromMidnight.toFloat(), value, sensorEventData)
-
-                        postValueToLiveData(entry)
-
-                        if (value < min) {
-                            min = value
+                    when (sensorType) {
+                        Sensor.TYPE_GRAVITY,
+                        Sensor.TYPE_LINEAR_ACCELERATION -> {
+                            parseData(startDayTimestamp, chartData.xData, chartData.xStatisticData, sensorEventData, 0)
+                            parseData(startDayTimestamp, chartData.yData, chartData.yStatisticData, sensorEventData, 1)
+                            parseData(startDayTimestamp, chartData.zData, chartData.zStatisticData, sensorEventData, 2)
                         }
-                        if (value > max) {
-                            max = value
+                        else -> {
+                            parseData(startDayTimestamp, chartData.xData, chartData.xStatisticData, sensorEventData, 0)
                         }
-                        sum += value
-                        count++
-
-                        showStatisticsContainer.postValue(count > 0)
-                        statisticMinValue.postValue(min)
-                        statisticMaxValue.postValue(max)
-                        statisticAverageValue.postValue(sum / count)
                     }
+
+
+                    showStatisticsContainer.postValue(true)
+                    chartLiveData.postValue(chartData)
                 }
         disposables.add(disposable)
     }
 
-    private fun postValueToLiveData(entry: Entry) {
-        val value: MutableList<Entry> = liveData.value ?: mutableListOf()
-        value.add(entry)
-        liveData.postValue(value)
+    private fun parseData(startDayTimestamp: Long, chartData: MutableList<Entry>, statisticData: StatisticData, sensorEventData: SensorEventData, index: Int) {
+        createEntry(sensorEventData, startDayTimestamp, index)?.let { entry ->
+            val value = sensorEventData.values[index]
+
+            if (value < statisticData.min) {
+                statisticData.min = value
+            }
+            if (value > statisticData.max) {
+                statisticData.max = value
+            }
+            statisticData.sum += value
+            statisticData.count++
+
+            chartData.add(entry)
+        }
+
+        statisticData.average = statisticData.sum / statisticData.count
+    }
+
+    private fun createEntry(sensorEventData: SensorEventData, lastMidnightTimestamp: Long, index: Int): Entry? {
+        var entry: Entry? = null
+
+        if (sensorEventData.values.isNotEmpty()) {
+            val timestampFromMidnight: Int = (sensorEventData.timestamp - lastMidnightTimestamp).toInt()
+
+            entry = Entry(timestampFromMidnight.toFloat(), sensorEventData.values[index], sensorEventData.values)
+        }
+        return entry
     }
 
     override fun onCleared() {

@@ -1,6 +1,5 @@
 package com.selastiansokolowski.healthcarewatch.model.healthCare.engine
 
-import android.annotation.SuppressLint
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
@@ -19,7 +18,6 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
         return setOf(Sensor.TYPE_HEART_RATE)
     }
 
-    @SuppressLint("CheckResult")
     override fun setSensorEventObservable(sensorObservable: PublishSubject<SensorEvent>) {
         sensorObservable
                 .subscribeOn(Schedulers.io())
@@ -27,7 +25,7 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
                 .subscribe { sensorEventData ->
                     sensorEventData.values?.let { values ->
                         val heartRate = values[0].toInt()
-                        if (heartRate > 90) {
+                        if (heartRate > 120) {
                             if (!anomalyState) {
                                 notifyHealthCareEvent(sensorEventData)
                                 anomalyState = true
@@ -39,6 +37,10 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
                 }.let {
                     compositeDisposable.add(it)
                 }
+    }
+
+    private fun isRunningMode(){
+
     }
 
     override fun getHealthCareEventType(): HealthCareEventType {

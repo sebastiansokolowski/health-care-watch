@@ -11,7 +11,7 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class HealthCareEngineBase {
 
-    private var sensorObservable: PublishSubject<HealthCareEvent>? = null
+    private var healthCareEventObservable: PublishSubject<HealthCareEvent>? = null
 
     var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -22,12 +22,12 @@ abstract class HealthCareEngineBase {
     abstract fun requiredSensors(): Set<Int>
 
     fun setNotifyObservable(sensorObservable: PublishSubject<HealthCareEvent>) {
-        this.sensorObservable = sensorObservable
+        this.healthCareEventObservable = sensorObservable
     }
 
     fun notifyHealthCareEvent(sensorEvent: SensorEvent) {
         val healthCareEvent = HealthCareEvent(sensorEvent, getHealthCareEventType())
-        sensorObservable?.onNext(healthCareEvent)
+        healthCareEventObservable?.onNext(healthCareEvent)
     }
 
 }

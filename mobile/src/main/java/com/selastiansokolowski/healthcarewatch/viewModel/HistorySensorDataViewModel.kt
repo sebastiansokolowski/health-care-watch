@@ -1,7 +1,10 @@
 package com.selastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.MutableLiveData
+import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
+import com.selastiansokolowski.healthcarewatch.dataModel.ChartData
+import com.selastiansokolowski.healthcarewatch.dataModel.StatisticData
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent_
 import com.selastiansokolowski.healthcarewatch.db.entity.SensorEventData
@@ -11,7 +14,6 @@ import io.objectbox.reactive.DataSubscriptionList
 import io.objectbox.rx.RxQuery
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
@@ -28,11 +30,9 @@ class HistorySensorDataViewModel
     val showLoadingProgressBar: MutableLiveData<Boolean> = MutableLiveData()
 
     val showStatisticsContainer: MutableLiveData<Boolean> = MutableLiveData()
-    val statisticMinValue: MutableLiveData<Float> = MutableLiveData()
-    val statisticMaxValue: MutableLiveData<Float> = MutableLiveData()
-    val statisticAverageValue: MutableLiveData<Float> = MutableLiveData()
 
-    val liveData: MutableLiveData<MutableList<Entry>> = MutableLiveData()
+    val chartLiveData: MutableLiveData<ChartData> = MutableLiveData()
+
     val entryHighlighted: MutableLiveData<Entry> = MutableLiveData()
 
     private var currentDate = Date()
@@ -84,37 +84,24 @@ class HistorySensorDataViewModel
             between(SensorEventData_.timestamp, startDayTimestamp, endDayTimestamp)
         }.build()
 
-        var min = Float.MAX_VALUE
-        var max = Float.MIN_VALUE
 
-        var sum = 0f
-        var count = 0
-
-        var disposable: Disposable? = null
-        disposable = RxQuery.observable(query)
+        val disposable = RxQuery.observable(query)
+                .take(1)
                 .subscribeOn(Schedulers.io())
                 .map {
-                    val result = mutableListOf<Entry>()
-
-                    it.forEach { sensorEventData ->
-                        if (sensorEventData.values.isNotEmpty()) {
-                            createEntry(sensorEventData, startDayTimestamp)?.let { entry ->
-                                val value = sensorEventData.values[0]
-
-                                if (value < min) {
-                                    min = value
-                                }
-                                if (value > max) {
-                                    max = value
-                                }
-                                sum += value
-                                count++
-
-                                result.add(entry)
-                            }
+                    val chartData = ChartData()
+                    when (sensorType) {
+                        Sensor.TYPE_GRAVITY,
+                        Sensor.TYPE_LINEAR_ACCELERATION -> {
+                            parseData(startDayTimestamp, chartData.xData, chartData.xStatisticData, it, 0)
+                            parseData(startDayTimestamp, chartData.yData, chartData.yStatisticData, it, 1)
+                            parseData(startDayTimestamp, chartData.zData, chartData.zStatisticData, it, 2)
+                        }
+                        else -> {
+                            parseData(startDayTimestamp, chartData.xData, chartData.xStatisticData, it, 0)
                         }
                     }
-                    return@map result
+                    return@map chartData
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe {
@@ -122,17 +109,33 @@ class HistorySensorDataViewModel
                     showStatisticsContainer.postValue(false)
                 }
                 .subscribe {
-                    liveData.postValue(it)
                     showLoadingProgressBar.postValue(false)
+                    showStatisticsContainer.postValue(it.xData.size > 0)
 
-                    showStatisticsContainer.postValue(count > 0)
-                    statisticMinValue.postValue(min)
-                    statisticMaxValue.postValue(max)
-                    statisticAverageValue.postValue(sum / count)
-
-                    disposable?.dispose()
+                    chartLiveData.postValue(it)
                 }
         disposables.add(disposable)
+    }
+
+    private fun parseData(startDayTimestamp: Long, chartData: MutableList<Entry>, statisticData: StatisticData, list: MutableList<SensorEventData>, index: Int) {
+        list.forEach { sensorEventData ->
+            createEntry(sensorEventData, startDayTimestamp, index)?.let { entry ->
+                val value = sensorEventData.values[index]
+
+                if (value < statisticData.min) {
+                    statisticData.min = value
+                }
+                if (value > statisticData.max) {
+                    statisticData.max = value
+                }
+                statisticData.sum += value
+                statisticData.count++
+
+                chartData.add(entry)
+            }
+        }
+
+        statisticData.average = statisticData.sum / statisticData.count
     }
 
     private fun getStartDayTimestamp(timestamp: Long): Long {
@@ -153,13 +156,13 @@ class HistorySensorDataViewModel
         return calendar.timeInMillis
     }
 
-    private fun createEntry(sensorEventData: SensorEventData, lastMidnightTimestamp: Long): Entry? {
+    private fun createEntry(sensorEventData: SensorEventData, lastMidnightTimestamp: Long, index: Int): Entry? {
         var entry: Entry? = null
 
         if (sensorEventData.values.isNotEmpty()) {
             val timestampFromMidnight: Int = (sensorEventData.timestamp - lastMidnightTimestamp).toInt()
 
-            entry = Entry(timestampFromMidnight.toFloat(), sensorEventData.values[0], sensorEventData.values)
+            entry = Entry(timestampFromMidnight.toFloat(), sensorEventData.values[index], sensorEventData.values)
         }
         return entry
     }
@@ -167,7 +170,7 @@ class HistorySensorDataViewModel
     fun showHealthCareEvent(healthCareEvent: HealthCareEvent) {
         healthCareEvent.sensorEventData.target?.let { sensorEventData ->
             val startDayTimestamp = getStartDayTimestamp(sensorEventData.timestamp)
-            createEntry(sensorEventData, startDayTimestamp)?.let { entry ->
+            createEntry(sensorEventData, startDayTimestamp, 0)?.let { entry ->
                 entryHighlighted.postValue(entry)
             }
         }

@@ -5,14 +5,19 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableRow
+import android.widget.TextView
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.selastiansokolowski.healthcarewatch.R
+import com.selastiansokolowski.healthcarewatch.dataModel.StatisticData
 import com.selastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.selastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.selastiansokolowski.healthcarewatch.util.SafeCall
@@ -105,21 +110,6 @@ class HistorySensorDataFragment : DaggerFragment() {
                 statistics_container.visibility = View.INVISIBLE
             }
         })
-        historySensorDataViewModel.statisticMinValue.observe(this, Observer {
-            it?.let {
-                statistic_min_tv.text = it.toString()
-            }
-        })
-        historySensorDataViewModel.statisticMaxValue.observe(this, Observer {
-            it?.let {
-                statistic_max_tv.text = it.toString()
-            }
-        })
-        historySensorDataViewModel.statisticAverageValue.observe(this, Observer {
-            it?.let {
-                statistic_avg_tv.text = it.toString()
-            }
-        })
         historySensorDataViewModel.healthCareEvents.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
                 val adapter = HealthCareEventAdapter(context, list, historySensorDataViewModel)
@@ -147,6 +137,35 @@ class HistorySensorDataFragment : DaggerFragment() {
         initChart(sensorAdapterItem)
     }
 
+    private fun addStatisticRow(title: String, statisticData: StatisticData) {
+        val tableRow = TableRow(context)
+
+        val titleTv = createStatisticTextView()
+        val minValueTv = createStatisticTextView()
+        val maxValueTv = createStatisticTextView()
+        val averageValueTv = createStatisticTextView()
+
+        titleTv.text = title
+        minValueTv.text = statisticData.min.toString()
+        maxValueTv.text = statisticData.max.toString()
+        averageValueTv.text = statisticData.average.toString()
+
+        tableRow.addView(titleTv)
+        tableRow.addView(minValueTv)
+        tableRow.addView(maxValueTv)
+        tableRow.addView(averageValueTv)
+
+        statistics_table.addView(tableRow)
+    }
+
+    private fun createStatisticTextView(): TextView {
+        val textView = TextView(context)
+        textView.gravity = Gravity.CENTER
+        textView.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f)
+
+        return textView
+    }
+
     private fun highlightValue(entry: Entry) {
         chart_lc.data?.let { lineData ->
             lineData.dataSets?.let {
@@ -164,17 +183,67 @@ class HistorySensorDataFragment : DaggerFragment() {
         }
         chart_lc.setTouchEnabled(true)
 
-        historySensorDataViewModel.liveData.observe(this, Observer {
-            if (it == null || it.isEmpty()) {
+        historySensorDataViewModel.chartLiveData.observe(this, Observer {
+            if (it == null || it.xData.isEmpty() && it.yData.isEmpty() && it.zData.isEmpty()) {
                 chart_lc.clear()
                 return@Observer
             }
 
-            val title = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
-            val lineDataSet = LineDataSet(it, title)
+            val lineDataSetList = mutableListOf<LineDataSet>()
+
+            var colorLineDataX = 0
+            var colorLineDataY = 0
+            var colorLineDataZ = 0
+
+            context?.let { context ->
+                colorLineDataX = ContextCompat.getColor(context, R.color.chart_x_color)
+                colorLineDataY = ContextCompat.getColor(context, R.color.chart_y_color)
+                colorLineDataZ = ContextCompat.getColor(context, R.color.chart_z_color)
+            }
+
+            //remove previous data
+            if (statistics_table.childCount > 1) {
+                statistics_table.removeViews(1, statistics_table.childCount - 1)
+            }
+
+            when (sensorAdapterItem) {
+                SensorAdapterItem.GRAVITY,
+                SensorAdapterItem.LINEAR_ACCELERATION -> {
+                    val xLineDataSet = LineDataSet(it.xData, "x")
+                    xLineDataSet.setColor(colorLineDataX, 100)
+                    xLineDataSet.setCircleColor(colorLineDataX)
+
+                    val yLineDataSet = LineDataSet(it.yData, "y")
+                    yLineDataSet.setColor(colorLineDataY, 100)
+                    yLineDataSet.setCircleColor(colorLineDataY)
+
+                    val zLineDataSet = LineDataSet(it.zData, "z")
+                    zLineDataSet.setColor(colorLineDataZ, 100)
+                    zLineDataSet.setCircleColor(colorLineDataZ)
+
+                    lineDataSetList.add(xLineDataSet)
+                    lineDataSetList.add(yLineDataSet)
+                    lineDataSetList.add(zLineDataSet)
+
+                    addStatisticRow("x", it.xStatisticData)
+                    addStatisticRow("y", it.yStatisticData)
+                    addStatisticRow("z", it.zStatisticData)
+                }
+                else -> {
+                    val title = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
+
+                    val xLineDataSet = LineDataSet(it.xData, title)
+                    xLineDataSet.setColor(colorLineDataX, 100)
+                    xLineDataSet.setCircleColor(colorLineDataX)
+
+                    lineDataSetList.add(xLineDataSet)
+
+                    addStatisticRow("x", it.xStatisticData)
+                }
+            }
 
             chart_lc.xAxis.valueFormatter = DateValueFormatter()
-            chart_lc.data = LineData(lineDataSet)
+            chart_lc.data = LineData(lineDataSetList.toList())
             chart_lc.notifyDataSetChanged()
             chart_lc.invalidate()
 
