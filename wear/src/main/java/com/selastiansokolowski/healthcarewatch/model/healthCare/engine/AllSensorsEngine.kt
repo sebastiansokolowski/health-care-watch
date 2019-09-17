@@ -15,7 +15,6 @@ class AllSensorsEngine : HealthCareEngineBase() {
     override fun requiredSensors(): Set<Int> {
         return setOf(Sensor.TYPE_HEART_RATE,
                 Sensor.TYPE_STEP_COUNTER,
-                Sensor.TYPE_PRESSURE,
                 Sensor.TYPE_GRAVITY,
                 Sensor.TYPE_LINEAR_ACCELERATION)
     }

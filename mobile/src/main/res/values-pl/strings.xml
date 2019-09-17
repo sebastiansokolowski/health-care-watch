@@ -36,7 +36,6 @@
     <string name="sensor_data_chart_no_data">Brak danych</string>
     <string name="sensor_adapter_gravity_title">GRAWITACJA</string>
     <string name="sensor_adapter_heart_rate_title">BICIE SERCA</string>
-    <string name="sensor_adapter_pressure_title">CIŚNIENIE</string>
     <string name="sensor_adapter_step_counter_title">LICZNIK KROKÓW</string>
     <string name="sensor_adapter_linear_acceleration">PRZYŚPIESZENIE LINIOWE</string>
 </resources>
