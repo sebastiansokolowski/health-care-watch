@@ -38,4 +38,6 @@
     <string name="sensor_adapter_heart_rate_title">BICIE SERCA</string>
     <string name="sensor_adapter_step_counter_title">LICZNIK KROKÓW</string>
     <string name="sensor_adapter_linear_acceleration">PRZYŚPIESZENIE LINIOWE</string>
+    <string name="health_care_event_fall_message">Wykryto upadek</string>
+    <string name="health_care_event_fall_title">Upadek</string>
 </resources>

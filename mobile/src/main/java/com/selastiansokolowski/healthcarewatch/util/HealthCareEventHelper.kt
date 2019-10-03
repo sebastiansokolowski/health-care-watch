@@ -22,6 +22,7 @@ class HealthCareEventHelper(val context: Context) {
         return when (healthCareEventType) {
             HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_title)
             HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_title)
+            HealthCareEventType.FALL -> context.getString(R.string.health_care_event_fall_title)
             else -> healthCareEventType.name
         }
     }
@@ -40,6 +41,7 @@ class HealthCareEventHelper(val context: Context) {
         return when (healthCareEvent.careEvent) {
             HealthCareEventType.EPILEPSY -> value.toString() + context.getString(R.string.unit_gravity)
             HealthCareEventType.HEARTH_RATE_ANOMALY -> value.toString() + context.getString(R.string.unit_hearth_rate)
+            HealthCareEventType.FALL -> value.toString() + context.getString(R.string.unit_gravity)
             else -> "null"
         }
     }
@@ -48,6 +50,7 @@ class HealthCareEventHelper(val context: Context) {
         return when (healthCareEvent.careEvent) {
             HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_message)
             HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_message)
+            HealthCareEventType.FALL -> context.getString(R.string.health_care_event_fall_message)
             else -> "null"
         }
     }

@@ -40,4 +40,6 @@
     <string name="sensor_adapter_step_counter_title">STEP COUNTER</string>
     <string name="sensor_adapter_gravity_title">GRAVITY</string>
     <string name="sensor_adapter_linear_acceleration">LINEAR ACCELERATION</string>
+    <string name="health_care_event_fall_message">Fall detected</string>
+    <string name="health_care_event_fall_title">Fall</string>
 </resources>

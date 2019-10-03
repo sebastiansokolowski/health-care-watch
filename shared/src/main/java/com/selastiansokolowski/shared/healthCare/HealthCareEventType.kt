@@ -6,5 +6,6 @@ package com.selastiansokolowski.shared.healthCare
 enum class HealthCareEventType {
     EPILEPSY,
     HEARTH_RATE_ANOMALY,
+    FALL,
     ALL_SENSORS,
 }

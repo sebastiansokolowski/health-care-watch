@@ -4,6 +4,7 @@ import android.hardware.Sensor
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.AllSensorsEngine
 import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.EpilepsyEngine
+import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.FallEngine
 import com.selastiansokolowski.healthcarewatch.model.healthCare.engine.HeartRateAnomalyEngine
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
 
@@ -47,6 +48,7 @@ class HealthCareEnginesUtils {
         private fun getHealthCareEngine(healthCareEventType: HealthCareEventType): HealthCareEngineBase? {
             return when (healthCareEventType) {
                 HealthCareEventType.EPILEPSY -> EpilepsyEngine()
+                HealthCareEventType.FALL -> FallEngine()
                 HealthCareEventType.HEARTH_RATE_ANOMALY -> HeartRateAnomalyEngine()
                 HealthCareEventType.ALL_SENSORS -> AllSensorsEngine()
                 else -> null
