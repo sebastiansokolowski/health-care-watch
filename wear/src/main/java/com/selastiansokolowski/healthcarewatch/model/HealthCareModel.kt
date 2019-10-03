@@ -7,6 +7,7 @@ import com.selastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
@@ -25,30 +26,26 @@ class HealthCareModel(private val wearableDataClient: WearableDataClient) {
 
     fun startEngines(measurementSettings: MeasurementSettings) {
         measurementSettings.healthCareEngines.forEach {
+            it.setupEngine(sensorDataModel.sensorsObservable, notifyObservable)
+
+            it.startEngine()
+
             healthCareEngines.add(it)
         }
-
-        setupEngines()
     }
 
     fun stopEngines() {
         healthCareEngines.forEach {
-            it.compositeDisposable.clear()
+            it.stopEngine()
         }
 
         healthCareEngines.clear()
     }
 
-    private fun setupEngines() {
-        healthCareEngines.forEach {
-            it.setSensorEventObservable(sensorDataModel.sensorsObservable)
-            it.setNotifyObservable(notifyObservable)
-        }
-    }
-
     @SuppressLint("CheckResult")
     private fun subscribeToNotifyObservable() {
         notifyObservable
+                .debounce(10, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     notifyAlert(it)

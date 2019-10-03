@@ -1,11 +1,8 @@
 package com.selastiansokolowski.healthcarewatch.model.healthCare.engine
 
-import android.annotation.SuppressLint
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import com.selastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.selastiansokolowski.shared.healthCare.HealthCareEventType
-import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
@@ -19,8 +16,10 @@ class AllSensorsEngine : HealthCareEngineBase() {
                 Sensor.TYPE_LINEAR_ACCELERATION)
     }
 
-    @SuppressLint("CheckResult")
-    override fun setSensorEventObservable(sensorObservable: PublishSubject<SensorEvent>) {
+    override fun startEngine() {
+    }
+
+    override fun stopEngine() {
     }
 
     override fun getHealthCareEventType(): HealthCareEventType {

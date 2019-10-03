@@ -20,7 +20,6 @@ class AppModule {
     @Singleton
     fun provideContext(app: Application): Context = app
 
-
     @Provides
     @Singleton
     fun provideWearableDataClient(app: Application): WearableDataClient {
