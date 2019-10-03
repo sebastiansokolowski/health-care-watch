@@ -93,7 +93,7 @@
         app:layout_constraintRight_toRightOf="@+id/health_care_events_lv"
         app:layout_constraintTop_toTopOf="@id/health_care_events_lv" />
 
-    <com.selastiansokolowski.healthcarewatch.view.CustomLineChart
+    <com.sebastiansokolowski.healthcarewatch.view.CustomLineChart
         android:id="@+id/chart_lc"
         android:layout_width="match_parent"
         android:layout_height="250dp"
