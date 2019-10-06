@@ -17,6 +17,7 @@ class SensorAdapterItemHelper {
                     SensorAdapterItem.STEP_COUNTER -> context.getString(R.string.sensor_adapter_step_counter_title)
                     SensorAdapterItem.GRAVITY -> context.getString(R.string.sensor_adapter_gravity_title)
                     SensorAdapterItem.LINEAR_ACCELERATION -> context.getString(R.string.sensor_adapter_linear_acceleration)
+                    SensorAdapterItem.ACCELEROMETER -> "ACCELEROMETER"
                 }
             }
             return "null"

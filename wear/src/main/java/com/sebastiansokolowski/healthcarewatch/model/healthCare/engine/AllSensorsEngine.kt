@@ -13,6 +13,7 @@ class AllSensorsEngine : HealthCareEngineBase() {
         return setOf(Sensor.TYPE_HEART_RATE,
                 Sensor.TYPE_STEP_COUNTER,
                 Sensor.TYPE_GRAVITY,
+                Sensor.TYPE_ACCELEROMETER,
                 Sensor.TYPE_LINEAR_ACCELERATION)
     }
 

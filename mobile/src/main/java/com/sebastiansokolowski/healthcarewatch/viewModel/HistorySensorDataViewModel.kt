@@ -92,6 +92,7 @@ class HistorySensorDataViewModel
                     val chartData = ChartData()
                     when (sensorType) {
                         Sensor.TYPE_GRAVITY,
+                        Sensor.TYPE_ACCELEROMETER,
                         Sensor.TYPE_LINEAR_ACCELERATION -> {
                             parseData(startDayTimestamp, chartData.xData, chartData.xStatisticData, it, 0)
                             parseData(startDayTimestamp, chartData.yData, chartData.yStatisticData, it, 1)
