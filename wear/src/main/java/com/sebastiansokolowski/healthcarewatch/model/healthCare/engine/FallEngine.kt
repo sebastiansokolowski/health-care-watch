@@ -54,7 +54,15 @@ class FallEngine : HealthCareEngineBase() {
                         val isFall = it.indexOf(min) < it.indexOf(max)
                         val diff = abs(min.acceCurrent - max.acceCurrent)
 
-                        Log.d(TAG, "min=$min max=$max isFall=$isFall dif=$diff")
+                            Log.d(TAG, "fall detected")
+                            Log.d(TAG, "data array start")
+                            it.forEach {
+                                Log.d(TAG, "value[0]=${it.sensorEvent.values[0]}" +
+                                        "value[1]=${it.sensorEvent.values[1]}" +
+                                        "value[2]=${it.sensorEvent.values[2]}")
+                            }
+                            Log.d(TAG, "data array end")
+                            Log.d(TAG, "min=$min max=$max isFall=$isFall dif=$diff")
                         if (isFall && diff > 8) {
                             notifyHealthCareEvent(max.sensorEvent)
                         }
