@@ -80,7 +80,7 @@ class WearableDataClient(context: Context) {
     }
 
     fun sendSensorEvent(event: SensorEvent) {
-        Log.d(TAG, "sendSensorEvent event=${event.sensor.name}")
+        Log.v(TAG, "sendSensorEvent event=${event.sensor.name}")
 
         val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
         putDataMapReq.dataMap.apply {
@@ -135,10 +135,10 @@ class WearableDataClient(context: Context) {
 
         if (BuildConfig.DEBUG) {
             dataItemTask.addOnSuccessListener {
-                Log.d(TAG, "Success sent data path:${request.uri} urgent:$urgent")
+                Log.v(TAG, "Success sent data path:${request.uri} urgent:$urgent")
             }
             dataItemTask.addOnFailureListener { ex ->
-                Log.d(TAG, "Error sending data $ex")
+                Log.v(TAG, "Error sending data $ex")
             }
         }
     }

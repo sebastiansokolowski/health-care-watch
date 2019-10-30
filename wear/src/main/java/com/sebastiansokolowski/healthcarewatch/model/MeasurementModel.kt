@@ -21,7 +21,7 @@ class MeasurementModel(context: Context) : DataClient.OnDataChangedListener {
 
     override fun onDataChanged(dataEvent: DataEventBuffer) {
         dataEvent.forEach { event ->
-            Log.d(TAG, "onDataChanged path:${event.dataItem.uri.path}")
+            Log.v(TAG, "onDataChanged path:${event.dataItem.uri.path}")
             if (event.type != DataEvent.TYPE_CHANGED) {
                 Log.d(TAG, "type not changed")
                 return

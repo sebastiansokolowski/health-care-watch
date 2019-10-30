@@ -35,6 +35,7 @@ class SensorService : DaggerService() {
     }
 
     override fun onLowMemory() {
+        Log.d(TAG, "onLowMemory")
         super.onLowMemory()
         sensorDataModel.stopMeasurement()
 
