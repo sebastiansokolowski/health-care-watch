@@ -28,12 +28,13 @@ class FallEngine : HealthCareEngineBase() {
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
+    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double) {
+    }
 
     override fun startEngine() {
         sensorEventSubject
                 .subscribeOn(Schedulers.io())
-                .filter { it.sensor.type == Sensor.TYPE_ACCELEROMETER }
+                .filter { it.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .map {
                     AcceDataModel(
                             it,
@@ -75,7 +76,7 @@ class FallEngine : HealthCareEngineBase() {
     }
 
     override fun requiredSensors(): Set<Int> {
-        return setOf(Sensor.TYPE_ACCELEROMETER,
+        return setOf(Sensor.TYPE_LINEAR_ACCELERATION,
                 Sensor.TYPE_GYROSCOPE,
                 Sensor.TYPE_STEP_DETECTOR)
     }
