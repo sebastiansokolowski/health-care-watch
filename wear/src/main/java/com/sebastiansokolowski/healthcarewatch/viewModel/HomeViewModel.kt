@@ -52,11 +52,22 @@ class HomeViewModel
     }
 
     fun requestPermissions(activity: Activity) {
+//        if (ContextCompat.checkSelfPermission(activity,
+//                        Manifest.permission.BODY_SENSORS)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(activity,
+//                    arrayOf(Manifest.permission.BODY_SENSORS),
+//                    MY_PERMISSIONS_REQUEST_BODY_SENSORS)
+//            sensorDataModel.stopMeasurement()
+//        }
         if (ContextCompat.checkSelfPermission(activity,
                         Manifest.permission.BODY_SENSORS)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(activity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
-                    arrayOf(Manifest.permission.BODY_SENSORS),
+                    arrayOf(Manifest.permission.BODY_SENSORS, Manifest.permission.WRITE_EXTERNAL_STORAGE),
                     MY_PERMISSIONS_REQUEST_BODY_SENSORS)
             sensorDataModel.stopMeasurement()
         }
