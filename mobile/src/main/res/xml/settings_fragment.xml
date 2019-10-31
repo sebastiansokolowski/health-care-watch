@@ -11,7 +11,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_health_care_events_category">
-        <com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
             android:key="health_care_events"
             android:title="@string/settings_select_events" />
     </PreferenceCategory>
@@ -23,7 +23,7 @@
             android:key="sms_notification_enabled"
             android:title="@string/settings_sms_notification" />
 
-        <com.selastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
             android:dependency="sms_notification_enabled"
             android:key="contacts"
             android:title="@string/settings_select_contacts" />
