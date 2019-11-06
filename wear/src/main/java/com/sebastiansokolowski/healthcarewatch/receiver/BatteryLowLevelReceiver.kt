@@ -18,7 +18,7 @@ class BatteryLowLevelReceiver : DaggerBroadcastReceiver() {
     lateinit var sensorDataModel: SensorDataModel
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d(TAG, "onReceive")
+        Log.d(TAG, "onReceive action=${intent?.action}")
         super.onReceive(context, intent)
 
         context?.let {
