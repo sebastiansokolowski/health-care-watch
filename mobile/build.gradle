@@ -8,7 +8,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.0'
     defaultConfig {
-        applicationId "com.selastiansokolowski.healthcarewatch"
+        applicationId "com.sebastiansokolowski.healthcarewatch"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1

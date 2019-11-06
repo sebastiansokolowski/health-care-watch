@@ -4,7 +4,7 @@
 
     <PreferenceCategory android:title="@string/settings_watch_category">
 
-        <com.selastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
             android:key="sampling_us"
             android:title="@string/settings_sampling_time" />
 

@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.selastiansokolowski.healthcarewatch"
+        applicationId "com.sebastiansokolowski.healthcarewatch"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
