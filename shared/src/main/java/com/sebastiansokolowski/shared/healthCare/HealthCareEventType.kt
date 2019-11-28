@@ -7,5 +7,6 @@ enum class HealthCareEventType {
     EPILEPSY,
     HEARTH_RATE_ANOMALY,
     FALL,
+    FALL_TORDU,
     ALL_SENSORS,
 }
