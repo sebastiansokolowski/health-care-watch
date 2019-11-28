@@ -21,15 +21,14 @@ class FallEngine : HealthCareEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val stepDetector = StepDetector(5 * 1000)
+    private val stepDetector = StepDetector(10 * 1000)
 
     override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>) {
         super.setupEngine(sensorsObservable, notifyObservable)
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double) {
-    }
+    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
 
     override fun startEngine() {
         sensorEventSubject
@@ -45,25 +44,21 @@ class FallEngine : HealthCareEngineBase() {
                             )
                     )
                 }
-                .buffer(10)
+                .buffer(10, 1)
                 .subscribe {
-                    val min = it.maxBy { it.acceCurrent }
-                    val max = it.minBy { it.acceCurrent }
+                    val min = it.minBy { it.acceCurrent }
+                    val max = it.maxBy { it.acceCurrent }
 
                     if (min != null && max != null) {
                         val isFall = it.indexOf(min) < it.indexOf(max)
-                        val diff = abs(min.acceCurrent - max.acceCurrent)
+                        val diff = abs(max.acceCurrent - min.acceCurrent)
 
-                        if (isFall && diff > 12) {
+                        if (isFall && diff > 17 && stepDetector.isStepDetected()) {
                             Log.d(TAG, "fall detected")
-                            Log.d(TAG, "data array start")
                             it.forEach {
-                                Log.d(TAG, "value[0]=${it.sensorEvent.values[0]}" +
-                                        "value[1]=${it.sensorEvent.values[1]}" +
-                                        "value[2]=${it.sensorEvent.values[2]}")
+                                Log.d(TAG, "acceCurrent=${it.acceCurrent}")
                             }
-                            Log.d(TAG, "data array end")
-                            Log.d(TAG, "min=$min max=$max isFall=$isFall dif=$diff")
+                            Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
 
                             notifyHealthCareEvent(max.sensorEvent)
                         }
