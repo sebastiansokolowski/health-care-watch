@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: "de.mannodermaus.android-junit5"
 
 android {
     compileSdkVersion 29
@@ -44,10 +45,14 @@ dependencies {
     // LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-core:2.28.2"
+    testImplementation "io.mockk:mockk:1.9.3"
+    testImplementation "io.mockk:mockk-common:1.9.3"
 
+    // (Required) Writing and executing Unit Tests on the JUnit Platform
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.5.2"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.5.2"
 }
+
 repositories {
     mavenCentral()
 }

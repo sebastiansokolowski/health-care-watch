@@ -3,27 +3,32 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.detector
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEvent
+import io.mockk.every
+import io.mockk.impl.annotations.SpyK
+import io.mockk.junit5.MockKExtension
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import junit.framework.TestCase.assertTrue
-import org.junit.Assert.assertFalse
-import org.junit.Before
-import org.junit.Test
-import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.Mockito
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 
 /**
  * Created by Sebastian Sokołowski on 23.09.19.
  */
+@ExtendWith(MockKExtension::class)
 class StepDetectorTest {
-    private lateinit var testObj: StepDetector
+    private val timeout: Long = 1000
+
+    @SpyK
+    var testObj = StepDetector(timeout)
 
     private val sensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
 
-    @Before
+    @BeforeEach
     fun setup() {
-        testObj = Mockito.spy(StepDetector(1 * 1000))
         testObj.setupDetector(sensorObservable)
         testObj.startDetector()
 
@@ -36,15 +41,7 @@ class StepDetectorTest {
     }
 
     @Test
-    fun isStepDetected_WhenOldEvent_shouldReturnFalse() {
-        sensorObservable.onNext(getMockedSensorEvent(Sensor.TYPE_STEP_DETECTOR))
-
-        assertFalse(testObj.isStepDetected())
-    }
-
-    @Test
     fun isStepDetected_WhenComeEvent_shouldReturnTrue() {
-        Mockito.`when`(testObj.timeout(anyLong())).thenReturn(true)
         sensorObservable.onNext(getMockedSensorEvent(Sensor.TYPE_STEP_DETECTOR))
 
         assertTrue(testObj.isStepDetected())
@@ -52,8 +49,9 @@ class StepDetectorTest {
 
     @Test
     fun isStepDetected_WhenTimeout_shouldReturnFalse() {
-        Mockito.`when`(testObj.timeout(anyLong())).thenReturn(false)
+        every { testObj.getCurrentTimestamp() } returns 0
         sensorObservable.onNext(getMockedSensorEvent(Sensor.TYPE_STEP_DETECTOR))
+        every { testObj.getCurrentTimestamp() } returns timeout
 
         assertFalse(testObj.isStepDetected())
     }

@@ -22,7 +22,7 @@ class FallEngine : HealthCareEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val stepDetector = StepDetector(10 * 1000)
+    var stepDetector = StepDetector(10 * 1000)
 
     override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
