@@ -1,12 +1,10 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.detector
 
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.DetectorBase
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 
 
 /**
@@ -16,7 +14,7 @@ class StepDetector(private var timeout: Long) : DetectorBase() {
     val TAG = this::class.java.simpleName
 
     private var disposable: Disposable? = null
-    private var lastStepDetectorEvent: SensorEvent? = null
+    private var lastEventTimestamp: Long? = null
 
     override fun startDetector() {
         disposable = sensorsObservable
@@ -24,7 +22,7 @@ class StepDetector(private var timeout: Long) : DetectorBase() {
                 .filter { it.sensor.type == Sensor.TYPE_STEP_DETECTOR }
                 .subscribe {
                     Log.d(TAG, "isStepDetected=$it")
-                    lastStepDetectorEvent = it
+                    lastEventTimestamp = getCurrentTimestamp()
                 }
     }
 
@@ -32,16 +30,19 @@ class StepDetector(private var timeout: Long) : DetectorBase() {
         disposable?.dispose()
     }
 
-    fun timeout(timestamp: Long): Boolean {
-        val currentTimestamp = Date().time
-        val diffTimestamp = currentTimestamp - timestamp
+    fun getCurrentTimestamp(): Long {
+        return System.currentTimeMillis()
+    }
 
-        return diffTimestamp < timeout
+    private fun isLastEventValid(timestamp: Long): Boolean {
+        val timestampDiff = getCurrentTimestamp() - timestamp
+
+        return timestampDiff < timeout
     }
 
     fun isStepDetected(): Boolean {
-        lastStepDetectorEvent?.let {
-            return timeout(it.timestamp)
+        lastEventTimestamp?.let {
+            return isLastEventValid(it)
         }
         return false
     }

@@ -73,7 +73,7 @@ class WearableDataClient(context: Context) {
         putDataMapReq.dataMap.apply {
             putString(HEALTH_CARE_TYPE, healthCareEvent.healthCareEventType.name)
             putDataMap(HEALTH_CARE_EVENT_DATA, setSensorEventDataMap(DataMap(), healthCareEvent.sensorEvent))
-            putLong(HEALTH_CARE_TIMESTAMP, Date().time)
+            putLong(HEALTH_CARE_TIMESTAMP, System.currentTimeMillis())
         }
 
         send(putDataMapReq, true)
