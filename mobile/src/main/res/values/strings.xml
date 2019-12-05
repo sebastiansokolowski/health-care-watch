@@ -35,6 +35,7 @@
     <string name="settings_select_events">Select events</string>
     <string name="settings_sms_notification">SMS message</string>
     <string name="settings_sampling_time">Sampling time (s)</string>
+    <string name="settings_fall_threshold">Fall threshold value</string>
     <string name="sensor_data_chart_no_data">No chart data available</string>
     <string name="sensor_adapter_heart_rate_title">HEART RATE</string>
     <string name="sensor_adapter_step_counter_title">STEP COUNTER</string>
@@ -42,4 +43,5 @@
     <string name="sensor_adapter_linear_acceleration">LINEAR ACCELERATION</string>
     <string name="health_care_event_fall_message">Fall detected</string>
     <string name="health_care_event_fall_title">Fall</string>
+    <string name="health_care_event_fall_tordu_title">Fall - Thordu algorithm</string>
 </resources>

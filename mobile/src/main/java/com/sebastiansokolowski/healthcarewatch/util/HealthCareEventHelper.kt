@@ -22,7 +22,8 @@ class HealthCareEventHelper(val context: Context) {
         return when (healthCareEventType) {
             HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_title)
             HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_title)
-            HealthCareEventType.FALL, HealthCareEventType.FALL_TORDU -> context.getString(R.string.health_care_event_fall_title)
+            HealthCareEventType.FALL-> context.getString(R.string.health_care_event_fall_title)
+            HealthCareEventType.FALL_TORDU -> context.getString(R.string.health_care_event_fall_tordu_title)
             else -> healthCareEventType.name
         }
     }

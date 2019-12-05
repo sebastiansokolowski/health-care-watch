@@ -13,12 +13,13 @@ import java.util.concurrent.TimeUnit
 class SettingsModel(private val sharedPreferences: SharedPreferences) {
     fun getMeasurementSettings(): MeasurementSettings {
         val refreshRate = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
+        val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, SettingsSharedPreferences.FALL_THRESHOLD_DEFAULT)
 
         val sampleUs = TimeUnit.SECONDS.toMicros(refreshRate.toLong()).toInt()
         val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
                 ?: emptySet()
 
-        return MeasurementSettings(sampleUs, ArrayList(healthCareEvents))
+        return MeasurementSettings(sampleUs, fallThreshold, ArrayList(healthCareEvents))
     }
 
     fun getSupportedHealthCareEventTypes(): List<HealthCareEventType> {

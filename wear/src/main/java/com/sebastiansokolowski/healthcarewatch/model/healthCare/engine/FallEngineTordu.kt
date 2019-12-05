@@ -4,6 +4,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
@@ -22,8 +23,8 @@ class FallEngineTordu : HealthCareEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>) {
-        super.setupEngine(sensorsObservable, notifyObservable)
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+        super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
 
@@ -49,7 +50,7 @@ class FallEngineTordu : HealthCareEngineBase() {
                     var lastDataUpperThreshold = false
                     it.forEachIndexed { index, acceDataModel ->
                         if (index % 2 == 0) {
-                            if (acceDataModel.acceCurrent > 18) {
+                            if (acceDataModel.acceCurrent > measurementSettings.fallThreshold) {
                                 lastDataUpperThreshold = true
                             }
                         } else {

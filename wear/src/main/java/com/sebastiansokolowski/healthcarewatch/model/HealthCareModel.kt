@@ -26,7 +26,7 @@ class HealthCareModel(private val wearableDataClient: WearableDataClient) {
 
     fun startEngines(measurementSettings: MeasurementSettings) {
         measurementSettings.healthCareEngines.forEach {
-            it.setupEngine(sensorDataModel.sensorsObservable, notifyObservable)
+            it.setupEngine(sensorDataModel.sensorsObservable, notifyObservable, measurementSettings)
 
             it.startEngine()
 

@@ -4,6 +4,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
@@ -23,8 +24,8 @@ class FallEngine : HealthCareEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>) {
-        super.setupEngine(sensorsObservable, notifyObservable)
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+        super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
 
@@ -53,7 +54,9 @@ class FallEngine : HealthCareEngineBase() {
                         val isFall = it.indexOf(min) < it.indexOf(max)
                         val diff = abs(max.acceCurrent - min.acceCurrent)
 
-                        if (isFall && diff > 17 && stepDetector.isStepDetected()) {
+                        Log.d(TAG, "fallThreshold=${measurementSettings.fallThreshold} " +
+                                "isStepDetected=${stepDetector.isStepDetected()} isFall=$isFall diff=$diff")
+                        if (isFall && diff > measurementSettings.fallThreshold && stepDetector.isStepDetected()) {
                             Log.d(TAG, "fall detected")
                             it.forEach {
                                 Log.d(TAG, "acceCurrent=${it.acceCurrent}")

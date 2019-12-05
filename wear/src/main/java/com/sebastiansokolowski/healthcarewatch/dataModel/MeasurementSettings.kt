@@ -5,4 +5,4 @@ import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngine
 /**
  * Created by Sebastian Sokołowski on 23.08.19.
  */
-data class MeasurementSettings(val samplingUs: Int, val sensors: Set<Int>, val healthCareEngines: Set<HealthCareEngineBase>)
+data class MeasurementSettings(val samplingUs: Int, val fallThreshold: Int, val sensors: Set<Int>, val healthCareEngines: Set<HealthCareEngineBase>)

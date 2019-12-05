@@ -3,6 +3,7 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
@@ -35,8 +36,8 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
         return HealthCareEventType.HEARTH_RATE_ANOMALY
     }
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>) {
-        super.setupEngine(sensorsObservable, notifyObservable)
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+        super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
 

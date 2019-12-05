@@ -31,6 +31,7 @@ class WearableDataClient(context: Context) {
         val putDataMapReq = PutDataMapRequest.create(DataClientPaths.MEASUREMENT_START_DATA)
         putDataMapReq.dataMap.apply {
             putInt(DataClientPaths.MEASUREMENT_START_DATA_SAMPLING_US, measurementSettings.samplingUs)
+            putInt(DataClientPaths.MEASUREMENT_START_DATA_FALL_THRESHOLD, measurementSettings.fallThreshold)
             putStringArrayList(DataClientPaths.MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS, measurementSettings.healthCareEvents)
             putLong(DataClientPaths.MEASUREMENT_START_DATA_TIMESTAMP, Date().time)
         }
