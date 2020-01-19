@@ -14,9 +14,9 @@ class FallThresholdSeekBarPreference : SeekBarPreference {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     init {
-        min = 1
-        max = 20
-        setDefaultValue(SettingsSharedPreferences.FALL_THRESHOLD_DEFAULT)
+        min = 10
+        max = 40
+        setDefaultValue (SettingsSharedPreferences.FALL_THRESHOLD_DEFAULT)
     }
 
 }
