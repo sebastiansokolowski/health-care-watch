@@ -1,7 +1,6 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare
 
-import android.hardware.Sensor
-import android.hardware.SensorEvent
+import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import io.mockk.every
 import io.mockk.mockk
 
@@ -10,23 +9,12 @@ import io.mockk.mockk
  */
 class SensorEventMock {
     companion object {
-        fun getMockedSensorEvent(type: Int, timestamp: Long = 0, values: FloatArray? = null): SensorEvent {
-            val sensorEvent = mockk<SensorEvent>()
+        fun getMockedSensorEventWrapper(type: Int, timestamp: Long = 0, values: FloatArray = FloatArray(0)): HealthSensorEvent {
+            val sensorEvent = mockk<HealthSensorEvent>()
 
-            val sensor = mockk<Sensor>()
-            every { sensor.type } returns type
-
-            val sensorField = sensorEvent.javaClass.getField("sensor")
-            sensorField.isAccessible = true
-            sensorField.set(sensorEvent, sensor)
-
-            val timestampField = sensorEvent.javaClass.getField("timestamp")
-            timestampField.isAccessible = true
-            timestampField.set(sensorEvent, timestamp)
-
-            val valuesField = sensorEvent.javaClass.getField("values")
-            valuesField.isAccessible = true
-            valuesField.set(sensorEvent, values)
+            every { sensorEvent.type } returns type
+            every { sensorEvent.values } returns values
+            every { sensorEvent.timestamp } returns timestamp
 
             return sensorEvent
         }

@@ -1,12 +1,12 @@
 package com.sebastiansokolowski.healthcarewatch.client
 
 import android.content.Context
-import android.hardware.SensorEvent
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.sebastiansokolowski.healthcarewatch.BuildConfig
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_PATH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY
@@ -67,35 +67,35 @@ class WearableDataClient(context: Context) {
     }
 
     fun sendHealthCareEvent(healthCareEvent: HealthCareEvent) {
-        Log.d(TAG, "sendHealthCareEvent sensorEvent=${healthCareEvent.sensorEvent}")
+        Log.d(TAG, "sendHealthCareEvent sensorEvent=${healthCareEvent.healthSensorEvent}")
 
         val putDataMapReq = PutDataMapRequest.create(HEALTH_CARE_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putString(HEALTH_CARE_TYPE, healthCareEvent.healthCareEventType.name)
-            putDataMap(HEALTH_CARE_EVENT_DATA, setSensorEventDataMap(DataMap(), healthCareEvent.sensorEvent))
+            putDataMap(HEALTH_CARE_EVENT_DATA, setSensorEventDataMap(DataMap(), healthCareEvent.healthSensorEvent))
             putLong(HEALTH_CARE_TIMESTAMP, System.currentTimeMillis())
         }
 
         send(putDataMapReq, true)
     }
 
-    fun sendSensorEvent(event: SensorEvent) {
-        Log.v(TAG, "sendSensorEvent event=${event.sensor.name}")
+    fun sendSensorEvent(eventHealth: HealthSensorEvent) {
+        Log.v(TAG, "sendSensorEvent event=${eventHealth.name}")
 
         val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            setSensorEventDataMap(this, event)
+            setSensorEventDataMap(this, eventHealth)
         }
 
         send(putDataMapReq, liveData)
     }
 
-    private fun setSensorEventDataMap(dataMap: DataMap, event: SensorEvent): DataMap {
+    private fun setSensorEventDataMap(dataMap: DataMap, eventHealth: HealthSensorEvent): DataMap {
         return dataMap.apply {
-            putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, event.values)
-            putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, event.sensor.type)
-            putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, event.accuracy)
-            putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, System.currentTimeMillis())
+            putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, eventHealth.values)
+            putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, eventHealth.type)
+            putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, eventHealth.accuracy)
+            putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, eventHealth.timestamp)
         }
     }
 

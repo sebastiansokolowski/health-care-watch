@@ -1,10 +1,10 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
 import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
+import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
@@ -23,17 +23,18 @@ class FallEngineTordu : HealthCareEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<HealthSensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
+    data class AcceDataModel(val healthSensorEvent: HealthSensorEvent, val acceCurrent: Double)
 
     override fun startEngine() {
-        sensorEventSubject
+        stepDetector.startDetector()
+        healthSensorEventSubject
                 .subscribeOn(Schedulers.io())
-                .filter { it.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION }
+                .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .map {
                     AcceDataModel(
                             it,
@@ -67,8 +68,11 @@ class FallEngineTordu : HealthCareEngineBase() {
                             Log.d(TAG, "acceCurrent=${it.acceCurrent}")
                         }
                         Log.d(TAG, "counter=$counter")
+                        Log.d(TAG, "isStepDetected=${stepDetector.isStepDetected()}")
 
-                        notifyHealthCareEvent(it.last().sensorEvent)
+                        if (stepDetector.isStepDetected()) {
+                            notifyHealthCareEvent(it.last().healthSensorEvent)
+                        }
                     }
                 }
                 .let {

@@ -1,9 +1,9 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
 import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
+import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
@@ -36,7 +36,7 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
         return HealthCareEventType.HEARTH_RATE_ANOMALY
     }
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<HealthSensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
@@ -44,9 +44,9 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
     override fun startEngine() {
         stepDetector.startDetector()
 
-        sensorEventSubject
+        healthSensorEventSubject
                 .subscribeOn(Schedulers.io())
-                .filter { it.sensor.type == Sensor.TYPE_HEART_RATE }
+                .filter { it.type == Sensor.TYPE_HEART_RATE }
                 .subscribe { sensorEventData ->
                     val heartRate = sensorEventData.values[0].toInt()
 

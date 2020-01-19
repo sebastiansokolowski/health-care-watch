@@ -1,8 +1,8 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.detector
 
 import android.hardware.Sensor
-import android.hardware.SensorEvent
-import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEvent
+import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
 import io.mockk.every
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
@@ -25,11 +25,11 @@ class StepDetectorTest {
     @SpyK
     var testObj = StepDetector(timeout)
 
-    private val sensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
+    private val healthSensorObservable: PublishSubject<HealthSensorEvent> = PublishSubject.create()
 
     @BeforeEach
     fun setup() {
-        testObj.setupDetector(sensorObservable)
+        testObj.setupDetector(healthSensorObservable)
         testObj.startDetector()
 
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
@@ -42,7 +42,7 @@ class StepDetectorTest {
 
     @Test
     fun isStepDetected_WhenComeEvent_shouldReturnTrue() {
-        sensorObservable.onNext(getMockedSensorEvent(Sensor.TYPE_STEP_DETECTOR))
+        healthSensorObservable.onNext(getMockedSensorEventWrapper(Sensor.TYPE_STEP_DETECTOR))
 
         assertTrue(testObj.isStepDetected())
     }
@@ -50,7 +50,7 @@ class StepDetectorTest {
     @Test
     fun isStepDetected_WhenTimeout_shouldReturnFalse() {
         every { testObj.getCurrentTimestamp() } returns 0
-        sensorObservable.onNext(getMockedSensorEvent(Sensor.TYPE_STEP_DETECTOR))
+        healthSensorObservable.onNext(getMockedSensorEventWrapper(Sensor.TYPE_STEP_DETECTOR))
         every { testObj.getCurrentTimestamp() } returns timeout
 
         assertFalse(testObj.isStepDetected())
@@ -59,7 +59,7 @@ class StepDetectorTest {
     @Test
     fun stopDetector_shouldReturnFalse() {
         testObj.stopDetector()
-        sensorObservable.onNext(getMockedSensorEvent(Sensor.TYPE_STEP_DETECTOR))
+        healthSensorObservable.onNext(getMockedSensorEventWrapper(Sensor.TYPE_STEP_DETECTOR))
 
         assertFalse(testObj.isStepDetected())
     }

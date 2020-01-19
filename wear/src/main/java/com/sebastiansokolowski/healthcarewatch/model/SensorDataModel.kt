@@ -7,6 +7,7 @@ import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
+import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -23,7 +24,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         healthCareModel.sensorDataModel = this
     }
 
-    val sensorsObservable: PublishSubject<SensorEvent> = PublishSubject.create()
+    val sensorsObservable: PublishSubject<HealthSensorEvent> = PublishSubject.create()
     val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
@@ -42,8 +43,8 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         wearableDataClient.sendMeasurementEvent(measurementRunning)
     }
 
-    private fun notifySensorsObservable(sensorEvent: SensorEvent) {
-        sensorsObservable.onNext(sensorEvent)
+    private fun notifySensorsObservable(healthSensorEvent: HealthSensorEvent) {
+        sensorsObservable.onNext(healthSensorEvent)
     }
 
     fun toggleMeasurementState() {
@@ -98,7 +99,11 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.apply {
-            when (event.sensor?.type) {
+            if (sensor == null) {
+                return@apply
+            }
+
+            when (sensor.type) {
                 Sensor.TYPE_HEART_RATE -> {
                     val sensorValue = values[0]
 
@@ -107,9 +112,16 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
                 }
             }
 
-            notifySensorsObservable(event)
+            val sensorEventWrapper = HealthSensorEvent(
+                    sensor.name ?: "empty",
+                    sensor.type,
+                    accuracy,
+                    values.copyOf()
+            )
 
-            wearableDataClient.sendSensorEvent(this)
+            notifySensorsObservable(sensorEventWrapper)
+
+            wearableDataClient.sendSensorEvent(sensorEventWrapper)
         }
     }
 }

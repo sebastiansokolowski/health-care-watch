@@ -19,7 +19,7 @@ class StepDetector(private var timeout: Long) : DetectorBase() {
     override fun startDetector() {
         disposable = sensorsObservable
                 .subscribeOn(Schedulers.io())
-                .filter { it.sensor.type == Sensor.TYPE_STEP_DETECTOR }
+                .filter { it.type == Sensor.TYPE_STEP_DETECTOR }
                 .subscribe {
                     Log.d(TAG, "isStepDetected=$it")
                     lastEventTimestamp = getCurrentTimestamp()
