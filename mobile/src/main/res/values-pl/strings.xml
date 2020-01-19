@@ -42,4 +42,8 @@
     <string name="health_care_event_fall_title">Upadek</string>
     <string name="settings_fall_threshold">Wartość progowa upadku</string>
     <string name="health_care_event_fall_tordu_title">Upadek - algorytm Thordu</string>
+    <string name="advanced_settings_title">Ustawienia zaawansowane</string>
+    <string name="history_data_title">Historia danych</string>
+    <string name="live_data_title">Dane z zegarka</string>
+    <string name="settings_title">Ustawienia</string>
 </resources>

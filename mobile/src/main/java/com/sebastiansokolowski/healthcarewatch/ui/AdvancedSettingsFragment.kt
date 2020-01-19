@@ -6,14 +6,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
 import com.sebastiansokolowski.healthcarewatch.MainActivity
 import com.sebastiansokolowski.healthcarewatch.R
-import com.sebastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
 import com.sebastiansokolowski.healthcarewatch.viewModel.AdvancedSettingsViewModel
-import com.sebastiansokolowski.shared.SettingsSharedPreferences
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.AndroidSupportInjection
@@ -43,6 +40,8 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentI
     override fun onResume() {
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        setDisplayHomeAsUpEnabled(true)
+        activity?.title = getString(R.string.advanced_settings_title)
     }
 
     override fun onPause() {

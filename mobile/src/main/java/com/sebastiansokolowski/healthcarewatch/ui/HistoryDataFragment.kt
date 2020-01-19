@@ -33,6 +33,11 @@ class HistoryDataFragment : DaggerFragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity?.title = getString(R.string.history_data_title)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.history_data_fragment, container, false)
     }

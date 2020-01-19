@@ -44,4 +44,8 @@
     <string name="health_care_event_fall_message">Fall detected</string>
     <string name="health_care_event_fall_title">Fall</string>
     <string name="health_care_event_fall_tordu_title">Fall - Thordu algorithm</string>
+    <string name="advanced_settings_title">Advanced settings</string>
+    <string name="history_data_title">History data</string>
+    <string name="live_data_title">Live data</string>
+    <string name="settings_title">Settings</string>
 </resources>

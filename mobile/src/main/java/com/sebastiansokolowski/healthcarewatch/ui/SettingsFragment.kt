@@ -49,6 +49,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     override fun onResume() {
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+        activity?.title = getString(R.string.settings_title)
     }
 
     override fun onPause() {

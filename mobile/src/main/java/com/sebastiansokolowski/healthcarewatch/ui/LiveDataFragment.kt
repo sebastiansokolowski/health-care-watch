@@ -20,6 +20,11 @@ class LiveDataFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    override fun onResume() {
+        super.onResume()
+        activity?.title = getString(R.string.live_data_title)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.watch_data_fragment, container, false)
     }

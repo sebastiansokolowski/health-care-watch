@@ -39,6 +39,11 @@ class HomeFragment : DaggerFragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onResume() {
+        super.onResume()
+        activity?.title = getString(R.string.app_name)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.home_fragment, container, false)
     }
