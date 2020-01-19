@@ -46,4 +46,5 @@
     <string name="history_data_title">Historia danych</string>
     <string name="live_data_title">Dane z zegarka</string>
     <string name="settings_title">Ustawienia</string>
+    <string name="settings_fall_step_detector">Wykrywanie kroku</string>
 </resources>

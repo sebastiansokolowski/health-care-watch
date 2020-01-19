@@ -14,12 +14,13 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
     fun getMeasurementSettings(): MeasurementSettings {
         val refreshRate = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
         val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, SettingsSharedPreferences.FALL_THRESHOLD_DEFAULT)
+        val fallStepDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_STEP_DETECTOR, SettingsSharedPreferences.FALL_STEP_DETECTOR_DEFAULT)
 
         val sampleUs = TimeUnit.MILLISECONDS.toMicros(refreshRate.toLong()).toInt()
         val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
                 ?: emptySet()
 
-        return MeasurementSettings(sampleUs, fallThreshold, ArrayList(healthCareEvents))
+        return MeasurementSettings(sampleUs, fallThreshold, fallStepDetector, ArrayList(healthCareEvents))
     }
 
     fun getSupportedHealthCareEventTypes(): List<HealthCareEventType> {

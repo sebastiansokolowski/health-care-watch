@@ -3,8 +3,8 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 import android.hardware.Sensor
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
@@ -57,7 +57,9 @@ class FallEngine : HealthCareEngineBase() {
 
                         Log.d(TAG, "fallThreshold=${measurementSettings.fallThreshold} " +
                                 "isStepDetected=${stepDetector.isStepDetected()} isFall=$isFall diff=$diff")
-                        if (isFall && diff > measurementSettings.fallThreshold && stepDetector.isStepDetected()) {
+                        if (isFall &&
+                                diff > measurementSettings.fallThreshold &&
+                                (!measurementSettings.fallStepDetector || stepDetector.isStepDetected())) {
                             Log.d(TAG, "fall detected")
                             it.forEach {
                                 Log.d(TAG, "x=${it.healthSensorEvent.values[0]} y=${it.healthSensorEvent.values[1]} z=${it.healthSensorEvent.values[2]}")

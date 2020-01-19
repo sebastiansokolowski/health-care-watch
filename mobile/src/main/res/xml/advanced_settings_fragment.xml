@@ -6,6 +6,7 @@
 
         <com.sebastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
             android:key="sampling_us"
+            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek."
             android:title="@string/settings_sampling_time" />
 
     </PreferenceCategory>
@@ -14,7 +15,13 @@
 
         <com.sebastiansokolowski.healthcarewatch.view.preference.FallThresholdSeekBarPreference
             android:key="fall_threshold"
+            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek."
             android:title="@string/settings_fall_threshold" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:summary="Zdarzenie zostanie wykryte wyłącznie w ruchu."
+            android:key="fall_step_detector"
+            android:title="@string/settings_fall_step_detector" />
     </PreferenceCategory>
 </PreferenceScreen>

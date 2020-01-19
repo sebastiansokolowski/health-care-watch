@@ -31,13 +31,14 @@ class MeasurementModel(context: Context) : DataClient.OnDataChangedListener {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
                         val samplingUs = getInt(DataClientPaths.MEASUREMENT_START_DATA_SAMPLING_US)
                         val fallThreshold = getInt(DataClientPaths.MEASUREMENT_START_DATA_FALL_THRESHOLD)
+                        val fallStepDetector = getBoolean(DataClientPaths.MEASUREMENT_START_DATA_FALL_STEP_DETECTOR)
 
                         val healthCareEvents = getStringArrayList(DataClientPaths.MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS)
                         val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(healthCareEvents)
                         val sensors = healthCareEngines.flatMap { it.requiredSensors() }.toSet()
 
                         Log.d(TAG, "settings samplingUs=$samplingUs sensors=$healthCareEvents engines=$healthCareEngines")
-                        val measurementSettings = MeasurementSettings(samplingUs, fallThreshold, sensors, healthCareEngines)
+                        val measurementSettings = MeasurementSettings(samplingUs, fallThreshold, fallStepDetector, sensors, healthCareEngines)
 
                         if (sensorDataModel.measurementRunning) {
                             sensorDataModel.stopMeasurement()

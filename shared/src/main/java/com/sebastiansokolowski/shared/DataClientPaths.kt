@@ -33,6 +33,7 @@ class DataClientPaths {
         const val MEASUREMENT_START_DATA = "/measurement_start_data"
         const val MEASUREMENT_START_DATA_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
         const val MEASUREMENT_START_DATA_FALL_THRESHOLD = SettingsSharedPreferences.FALL_THRESHOLD
+        const val MEASUREMENT_START_DATA_FALL_STEP_DETECTOR = SettingsSharedPreferences.FALL_STEP_DETECTOR
         const val MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS = SettingsSharedPreferences.SENSORS
         const val MEASUREMENT_START_DATA_TIMESTAMP = "timestamp"
     }
