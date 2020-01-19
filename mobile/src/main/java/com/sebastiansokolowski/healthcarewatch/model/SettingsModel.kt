@@ -15,7 +15,7 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val refreshRate = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
         val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, SettingsSharedPreferences.FALL_THRESHOLD_DEFAULT)
 
-        val sampleUs = TimeUnit.SECONDS.toMicros(refreshRate.toLong()).toInt()
+        val sampleUs = TimeUnit.MILLISECONDS.toMicros(refreshRate.toLong()).toInt()
         val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
                 ?: emptySet()
 

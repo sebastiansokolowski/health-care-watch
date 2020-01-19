@@ -13,7 +13,7 @@ class SettingsSharedPreferences {
         // mobile and wear
         const val SAMPLING_US = "sampling_us"
         const val FALL_THRESHOLD = "fall_threshold"
-        const val SAMPLING_US_DEFAULT = 5
+        const val SAMPLING_US_DEFAULT = 1000
         const val FALL_THRESHOLD_DEFAULT = 20
         // wear
         const val SENSORS = "sensors"

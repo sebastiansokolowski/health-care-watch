@@ -14,9 +14,10 @@ class SamplingSeekBarPreference : SeekBarPreference {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     init {
-        min = 1
-        max = 10
+        min = 100
+        max = 9000
         setDefaultValue(SettingsSharedPreferences.SAMPLING_US_DEFAULT)
     }
+
 
 }
