@@ -10,7 +10,7 @@
 
         <com.sebastiansokolowski.healthcarewatch.view.preference.FallThresholdSeekBarPreference
             android:key="fall_threshold"
-            android:title="@string/settings_sampling_time" />
+            android:title="@string/settings_fall_threshold" />
 
     </PreferenceCategory>
 
