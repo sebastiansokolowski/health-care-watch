@@ -22,6 +22,7 @@ import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.sebastiansokolowski.healthcarewatch.util.SafeCall
 import com.sebastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
+import com.sebastiansokolowski.healthcarewatch.util.Utils
 import com.sebastiansokolowski.healthcarewatch.view.CustomMarkerView
 import com.sebastiansokolowski.healthcarewatch.view.DateValueFormatter
 import com.sebastiansokolowski.healthcarewatch.viewModel.HistoryDataViewModel
@@ -146,9 +147,9 @@ class HistorySensorDataFragment : DaggerFragment() {
         val averageValueTv = createStatisticTextView()
 
         titleTv.text = title
-        minValueTv.text = statisticData.min.toString()
-        maxValueTv.text = statisticData.max.toString()
-        averageValueTv.text = statisticData.average.toString()
+        minValueTv.text = Utils.format(statisticData.min, 2)
+        maxValueTv.text = Utils.format(statisticData.max, 2)
+        averageValueTv.text = Utils.format(statisticData.average, 2)
 
         tableRow.addView(titleTv)
         tableRow.addView(minValueTv)

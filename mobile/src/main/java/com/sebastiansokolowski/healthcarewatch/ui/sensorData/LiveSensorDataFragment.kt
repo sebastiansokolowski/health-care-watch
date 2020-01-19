@@ -16,6 +16,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthcarewatch.R
 import com.sebastiansokolowski.healthcarewatch.dataModel.StatisticData
 import com.sebastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
+import com.sebastiansokolowski.healthcarewatch.util.Utils
 import com.sebastiansokolowski.healthcarewatch.view.CustomMarkerView
 import com.sebastiansokolowski.healthcarewatch.view.DateValueFormatter
 import com.sebastiansokolowski.healthcarewatch.viewModel.LiveSensorDataViewModel
@@ -88,9 +89,9 @@ class LiveSensorDataFragment : DaggerFragment() {
         val averageValueTv = createStatisticTextView()
 
         titleTv.text = title
-        minValueTv.text = statisticData.min.toString()
-        maxValueTv.text = statisticData.max.toString()
-        averageValueTv.text = statisticData.average.toString()
+        minValueTv.text = Utils.format(statisticData.min, 2)
+        maxValueTv.text = Utils.format(statisticData.max, 2)
+        averageValueTv.text = Utils.format(statisticData.average, 2)
 
         tableRow.addView(titleTv)
         tableRow.addView(minValueTv)
