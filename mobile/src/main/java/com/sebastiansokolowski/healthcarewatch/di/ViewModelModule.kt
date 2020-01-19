@@ -39,6 +39,11 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(AdvancedSettingsViewModel::class)
+    abstract fun bindAdvancedSettingsViewModel(advancedSettingsViewModel: AdvancedSettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(HistoryDataViewModel::class)
     abstract fun bindHistoryDataViewModel(historyDataViewModel: HistoryDataViewModel): ViewModel
 

@@ -9,10 +9,7 @@ import android.view.MenuItem
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.sebastiansokolowski.healthcarewatch.service.MessageReceiverService
-import com.sebastiansokolowski.healthcarewatch.ui.HistoryDataFragment
-import com.sebastiansokolowski.healthcarewatch.ui.HomeFragment
-import com.sebastiansokolowski.healthcarewatch.ui.LiveDataFragment
-import com.sebastiansokolowski.healthcarewatch.ui.SettingsFragment
+import com.sebastiansokolowski.healthcarewatch.ui.*
 import com.sebastiansokolowski.healthcarewatch.util.SingleEvent
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -65,13 +62,28 @@ class MainActivity : DaggerAppCompatActivity() {
             }
 
             selectedFragment?.let {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                }
                 supportFragmentManager.beginTransaction().replace(R.id.fragment_container, it).commit()
-
                 return true
             }
 
             return false
         }
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStackImmediate()
+        } else super.onBackPressed()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return if (item?.itemId == android.R.id.home) {
+            onBackPressed()
+            true
+        } else super.onOptionsItemSelected(item)
     }
 
     private fun setBottomNavigationSelectedItem(fragment: Fragment) {
@@ -80,13 +92,19 @@ class MainActivity : DaggerAppCompatActivity() {
             LiveDataFragment::class.java -> R.id.nav_data
             HistoryDataFragment::class.java -> R.id.nav_history
             SettingsFragment::class.java -> R.id.nav_settings
+            AdvancedSettingsFragment::class.java -> return
             else -> R.id.nav_home
         }
     }
 
-    fun showFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
-                fragment).commit()
+    fun showFragment(fragment: Fragment, addToBackStack: Boolean = false) {
+        val fragmentTransaction = supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
+                fragment)
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null)
+        }
+        fragmentTransaction.commit()
+
         setBottomNavigationSelectedItem(fragment)
     }
 

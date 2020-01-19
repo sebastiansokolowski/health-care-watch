@@ -22,7 +22,6 @@ class SettingsViewModel
 
     fun onSharedPreferenceChanged(key: String) {
         when (key) {
-            SettingsSharedPreferences.SAMPLING_US,
             SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
                 if (sensorDataModel.measurementRunning) {
                     sensorDataModel.stopMeasurement()

@@ -1,9 +1,6 @@
 package com.sebastiansokolowski.healthcarewatch.di
 
-import com.sebastiansokolowski.healthcarewatch.ui.HistoryDataFragment
-import com.sebastiansokolowski.healthcarewatch.ui.HomeFragment
-import com.sebastiansokolowski.healthcarewatch.ui.LiveDataFragment
-import com.sebastiansokolowski.healthcarewatch.ui.SettingsFragment
+import com.sebastiansokolowski.healthcarewatch.ui.*
 import com.sebastiansokolowski.healthcarewatch.ui.sensorData.HistorySensorDataFragment
 import com.sebastiansokolowski.healthcarewatch.ui.sensorData.LiveSensorDataFragment
 import dagger.Module
@@ -29,4 +26,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSettingsFragment(): SettingsFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeAdvancedSettingsFragment(): AdvancedSettingsFragment
 }

@@ -14,6 +14,7 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import android.view.View
 import android.widget.Toast
+import com.sebastiansokolowski.healthcarewatch.MainActivity
 import com.sebastiansokolowski.healthcarewatch.R
 import com.sebastiansokolowski.healthcarewatch.model.SetupModel
 import com.sebastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
@@ -67,6 +68,15 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         settingsViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(SettingsViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
+        if (preference?.key == "advanced_settings") {
+            val mainActivity: MainActivity = activity as MainActivity
+            mainActivity.showFragment(AdvancedSettingsFragment(), true)
+        }
+
+        return super.onPreferenceTreeClick(preference)
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {

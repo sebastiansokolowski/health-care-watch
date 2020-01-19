@@ -2,22 +2,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="Settings">
 
-    <PreferenceCategory android:title="@string/settings_watch_category">
-
-        <com.sebastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
-            android:key="sampling_us"
-            android:title="@string/settings_sampling_time" />
-
-        <com.sebastiansokolowski.healthcarewatch.view.preference.FallThresholdSeekBarPreference
-            android:key="fall_threshold"
-            android:title="@string/settings_fall_threshold" />
-
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/settings_health_care_events_category">
         <com.sebastiansokolowski.healthcarewatch.view.preference.CustomMultiSelectListPreference
             android:key="health_care_events"
             android:title="@string/settings_select_events" />
+        <Preference
+            android:key="advanced_settings"
+            android:title="Ustawienia zaawansowane" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_alert_notification_category">

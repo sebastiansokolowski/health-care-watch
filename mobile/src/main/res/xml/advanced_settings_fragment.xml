@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Settings">
+
+    <PreferenceCategory android:title="@string/settings_watch_category">
+
+        <com.sebastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
+            android:key="sampling_us"
+            android:title="@string/settings_sampling_time" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/health_care_event_fall_title">
+
+        <com.sebastiansokolowski.healthcarewatch.view.preference.FallThresholdSeekBarPreference
+            android:key="fall_threshold"
+            android:title="@string/settings_fall_threshold" />
+
+    </PreferenceCategory>
+</PreferenceScreen>
