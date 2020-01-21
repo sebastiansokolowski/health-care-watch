@@ -32,7 +32,7 @@ class WearableDataClient(context: Context) {
         putDataMapReq.dataMap.apply {
             putInt(DataClientPaths.MEASUREMENT_START_DATA_SAMPLING_US, measurementSettings.samplingUs)
             putInt(DataClientPaths.MEASUREMENT_START_DATA_FALL_THRESHOLD, measurementSettings.fallThreshold)
-            putBoolean(DataClientPaths.MEASUREMENT_START_DATA_FALL_THRESHOLD, measurementSettings.fallStepDetector)
+            putBoolean(DataClientPaths.MEASUREMENT_START_DATA_FALL_STEP_DETECTOR, measurementSettings.fallStepDetector)
             putStringArrayList(DataClientPaths.MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS, measurementSettings.healthCareEvents)
             putLong(DataClientPaths.MEASUREMENT_START_DATA_TIMESTAMP, Date().time)
         }
