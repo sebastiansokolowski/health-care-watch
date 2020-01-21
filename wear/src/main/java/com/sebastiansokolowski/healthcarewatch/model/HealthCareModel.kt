@@ -3,8 +3,9 @@ package com.sebastiansokolowski.healthcarewatch.model
 import android.annotation.SuppressLint
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
+import com.sebastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
+import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -25,12 +26,14 @@ class HealthCareModel(private val wearableDataClient: WearableDataClient) {
     }
 
     fun startEngines(measurementSettings: MeasurementSettings) {
-        measurementSettings.healthCareEngines.forEach {
+        val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(measurementSettings.healthCareEvents)
+
+        healthCareEngines.forEach {
             it.setupEngine(sensorDataModel.sensorsObservable, notifyObservable, measurementSettings)
 
             it.startEngine()
 
-            healthCareEngines.add(it)
+            this.healthCareEngines.add(it)
         }
     }
 

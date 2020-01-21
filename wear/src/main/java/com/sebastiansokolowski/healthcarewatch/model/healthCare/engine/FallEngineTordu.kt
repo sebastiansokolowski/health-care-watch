@@ -3,10 +3,10 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 import android.hardware.Sensor
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -51,7 +51,7 @@ class FallEngineTordu : HealthCareEngineBase() {
                     var lastDataUpperThreshold = false
                     it.forEachIndexed { index, acceDataModel ->
                         if (index % 2 == 0) {
-                            if (acceDataModel.acceCurrent > measurementSettings.fallThreshold) {
+                            if (acceDataModel.acceCurrent > measurementSettings.fallSettings.threshold) {
                                 lastDataUpperThreshold = true
                             }
                         } else {

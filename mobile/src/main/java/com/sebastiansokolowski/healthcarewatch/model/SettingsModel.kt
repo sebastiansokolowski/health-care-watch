@@ -2,8 +2,9 @@ package com.sebastiansokolowski.healthcarewatch.model
 
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
+import com.sebastiansokolowski.shared.dataModel.FallSettings
+import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
 import java.util.concurrent.TimeUnit
 
@@ -12,15 +13,19 @@ import java.util.concurrent.TimeUnit
  */
 class SettingsModel(private val sharedPreferences: SharedPreferences) {
     fun getMeasurementSettings(): MeasurementSettings {
-        val refreshRate = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
+        val samplingMs = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
         val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, SettingsSharedPreferences.FALL_THRESHOLD_DEFAULT)
         val fallStepDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_STEP_DETECTOR, SettingsSharedPreferences.FALL_STEP_DETECTOR_DEFAULT)
+        val fallTimeOfInactivityS = sharedPreferences.getInt(SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S, SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S_DEFAULT)
+        val fallActivityThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD, SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD_DEFAULT)
 
-        val sampleUs = TimeUnit.MILLISECONDS.toMicros(refreshRate.toLong()).toInt()
+        val samplingUs = TimeUnit.MILLISECONDS.toMicros(samplingMs.toLong()).toInt()
         val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
                 ?: emptySet()
 
-        return MeasurementSettings(sampleUs, fallThreshold, fallStepDetector, ArrayList(healthCareEvents))
+        val fallSettings = FallSettings(fallThreshold, fallStepDetector, fallTimeOfInactivityS, fallActivityThreshold)
+
+        return MeasurementSettings(samplingUs, ArrayList(healthCareEvents), fallSettings)
     }
 
     fun getSupportedHealthCareEventTypes(): List<HealthCareEventType> {

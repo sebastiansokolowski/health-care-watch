@@ -7,6 +7,7 @@ class DataClientPaths {
     companion object {
         const val NODE_CAPABILITY = "health_care_watch"
 
+        //messages
         const val START_MEASUREMENT = "/start_measurement"
         const val STOP_MEASUREMENT = "/stop_measurement"
         const val GET_MEASUREMENT = "/get_measurement"
@@ -15,6 +16,7 @@ class DataClientPaths {
         const val STOP_LIVE_DATA = "/stop_live_data"
         const val GET_SUPPORTED_HEALTH_CARE_EVENTS = "/get_supported_health_care_engines"
 
+        //data
         const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH = "/supported_health_care_events"
         const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES = "types"
         const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_TIMESTAMP = "timestamp"
@@ -32,9 +34,11 @@ class DataClientPaths {
 
         const val MEASUREMENT_START_DATA = "/measurement_start_data"
         const val MEASUREMENT_START_DATA_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
+        const val MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS = SettingsSharedPreferences.SENSORS
         const val MEASUREMENT_START_DATA_FALL_THRESHOLD = SettingsSharedPreferences.FALL_THRESHOLD
         const val MEASUREMENT_START_DATA_FALL_STEP_DETECTOR = SettingsSharedPreferences.FALL_STEP_DETECTOR
-        const val MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS = SettingsSharedPreferences.SENSORS
+        const val MEASUREMENT_START_DATA_FALL_TIME_OF_INACTIVITY_S = SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S
+        const val MEASUREMENT_START_DATA_FALL_ACTIVITY_THRESHOLD = SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD
         const val MEASUREMENT_START_DATA_TIMESTAMP = "timestamp"
     }
 }

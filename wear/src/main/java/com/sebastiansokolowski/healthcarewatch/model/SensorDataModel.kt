@@ -6,9 +6,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
+import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlin.math.roundToInt
@@ -66,11 +66,14 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         if (measurementRunning) {
             return
         }
+        val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(measurementSettings.healthCareEvents)
+        val sensors = healthCareEngines.flatMap { it.requiredSensors() }.toSet()
+
         changeMeasurementState(true)
 
         healthCareModel.startEngines(measurementSettings)
 
-        for (sensorId: Int in measurementSettings.sensors) {
+        for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
 
             val registered = sensorManager.registerListener(this, sensor, measurementSettings.samplingUs)

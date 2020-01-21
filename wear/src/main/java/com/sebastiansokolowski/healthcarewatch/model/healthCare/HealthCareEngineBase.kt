@@ -1,8 +1,8 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare
 
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
 import io.reactivex.subjects.PublishSubject
 

@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.detector
 
 import android.hardware.Sensor
+import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.DetectorBase
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -39,12 +40,13 @@ class ActivityDetector(private var activityThreshold: Int, private var bufferTim
                     }
                     sum / count
                 }.subscribe {
+                    Log.d(TAG, "avg=$it")
                     notifyActivityState(it >= activityThreshold)
                 }
     }
 
-
     fun notifyActivityState(activity: Boolean) {
+        Log.d(TAG, "activity=$activity")
         activityStateObservable.onNext(activity)
     }
 

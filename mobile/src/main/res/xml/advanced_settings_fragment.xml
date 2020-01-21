@@ -6,7 +6,7 @@
 
         <com.sebastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
             android:key="sampling_us"
-            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek."
+            android:summary="Częstotliwość odświerzania danych z czujników"
             android:title="@string/settings_sampling_time" />
 
     </PreferenceCategory>
@@ -15,13 +15,24 @@
 
         <com.sebastiansokolowski.healthcarewatch.view.preference.FallThresholdSeekBarPreference
             android:key="fall_threshold"
-            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek."
+            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek"
             android:title="@string/settings_fall_threshold" />
 
         <SwitchPreference
             android:defaultValue="true"
-            android:summary="Zdarzenie zostanie wykryte wyłącznie w ruchu."
             android:key="fall_step_detector"
+            android:summary="Zdarzenie zostanie wykryte wyłącznie w ruchu"
             android:title="@string/settings_fall_step_detector" />
+
+        <com.sebastiansokolowski.healthcarewatch.view.preference.TimeOfInactivitySeekBarPreference
+            android:key="fall_time_of_inactivity_s"
+            android:summary="Czas w bezruchu po upadku po którym zdarzenie zostanie rozpoznane jako upadek"
+            android:title="Czas bezruchu (s)" />
+
+        <com.sebastiansokolowski.healthcarewatch.view.preference.ActivityThresholdSeekBarPreference
+            android:key="fall_activity_threshold"
+            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako ruch"
+            android:title="Wartość progowa bezruchu" />
     </PreferenceCategory>
+
 </PreferenceScreen>

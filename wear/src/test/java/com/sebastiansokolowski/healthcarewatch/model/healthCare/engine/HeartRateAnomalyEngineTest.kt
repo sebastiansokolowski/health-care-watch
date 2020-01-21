@@ -2,10 +2,10 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK

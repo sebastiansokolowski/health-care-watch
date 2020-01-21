@@ -2,10 +2,10 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
@@ -44,7 +44,9 @@ class FallEngineTest {
         testObj.startEngine()
 
         every { stepDetector.isStepDetected() } returns true
-        every { measurementSettings.fallThreshold } returns 2
+        every { measurementSettings.fallSettings.stepDetector } returns true
+        every { measurementSettings.fallSettings.threshold } returns 2
+        every { measurementSettings.fallSettings.timeOfInactivity } returns 0
 
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
     }
@@ -57,11 +59,32 @@ class FallEngineTest {
     }
 
     @Test
-    fun testFallDetectWhenStepIsNotDetected_shouldNotify() {
+    fun testFallDetect_WhenStepIsNotDetected_shouldNotNotify() {
         every { stepDetector.isStepDetected() } returns false
         triggerFall()
 
         verify(exactly = 0) { testObj.notifyHealthCareEvent(any()) }
+    }
+
+    @Test
+    fun testFallDetect_WhenStepDetectIsDisabled_shouldNotify() {
+        every { stepDetector.isStepDetected() } returns false
+        every { measurementSettings.fallSettings.stepDetector } returns false
+
+        triggerFall()
+
+        verify(exactly = 1) { testObj.notifyHealthCareEvent(any()) }
+    }
+
+    @Test
+    fun testFallDetect_WhenPostFallDetectionIsEnabled_shouldNotNotify() {
+        every { measurementSettings.fallSettings.activityThreshold } returns 3
+         every { measurementSettings.fallSettings.timeOfInactivity } returns 5
+
+        triggerFall()
+
+        verify(exactly = 0) { testObj.notifyHealthCareEvent(any()) }
+        verify(exactly = 1) { testObj.checkPostFallActivity(any()) }
     }
 
     private fun triggerFall() {
