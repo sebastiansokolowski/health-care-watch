@@ -6,6 +6,7 @@ import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
 import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.dataModel.MeasurementSettings
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
+import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.ActivityDetector
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
@@ -30,6 +31,13 @@ class FallEngine : HealthCareEngineBase() {
     }
 
     data class AcceDataModel(val healthSensorEvent: HealthSensorEvent, val acceCurrent: Double)
+
+    private fun createActivityDetector(): ActivityDetector {
+        val activityDetector = ActivityDetector(3, 5)
+        activityDetector.setupDetector(healthSensorEventSubject)
+
+        return activityDetector
+    }
 
     override fun startEngine() {
         stepDetector.startDetector()
@@ -67,7 +75,16 @@ class FallEngine : HealthCareEngineBase() {
                             }
                             Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
 
-                            notifyHealthCareEvent(max.healthSensorEvent)
+
+                            val activityDetector = createActivityDetector()
+                            activityDetector.activityStateObservable.subscribe { activity ->
+                                if (!activity) {
+                                    notifyHealthCareEvent(max.healthSensorEvent)
+                                }
+                            }.let {
+                                compositeDisposable.add(it)
+                            }
+                            activityDetector.startDetector()
                         }
                     }
                 }
