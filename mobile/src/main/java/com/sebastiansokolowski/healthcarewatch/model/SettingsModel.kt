@@ -13,11 +13,13 @@ import java.util.concurrent.TimeUnit
  */
 class SettingsModel(private val sharedPreferences: SharedPreferences) {
     fun getMeasurementSettings(): MeasurementSettings {
-        val samplingMs = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, SettingsSharedPreferences.SAMPLING_US_DEFAULT)
-        val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, SettingsSharedPreferences.FALL_THRESHOLD_DEFAULT)
-        val fallStepDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_STEP_DETECTOR, SettingsSharedPreferences.FALL_STEP_DETECTOR_DEFAULT)
-        val fallTimeOfInactivityS = sharedPreferences.getInt(SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S, SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S_DEFAULT)
-        val fallActivityThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD, SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD_DEFAULT)
+        val defaultMeasurementSettings = MeasurementSettings()
+
+        val samplingMs = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, defaultMeasurementSettings.samplingUs)
+        val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, defaultMeasurementSettings.fallSettings.threshold)
+        val fallStepDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_STEP_DETECTOR, defaultMeasurementSettings.fallSettings.stepDetector)
+        val fallTimeOfInactivityS = sharedPreferences.getInt(SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S, defaultMeasurementSettings.fallSettings.timeOfInactivity)
+        val fallActivityThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD, defaultMeasurementSettings.fallSettings.activityThreshold)
 
         val samplingUs = TimeUnit.MILLISECONDS.toMicros(samplingMs.toLong()).toInt()
         val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
