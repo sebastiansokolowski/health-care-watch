@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthcarewatch.model
 
 import android.hardware.Sensor
+import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
@@ -10,6 +11,7 @@ import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlin.math.roundToInt
 
 /**
  * Created by Sebastian Sokołowski on 18.06.19.

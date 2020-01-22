@@ -1,8 +1,8 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.detector
 
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 class ActivityDetectorTest {
 
-    private val healthSensorObservable: PublishSubject<HealthSensorEvent> = PublishSubject.create()
+    private val healthSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
 
     private val activityThreshold: Int = 3
     private val bufferTime: Long = 1

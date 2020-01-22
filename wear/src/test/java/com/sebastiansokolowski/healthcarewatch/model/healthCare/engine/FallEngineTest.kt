@@ -1,10 +1,10 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 class FallEngineTest {
 
-    private val healthSensorObservable: PublishSubject<HealthSensorEvent> = PublishSubject.create()
+    private val healthSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
     private val notifyObservable: PublishSubject<HealthCareEvent> = PublishSubject.create()
 
     @SpyK

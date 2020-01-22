@@ -128,9 +128,9 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 return
             }
             when (event.dataItem.uri.path) {
-                DataClientPaths.HEALTH_SENSOR_MAP_PATH -> {
+                DataClientPaths.SENSOR_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val json = getString(DataClientPaths.HEALTH_SENSOR_MAP_JSON)
+                        val json = getString(DataClientPaths.SENSOR_MAP_JSON)
                         val sensorEvent = Gson().fromJson(json, SensorEvent::class.java)
 
                         val sensorEventData = createSensorEventDataEntity(sensorEvent)

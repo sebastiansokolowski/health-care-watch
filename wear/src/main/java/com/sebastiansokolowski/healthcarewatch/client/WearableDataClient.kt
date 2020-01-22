@@ -9,8 +9,8 @@ import com.sebastiansokolowski.healthcarewatch.BuildConfig
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_PATH
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_SENSOR_MAP_JSON
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_SENSOR_MAP_PATH
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_MAP_JSON
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_MAP_PATH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
@@ -71,9 +71,9 @@ class WearableDataClient(context: Context) {
     fun sendSensorEvent(event: SensorEvent) {
         Log.v(TAG, "sendSensorEvent type=${event.type}")
 
-        val putDataMapReq = PutDataMapRequest.create(HEALTH_SENSOR_MAP_PATH)
+        val putDataMapReq = PutDataMapRequest.create(SENSOR_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            putString(HEALTH_SENSOR_MAP_JSON, Gson().toJson(event))
+            putString(SENSOR_MAP_JSON, Gson().toJson(event))
         }
 
         send(putDataMapReq, liveData)

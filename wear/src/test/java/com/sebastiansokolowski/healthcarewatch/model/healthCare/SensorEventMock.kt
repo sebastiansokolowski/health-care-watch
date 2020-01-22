@@ -1,6 +1,6 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare
 
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.mockk.every
 import io.mockk.mockk
 
@@ -9,8 +9,8 @@ import io.mockk.mockk
  */
 class SensorEventMock {
     companion object {
-        fun getMockedSensorEventWrapper(type: Int, timestamp: Long = 0, values: FloatArray = FloatArray(0)): HealthSensorEvent {
-            val sensorEvent = mockk<HealthSensorEvent>()
+        fun getMockedSensorEventWrapper(type: Int, timestamp: Long = 0, values: FloatArray = FloatArray(0)): SensorEvent {
+            val sensorEvent = mockk<SensorEvent>()
 
             every { sensorEvent.type } returns type
             every { sensorEvent.values } returns values

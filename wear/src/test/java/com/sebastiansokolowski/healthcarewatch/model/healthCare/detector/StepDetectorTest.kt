@@ -1,8 +1,8 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.detector
 
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.mockk.every
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
@@ -25,7 +25,7 @@ class StepDetectorTest {
     @SpyK
     var testObj = StepDetector(timeout)
 
-    private val healthSensorObservable: PublishSubject<HealthSensorEvent> = PublishSubject.create()
+    private val healthSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
 
     @BeforeEach
     fun setup() {
