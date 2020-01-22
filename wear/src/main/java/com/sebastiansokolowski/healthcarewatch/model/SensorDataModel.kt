@@ -1,18 +1,15 @@
 package com.sebastiansokolowski.healthcarewatch.model
 
 import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.sebastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
-import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
-import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlin.math.roundToInt
 
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
@@ -25,7 +22,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         healthCareModel.sensorDataModel = this
     }
 
-    val sensorsObservable: PublishSubject<HealthSensorEvent> = PublishSubject.create()
+    val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
     val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
@@ -44,8 +41,8 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         wearableDataClient.sendMeasurementEvent(measurementRunning)
     }
 
-    private fun notifySensorsObservable(healthSensorEvent: HealthSensorEvent) {
-        sensorsObservable.onNext(healthSensorEvent)
+    private fun notifySensorsObservable(sensorEvent: com.sebastiansokolowski.shared.dataModel.SensorEvent) {
+        sensorsObservable.onNext(sensorEvent)
     }
 
     fun toggleMeasurementState() {
@@ -116,7 +113,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
                 }
             }
 
-            val sensorEventWrapper = HealthSensorEvent(
+            val sensorEventWrapper = com.sebastiansokolowski.shared.dataModel.SensorEvent(
                     sensor.type,
                     values.copyOf(),
                     accuracy

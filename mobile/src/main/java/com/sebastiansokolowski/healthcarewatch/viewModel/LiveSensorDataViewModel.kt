@@ -6,7 +6,7 @@ import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthcarewatch.dataModel.ChartData
 import com.sebastiansokolowski.healthcarewatch.dataModel.StatisticData
-import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthcarewatch.model.SensorDataModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -63,9 +63,9 @@ class LiveSensorDataViewModel
         disposables.add(disposable)
     }
 
-    private fun parseData(startDayTimestamp: Long, chartData: MutableList<Entry>, statisticData: StatisticData, sensorEventData: SensorEventData, index: Int) {
-        createEntry(sensorEventData, startDayTimestamp, index)?.let { entry ->
-            val value = sensorEventData.values[index]
+    private fun parseData(startDayTimestamp: Long, chartData: MutableList<Entry>, statisticData: StatisticData, sensorEventEntity: SensorEventEntity, index: Int) {
+        createEntry(sensorEventEntity, startDayTimestamp, index)?.let { entry ->
+            val value = sensorEventEntity.values[index]
 
             if (value < statisticData.min) {
                 statisticData.min = value
@@ -82,13 +82,13 @@ class LiveSensorDataViewModel
         statisticData.average = statisticData.sum / statisticData.count
     }
 
-    private fun createEntry(sensorEventData: SensorEventData, lastMidnightTimestamp: Long, index: Int): Entry? {
+    private fun createEntry(sensorEventEntity: SensorEventEntity, lastMidnightTimestamp: Long, index: Int): Entry? {
         var entry: Entry? = null
 
-        if (sensorEventData.values.isNotEmpty()) {
-            val timestampFromMidnight: Int = (sensorEventData.timestamp - lastMidnightTimestamp).toInt()
+        if (sensorEventEntity.values.isNotEmpty()) {
+            val timestampFromMidnight: Int = (sensorEventEntity.timestamp - lastMidnightTimestamp).toInt()
 
-            entry = Entry(timestampFromMidnight.toFloat(), sensorEventData.values[index], sensorEventData.values)
+            entry = Entry(timestampFromMidnight.toFloat(), sensorEventEntity.values[index], sensorEventEntity.values)
         }
         return entry
     }

@@ -3,7 +3,7 @@ package com.sebastiansokolowski.healthcarewatch.viewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.Transformations
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent_
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity_
 import com.sebastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.sebastiansokolowski.healthcarewatch.model.SetupModel
 import io.objectbox.BoxStore
@@ -38,15 +38,15 @@ class HomeViewModel
     }
 
     override fun initHealthCarEvents() {
-        val query = healthCareEventBox.query()
-                .orderDesc(HealthCareEvent_.__ID_PROPERTY)
+        val query = healthCareEventEntityBox.query()
+                .orderDesc(HealthCareEventEntity_.__ID_PROPERTY)
                 .build()
 
         val disposable = RxQuery.observable(query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    healthCareEvents.postValue(it)
+                    healthCareEventsEntity.postValue(it)
                 }
         disposables.add(disposable)
     }

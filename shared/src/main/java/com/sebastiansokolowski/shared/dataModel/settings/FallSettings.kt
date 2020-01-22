@@ -1,4 +1,4 @@
-package com.sebastiansokolowski.shared.dataModel
+package com.sebastiansokolowski.shared.dataModel.settings
 
 /**
  * Created by Sebastian Sokołowski on 20.01.20.

@@ -3,8 +3,8 @@ package com.sebastiansokolowski.healthcarewatch.model
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
-import com.sebastiansokolowski.shared.dataModel.FallSettings
-import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
+import com.sebastiansokolowski.shared.dataModel.settings.FallSettings
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import java.util.concurrent.TimeUnit
 

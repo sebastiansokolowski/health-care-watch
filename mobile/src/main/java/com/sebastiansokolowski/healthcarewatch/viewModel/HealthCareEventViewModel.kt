@@ -2,9 +2,9 @@ package com.sebastiansokolowski.healthcarewatch.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
-import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.sebastiansokolowski.healthcarewatch.util.SingleEvent
 import io.objectbox.Box
@@ -17,50 +17,50 @@ import java.util.*
 abstract class HealthCareEventViewModel(val boxStore: BoxStore) : ViewModel(), HealthCareEventAdapter.HealthCareEventAdapterItemListener {
     private val TAG = javaClass.canonicalName
 
-    val healthCareEventBox: Box<HealthCareEvent> = boxStore.boxFor(HealthCareEvent::class.java)
-    val healthCareEventSelected: MutableLiveData<HealthCareEvent> = MutableLiveData()
+    val healthCareEventEntityBox: Box<HealthCareEventEntity> = boxStore.boxFor(HealthCareEventEntity::class.java)
+    val healthCareEventEntitySelected: MutableLiveData<HealthCareEventEntity> = MutableLiveData()
 
     init {
 //        addHealthCareEvents()
     }
 
-    val healthCareEventToRestore: MutableLiveData<SingleEvent<HealthCareEvent>> = MutableLiveData()
-    val healthCareEvents: MutableLiveData<List<HealthCareEvent>> = MutableLiveData()
+    val healthCareEventEntityToRestore: MutableLiveData<SingleEvent<HealthCareEventEntity>> = MutableLiveData()
+    val healthCareEventsEntity: MutableLiveData<List<HealthCareEventEntity>> = MutableLiveData()
 
     abstract fun initHealthCarEvents()
 
     fun addHealthCareEvents() {
-        val healthCareEvents = mutableListOf<HealthCareEvent>()
+        val healthCareEvents = mutableListOf<HealthCareEventEntity>()
 
-        val box = boxStore.boxFor(SensorEventData::class.java)
+        val box = boxStore.boxFor(SensorEventEntity::class.java)
         val sensorEventDataList = box.all
 
         for (i in 1..10) {
             val random = Random()
             val index = random.nextInt(sensorEventDataList.size)
-            val healthCareEvent = HealthCareEvent().apply {
+            val healthCareEvent = HealthCareEventEntity().apply {
                 careEvent = HealthCareEventType.HEARTH_RATE_ANOMALY
-                sensorEventData.target = sensorEventDataList[index]
+                sensorEventEntity.target = sensorEventDataList[index]
             }
 
             healthCareEvents.add(healthCareEvent)
         }
 
-        healthCareEventBox.put(healthCareEvents)
+        healthCareEventEntityBox.put(healthCareEvents)
     }
 
-    fun restoreDeletedEvent(healthCareEvent: HealthCareEvent) {
-        healthCareEventBox.put(healthCareEvent)
+    fun restoreDeletedEvent(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventEntityBox.put(healthCareEventEntity)
     }
 
     //HealthCareEventAdapterItemListener
 
-    override fun onClickItem(healthCareEvent: HealthCareEvent) {
-        healthCareEventSelected.postValue(healthCareEvent)
+    override fun onClickItem(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventEntitySelected.postValue(healthCareEventEntity)
     }
 
-    override fun onDeleteItem(healthCareEvent: HealthCareEvent) {
-        healthCareEventBox.remove(healthCareEvent)
-        healthCareEventToRestore.postValue(SingleEvent(healthCareEvent))
+    override fun onDeleteItem(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventEntityBox.remove(healthCareEventEntity)
+        healthCareEventEntityToRestore.postValue(SingleEvent(healthCareEventEntity))
     }
 }

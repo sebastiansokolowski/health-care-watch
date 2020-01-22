@@ -18,7 +18,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthcarewatch.R
 import com.sebastiansokolowski.healthcarewatch.dataModel.StatisticData
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.sebastiansokolowski.healthcarewatch.util.SafeCall
 import com.sebastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
@@ -83,11 +83,11 @@ class HistorySensorDataFragment : DaggerFragment() {
                 historySensorDataViewModel.setCurrentDate(it)
             }
         })
-        historyDataViewModel.healthCareEventToShow.observe(this, Observer {
+        historyDataViewModel.healthCareEventEntityToShow.observe(this, Observer {
             it?.let {
-                if (it.sensorEventData.target.type == sensorAdapterItem.sensorId) {
+                if (it.sensorEventEntity.target.type == sensorAdapterItem.sensorId) {
                     historySensorDataViewModel.showHealthCareEvent(it)
-                    historyDataViewModel.healthCareEventToShow.postValue(null)
+                    historyDataViewModel.healthCareEventEntityToShow.postValue(null)
                 }
             }
         })
@@ -111,21 +111,21 @@ class HistorySensorDataFragment : DaggerFragment() {
                 statistics_container.visibility = View.INVISIBLE
             }
         })
-        historySensorDataViewModel.healthCareEvents.observe(this, Observer {
+        historySensorDataViewModel.healthCareEventsEntity.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
                 val adapter = HealthCareEventAdapter(context, list, historySensorDataViewModel)
                 adapter.setEmptyView(health_care_events_empty_view)
                 health_care_events_lv.adapter = adapter
             }
         })
-        historySensorDataViewModel.healthCareEventToRestore.observe(this, Observer {
+        historySensorDataViewModel.healthCareEventEntityToRestore.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showRestoreDeletedItemSnackBar(it)
                 }
             }
         })
-        historySensorDataViewModel.healthCareEventSelected.observe(this, Observer {
+        historySensorDataViewModel.healthCareEventEntitySelected.observe(this, Observer {
             it?.let {
                 historySensorDataViewModel.showHealthCareEvent(it)
             }
@@ -255,11 +255,11 @@ class HistorySensorDataFragment : DaggerFragment() {
         })
     }
 
-    private fun showRestoreDeletedItemSnackBar(healthCareEvent: HealthCareEvent) {
+    private fun showRestoreDeletedItemSnackBar(healthCareEventEntity: HealthCareEventEntity) {
         view?.let {
             val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
             snackbar.setAction(getString(R.string.action_undo)) {
-                historySensorDataViewModel.restoreDeletedEvent(healthCareEvent)
+                historySensorDataViewModel.restoreDeletedEvent(healthCareEventEntity)
             }
             snackbar.show()
         }

@@ -4,13 +4,14 @@ import com.sebastiansokolowski.healthcarewatch.db.converter.FloatArrayConverter
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import io.objectbox.annotation.Uid
 import java.util.*
 
 /**
  * Created by Sebastian Sokołowski on 17.01.19.
  */
 @Entity
-class SensorEventData {
+class SensorEventEntity {
     @Id
     var id: Long = 0
     var type: Int = 0

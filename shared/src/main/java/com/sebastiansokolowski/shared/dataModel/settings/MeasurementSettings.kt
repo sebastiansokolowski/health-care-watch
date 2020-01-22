@@ -1,4 +1,4 @@
-package com.sebastiansokolowski.shared.dataModel
+package com.sebastiansokolowski.shared.dataModel.settings
 
 import java.util.*
 import kotlin.collections.ArrayList

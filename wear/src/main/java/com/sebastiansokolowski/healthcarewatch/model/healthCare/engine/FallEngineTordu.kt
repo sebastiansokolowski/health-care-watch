@@ -5,8 +5,8 @@ import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
-import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,16 +23,16 @@ class FallEngineTordu : HealthCareEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<HealthSensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    data class AcceDataModel(val healthSensorEvent: HealthSensorEvent, val acceCurrent: Double)
+    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
 
     override fun startEngine() {
         stepDetector.startDetector()
-        healthSensorEventSubject
+        sensorEventSubject
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .map {
@@ -71,7 +71,7 @@ class FallEngineTordu : HealthCareEngineBase() {
                         Log.d(TAG, "isStepDetected=${stepDetector.isStepDetected()}")
 
                         if (stepDetector.isStepDetected()) {
-                            notifyHealthCareEvent(it.last().healthSensorEvent)
+                            notifyHealthCareEvent(it.last().sensorEvent)
                         }
                     }
                 }

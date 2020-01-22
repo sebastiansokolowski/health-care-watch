@@ -7,12 +7,13 @@ import android.util.Log
 import com.google.android.gms.wearable.*
 import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventData
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthcarewatch.service.MeasurementService
 import com.sebastiansokolowski.shared.DataClientPaths
+import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
-import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
 import io.objectbox.BoxStore
 import io.reactivex.disposables.Disposable
@@ -31,8 +32,8 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     var measurementRunning: Boolean = false
     private var saveDataDisposable: Disposable? = null
 
-    val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
-    val heartRateObservable: BehaviorSubject<SensorEventData> = BehaviorSubject.create()
+    val sensorsObservable: PublishSubject<SensorEventEntity> = PublishSubject.create()
+    val heartRateObservable: BehaviorSubject<SensorEventEntity> = BehaviorSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
     val supportedHealthCareEventsObservable: PublishSubject<Set<HealthCareEventType>> = PublishSubject.create()
 
@@ -40,12 +41,12 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
         Wearable.getDataClient(context).addListener(this)
     }
 
-    private fun notifyHeartRateObservable(sensorEventData: SensorEventData) {
-        heartRateObservable.onNext(sensorEventData)
+    private fun notifyHeartRateObservable(sensorEventEntity: SensorEventEntity) {
+        heartRateObservable.onNext(sensorEventEntity)
     }
 
-    private fun notifySensorsObservable(sensorEventData: SensorEventData) {
-        sensorsObservable.onNext(sensorEventData)
+    private fun notifySensorsObservable(sensorEventEntity: SensorEventEntity) {
+        sensorsObservable.onNext(sensorEventEntity)
     }
 
     private fun notifyMeasurementStateObservable(measurementState: Boolean) {
@@ -108,7 +109,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 .buffer(10, TimeUnit.SECONDS)
                 .subscribe {
                     Log.d(TAG, "save data to database")
-                    val eventBox = boxStore.boxFor(SensorEventData::class.java)
+                    val eventBox = boxStore.boxFor(SensorEventEntity::class.java)
                     eventBox.put(it)
 
                     synchronized(this) {
@@ -130,7 +131,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 DataClientPaths.HEALTH_SENSOR_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
                         val json = getString(DataClientPaths.HEALTH_SENSOR_MAP_JSON)
-                        val sensorEvent = Gson().fromJson(json, HealthSensorEvent::class.java)
+                        val sensorEvent = Gson().fromJson(json, SensorEvent::class.java)
 
                         val sensorEventData = createSensorEventDataEntity(sensorEvent)
 
@@ -145,11 +146,11 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 DataClientPaths.HEALTH_CARE_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
                         val json = getString(DataClientPaths.HEALTH_CARE_MAP_JSON)
-                        val healthCareEvent = Gson().fromJson(json, com.sebastiansokolowski.shared.dataModel.HealthCareEvent::class.java)
+                        val healthCareEvent = Gson().fromJson(json, HealthCareEvent::class.java)
 
                         val healthCareEventEntity = createHealthCareEvent(healthCareEvent)
 
-                        val eventBox = boxStore.boxFor(HealthCareEvent::class.java)
+                        val eventBox = boxStore.boxFor(HealthCareEventEntity::class.java)
                         eventBox.put(healthCareEventEntity)
 
                         notificationModel.notifyHealthCareEvent(healthCareEventEntity)
@@ -171,19 +172,19 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
         }
     }
 
-    private fun createSensorEventDataEntity(healthSensorEvent: HealthSensorEvent): SensorEventData {
-        return SensorEventData().apply {
-            this.type = healthSensorEvent.type
-            this.accuracy = healthSensorEvent.accuracy
-            this.timestamp = healthSensorEvent.timestamp
-            this.values = healthSensorEvent.values
+    private fun createSensorEventDataEntity(sensorEvent: SensorEvent): SensorEventEntity {
+        return SensorEventEntity().apply {
+            this.type = sensorEvent.type
+            this.accuracy = sensorEvent.accuracy
+            this.timestamp = sensorEvent.timestamp
+            this.values = sensorEvent.values
         }
     }
 
-    private fun createHealthCareEvent(healthCareEvent: com.sebastiansokolowski.shared.dataModel.HealthCareEvent): HealthCareEvent {
-        return HealthCareEvent().apply {
+    private fun createHealthCareEvent(healthCareEvent: HealthCareEvent): HealthCareEventEntity {
+        return HealthCareEventEntity().apply {
             this.careEvent = healthCareEvent.healthCareEventType
-            this.sensorEventData.target = createSensorEventDataEntity(healthCareEvent.healthSensorEvent)
+            this.sensorEventEntity.target = createSensorEventDataEntity(healthCareEvent.sensorEvent)
         }
     }
 }

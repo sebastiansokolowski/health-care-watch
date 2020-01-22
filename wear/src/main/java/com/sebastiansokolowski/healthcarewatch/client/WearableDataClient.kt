@@ -15,7 +15,7 @@ import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
-import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
 
 
 /**
@@ -58,7 +58,7 @@ class WearableDataClient(context: Context) {
     }
 
     fun sendHealthCareEvent(healthCareEvent: HealthCareEvent) {
-        Log.d(TAG, "sendHealthCareEvent sensorEvent=${healthCareEvent.healthSensorEvent}")
+        Log.d(TAG, "sendHealthCareEvent sensorEvent=${healthCareEvent.sensorEvent}")
 
         val putDataMapReq = PutDataMapRequest.create(HEALTH_CARE_MAP_PATH)
         putDataMapReq.dataMap.apply {
@@ -68,12 +68,12 @@ class WearableDataClient(context: Context) {
         send(putDataMapReq, true)
     }
 
-    fun sendSensorEvent(eventHealth: HealthSensorEvent) {
-        Log.v(TAG, "sendSensorEvent type=${eventHealth.type}")
+    fun sendSensorEvent(event: SensorEvent) {
+        Log.v(TAG, "sendSensorEvent type=${event.type}")
 
         val putDataMapReq = PutDataMapRequest.create(HEALTH_SENSOR_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            putString(HEALTH_SENSOR_MAP_JSON, Gson().toJson(eventHealth))
+            putString(HEALTH_SENSOR_MAP_JSON, Gson().toJson(event))
         }
 
         send(putDataMapReq, liveData)

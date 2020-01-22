@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import com.daimajia.swipe.SwipeLayout
 import com.daimajia.swipe.adapters.BaseSwipeAdapter
 import com.sebastiansokolowski.healthcarewatch.R
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.util.HealthCareEventHelper
 import kotlinx.android.synthetic.main.health_care_event_item.view.*
 
 /**
  * Created by Sebastian Sokołowski on 24.06.19.
  */
-class HealthCareEventAdapter(val context: Context, private val healthCareEvents: List<HealthCareEvent>, private val healthCareEventAdapterItemListener: HealthCareEventAdapterItemListener) : BaseSwipeAdapter(), SwipeLayout.SwipeListener {
+class HealthCareEventAdapter(val context: Context, private val healthCareEventEntities: List<HealthCareEventEntity>, private val healthCareEventAdapterItemListener: HealthCareEventAdapterItemListener) : BaseSwipeAdapter(), SwipeLayout.SwipeListener {
     private val TAG = javaClass.canonicalName
 
     private val healthCareEventHelper = HealthCareEventHelper(context)
@@ -24,7 +24,7 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEvents:
     }
 
     override fun getItem(position: Int): Any {
-        return healthCareEvents[position]
+        return healthCareEventEntities[position]
     }
 
     override fun getSwipeLayoutResourceId(position: Int): Int {
@@ -32,11 +32,11 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEvents:
     }
 
     override fun getItemId(position: Int): Long {
-        return healthCareEvents[position].id
+        return healthCareEventEntities[position].id
     }
 
     override fun getCount(): Int {
-        return healthCareEvents.size
+        return healthCareEventEntities.size
     }
 
     override fun generateView(position: Int, parent: ViewGroup?): View {
@@ -49,7 +49,7 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEvents:
     }
 
     override fun fillValues(position: Int, convertView: View?) {
-        val item = healthCareEvents[position]
+        val item = healthCareEventEntities[position]
         convertView?.apply {
             tag = item
             health_care_event_item_title.text = healthCareEventHelper.getTitle(item)
@@ -63,15 +63,15 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEvents:
     }
 
     interface HealthCareEventAdapterItemListener {
-        fun onClickItem(healthCareEvent: HealthCareEvent)
-        fun onDeleteItem(healthCareEvent: HealthCareEvent)
+        fun onClickItem(healthCareEventEntity: HealthCareEventEntity)
+        fun onDeleteItem(healthCareEventEntity: HealthCareEventEntity)
     }
 
     //SwipeListener
 
     override fun onOpen(layout: SwipeLayout?) {
         layout?.let {
-            val healthCareEvent = it.tag as HealthCareEvent
+            val healthCareEvent = it.tag as HealthCareEventEntity
             healthCareEventAdapterItemListener.onDeleteItem(healthCareEvent)
         }
     }

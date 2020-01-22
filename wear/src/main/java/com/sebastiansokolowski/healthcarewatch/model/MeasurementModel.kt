@@ -5,7 +5,7 @@ import android.util.Log
 import com.google.android.gms.wearable.*
 import com.google.gson.Gson
 import com.sebastiansokolowski.shared.DataClientPaths
-import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 
 /**
  * Created by Sebastian Sokołowski on 06.07.19.

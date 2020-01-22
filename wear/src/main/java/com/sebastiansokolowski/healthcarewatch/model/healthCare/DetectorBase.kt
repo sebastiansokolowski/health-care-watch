@@ -1,6 +1,6 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare
 
-import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.reactivex.subjects.PublishSubject
 
 /**
@@ -8,9 +8,9 @@ import io.reactivex.subjects.PublishSubject
  */
 abstract class DetectorBase {
 
-    lateinit var sensorsObservable: PublishSubject<HealthSensorEvent>
+    lateinit var sensorsObservable: PublishSubject<SensorEvent>
 
-    fun setupDetector(sensorsObservable: PublishSubject<HealthSensorEvent>) {
+    fun setupDetector(sensorsObservable: PublishSubject<SensorEvent>) {
         this.sensorsObservable = sensorsObservable
     }
 

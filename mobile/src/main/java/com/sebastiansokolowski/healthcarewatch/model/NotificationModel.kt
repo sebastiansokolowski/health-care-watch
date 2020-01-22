@@ -2,7 +2,7 @@ package com.sebastiansokolowski.healthcarewatch.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.model.notification.AndroidNotification
 import com.sebastiansokolowski.healthcarewatch.model.notification.SmsNotification
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
@@ -22,8 +22,8 @@ class NotificationModel(context: Context, private val prefs: SharedPreferences) 
         return prefs.getBoolean("sms_notification_enabled", false)
     }
 
-    fun notifyHealthCareEvent(healthCareEvent: HealthCareEvent) {
-        val message = createMessage(healthCareEvent) ?: return
+    fun notifyHealthCareEvent(healthCareEventEntity: HealthCareEventEntity) {
+        val message = createMessage(healthCareEventEntity) ?: return
 
         if (isAndroidNotificationEnabled()) {
             androidNotificationModel.showAlertNotification(message)
@@ -33,8 +33,8 @@ class NotificationModel(context: Context, private val prefs: SharedPreferences) 
         }
     }
 
-    private fun createMessage(healthCareEvent: HealthCareEvent): String? {
-        return when (healthCareEvent.careEvent) {
+    private fun createMessage(healthCareEventEntity: HealthCareEventEntity): String? {
+        return when (healthCareEventEntity.careEvent) {
             HealthCareEventType.EPILEPSY -> {
                 ""
             }

@@ -6,8 +6,8 @@ import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngine
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.ActivityDetector
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
-import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -25,23 +25,23 @@ class FallEngine : HealthCareEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     var stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<HealthSensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    data class AcceDataModel(val healthSensorEvent: HealthSensorEvent, val acceCurrent: Double)
+    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
 
     private fun createActivityDetector(): ActivityDetector {
         val activityDetector = ActivityDetector(measurementSettings.fallSettings.activityThreshold, measurementSettings.fallSettings.timeOfInactivity.toLong())
-        activityDetector.setupDetector(healthSensorEventSubject)
+        activityDetector.setupDetector(sensorEventSubject)
 
         return activityDetector
     }
 
     override fun startEngine() {
         stepDetector.startDetector()
-        healthSensorEventSubject
+        sensorEventSubject
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .map {
@@ -69,16 +69,16 @@ class FallEngine : HealthCareEngineBase() {
                                 diff > measurementSettings.fallSettings.threshold &&
                                 (!measurementSettings.fallSettings.stepDetector || stepDetector.isStepDetected())) {
                             it.forEach {
-                                Log.d(TAG, "x=${it.healthSensorEvent.values[0]} y=${it.healthSensorEvent.values[1]} z=${it.healthSensorEvent.values[2]}")
+                                Log.d(TAG, "x=${it.sensorEvent.values[0]} y=${it.sensorEvent.values[1]} z=${it.sensorEvent.values[2]}")
                                 Log.d(TAG, "acceCurrent=${it.acceCurrent}")
                             }
                             Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
 
                             if (measurementSettings.fallSettings.timeOfInactivity > 0) {
-                                checkPostFallActivity(max.healthSensorEvent)
+                                checkPostFallActivity(max.sensorEvent)
                             } else {
                                 Log.d(TAG, "fall detected!!")
-                                notifyHealthCareEvent(max.healthSensorEvent)
+                                notifyHealthCareEvent(max.sensorEvent)
                             }
                         }
                     }
@@ -88,13 +88,13 @@ class FallEngine : HealthCareEngineBase() {
                 }
     }
 
-    fun checkPostFallActivity(healthSensorEvent: HealthSensorEvent) {
+    fun checkPostFallActivity(sensorEvent: SensorEvent) {
         Log.d(TAG, "checkPostFallActivity")
         val activityDetector = createActivityDetector()
         activityDetector.activityStateObservable.subscribe { activity ->
             if (!activity) {
                 Log.d(TAG, "fall detected!!")
-                notifyHealthCareEvent(healthSensorEvent)
+                notifyHealthCareEvent(sensorEvent)
             }
         }.let {
             compositeDisposable.add(it)

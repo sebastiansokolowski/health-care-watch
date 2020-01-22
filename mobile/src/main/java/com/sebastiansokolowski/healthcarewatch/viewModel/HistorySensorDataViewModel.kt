@@ -5,10 +5,10 @@ import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthcarewatch.dataModel.ChartData
 import com.sebastiansokolowski.healthcarewatch.dataModel.StatisticData
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent_
-import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventData
-import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventData_
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity_
+import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity
+import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity_
 import io.objectbox.BoxStore
 import io.objectbox.reactive.DataSubscriptionList
 import io.objectbox.rx.RxQuery
@@ -52,19 +52,19 @@ class HistorySensorDataViewModel
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
         val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
-        val query = healthCareEventBox.query()
-                .orderDesc(HealthCareEvent_.__ID_PROPERTY)
+        val query = healthCareEventEntityBox.query()
+                .orderDesc(HealthCareEventEntity_.__ID_PROPERTY)
                 .apply {
-                    link(HealthCareEvent_.sensorEventData)
-                            .between(SensorEventData_.timestamp, startDayTimestamp, endDayTimestamp)
-                            .equal(SensorEventData_.type, sensorType.toLong())
+                    link(HealthCareEventEntity_.sensorEventEntity)
+                            .between(SensorEventEntity_.timestamp, startDayTimestamp, endDayTimestamp)
+                            .equal(SensorEventEntity_.type, sensorType.toLong())
                 }.build()
 
         val disposable = RxQuery.observable(query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    healthCareEvents.postValue(it)
+                    healthCareEventsEntity.postValue(it)
                 }
         disposables.add(disposable)
     }
@@ -78,10 +78,10 @@ class HistorySensorDataViewModel
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
         val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
-        val box = boxStore.boxFor(SensorEventData::class.java)
+        val box = boxStore.boxFor(SensorEventEntity::class.java)
         val query = box.query().apply {
-            equal(SensorEventData_.type, sensorType.toLong())
-            between(SensorEventData_.timestamp, startDayTimestamp, endDayTimestamp)
+            equal(SensorEventEntity_.type, sensorType.toLong())
+            between(SensorEventEntity_.timestamp, startDayTimestamp, endDayTimestamp)
         }.build()
 
 
@@ -118,7 +118,7 @@ class HistorySensorDataViewModel
         disposables.add(disposable)
     }
 
-    private fun parseData(startDayTimestamp: Long, chartData: MutableList<Entry>, statisticData: StatisticData, list: MutableList<SensorEventData>, index: Int) {
+    private fun parseData(startDayTimestamp: Long, chartData: MutableList<Entry>, statisticData: StatisticData, list: MutableList<SensorEventEntity>, index: Int) {
         list.forEach { sensorEventData ->
             createEntry(sensorEventData, startDayTimestamp, index)?.let { entry ->
                 val value = sensorEventData.values[index]
@@ -157,19 +157,19 @@ class HistorySensorDataViewModel
         return calendar.timeInMillis
     }
 
-    private fun createEntry(sensorEventData: SensorEventData, lastMidnightTimestamp: Long, index: Int): Entry? {
+    private fun createEntry(sensorEventEntity: SensorEventEntity, lastMidnightTimestamp: Long, index: Int): Entry? {
         var entry: Entry? = null
 
-        if (sensorEventData.values.isNotEmpty()) {
-            val timestampFromMidnight: Int = (sensorEventData.timestamp - lastMidnightTimestamp).toInt()
+        if (sensorEventEntity.values.isNotEmpty()) {
+            val timestampFromMidnight: Int = (sensorEventEntity.timestamp - lastMidnightTimestamp).toInt()
 
-            entry = Entry(timestampFromMidnight.toFloat(), sensorEventData.values[index], sensorEventData.values)
+            entry = Entry(timestampFromMidnight.toFloat(), sensorEventEntity.values[index], sensorEventEntity.values)
         }
         return entry
     }
 
-    fun showHealthCareEvent(healthCareEvent: HealthCareEvent) {
-        healthCareEvent.sensorEventData.target?.let { sensorEventData ->
+    fun showHealthCareEvent(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventEntity.sensorEventEntity.target?.let { sensorEventData ->
             val startDayTimestamp = getStartDayTimestamp(sensorEventData.timestamp)
             createEntry(sensorEventData, startDayTimestamp, 0)?.let { entry ->
                 entryHighlighted.postValue(entry)

@@ -6,7 +6,7 @@
     {
       "id": "1:5945329733278448333",
       "lastPropertyId": "5:744993564005451496",
-      "name": "SensorEventData",
+      "name": "SensorEventEntity",
       "properties": [
         {
           "id": "1:8038907277621769351",
@@ -33,8 +33,8 @@
     },
     {
       "id": "5:6768539438509785713",
-      "lastPropertyId": "4:2329534120986758418",
-      "name": "HealthCareEvent",
+      "lastPropertyId": "5:7424547064204552030",
+      "name": "HealthCareEventEntity",
       "properties": [
         {
           "id": "1:737115573168731360",
@@ -45,16 +45,16 @@
           "name": "careEvent"
         },
         {
-          "id": "4:2329534120986758418",
-          "indexId": "2:3943952837893694492",
-          "name": "sensorEventDataId"
+          "id": "5:7424547064204552030",
+          "indexId": "3:6737194817201502701",
+          "name": "sensorEventEntityId"
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "5:6768539438509785713",
-  "lastIndexId": "2:3943952837893694492",
+  "lastIndexId": "3:6737194817201502701",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
@@ -65,7 +65,8 @@
     3077164819406872547
   ],
   "retiredIndexUids": [
-    8707320343900496575
+    8707320343900496575,
+    3943952837893694492
   ],
   "retiredPropertyUids": [
     6395558569067713349,
@@ -78,7 +79,8 @@
     3978716418250032961,
     1033219896639260609,
     7431483495792661048,
-    5217401193066746252
+    5217401193066746252,
+    2329534120986758418
   ],
   "retiredRelationUids": [],
   "version": 1

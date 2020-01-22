@@ -13,7 +13,7 @@ import android.view.*
 import android.widget.TextView
 import com.sebastiansokolowski.healthcarewatch.MainActivity
 import com.sebastiansokolowski.healthcarewatch.R
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.model.SetupModel
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.sebastiansokolowski.healthcarewatch.util.SafeCall
@@ -69,14 +69,14 @@ class HomeFragment : DaggerFragment() {
                 heart_rate_iv.startAnimation()
             }
         })
-        homeViewModel.healthCareEvents.observe(this, Observer {
+        homeViewModel.healthCareEventsEntity.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
                 val adapter = HealthCareEventAdapter(context, list, homeViewModel)
                 adapter.setEmptyView(health_care_events_empty_view)
                 health_care_events_lv.adapter = adapter
             }
         })
-        homeViewModel.healthCareEventToRestore.observe(this, Observer {
+        homeViewModel.healthCareEventEntityToRestore.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showRestoreDeletedItemSnackBar(it)
@@ -88,7 +88,7 @@ class HomeFragment : DaggerFragment() {
             homeViewModel.toggleMeasurementState()
         }
 
-        homeViewModel.healthCareEventSelected.observe(this, Observer {
+        homeViewModel.healthCareEventEntitySelected.observe(this, Observer {
             it?.let {
                 showHealthCareEventInHistoryFragment(it)
             }
@@ -144,19 +144,19 @@ class HomeFragment : DaggerFragment() {
         }
     }
 
-    private fun showRestoreDeletedItemSnackBar(healthCareEvent: HealthCareEvent) {
+    private fun showRestoreDeletedItemSnackBar(healthCareEventEntity: HealthCareEventEntity) {
         view?.let {
             val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
             snackbar.setAction(getString(R.string.action_undo)) {
-                homeViewModel.restoreDeletedEvent(healthCareEvent)
+                homeViewModel.restoreDeletedEvent(healthCareEventEntity)
             }
             snackbar.show()
         }
     }
 
-    private fun showHealthCareEventInHistoryFragment(healthCareEvent: HealthCareEvent) {
+    private fun showHealthCareEventInHistoryFragment(healthCareEventEntity: HealthCareEventEntity) {
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.showFragment(HistoryDataFragment())
-        mainActivity.healthCareEventSelected.postValue(SingleEvent(healthCareEvent))
+        mainActivity.healthCareEventEntitySelected.postValue(SingleEvent(healthCareEventEntity))
     }
 }

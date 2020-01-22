@@ -4,8 +4,8 @@ import android.hardware.Sensor
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
-import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
+import com.sebastiansokolowski.shared.dataModel.SensorEvent
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -36,7 +36,7 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
         return HealthCareEventType.HEARTH_RATE_ANOMALY
     }
 
-    override fun setupEngine(sensorsObservable: PublishSubject<HealthSensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
@@ -44,7 +44,7 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
     override fun startEngine() {
         stepDetector.startDetector()
 
-        healthSensorEventSubject
+        sensorEventSubject
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == Sensor.TYPE_HEART_RATE }
                 .subscribe { sensorEventData ->

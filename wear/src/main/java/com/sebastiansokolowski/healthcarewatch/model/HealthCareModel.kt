@@ -5,7 +5,7 @@ import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
