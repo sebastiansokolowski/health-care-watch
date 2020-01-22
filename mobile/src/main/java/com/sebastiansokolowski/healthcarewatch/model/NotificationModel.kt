@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.sebastiansokolowski.healthcarewatch.model.notification.AndroidNotification
 import com.sebastiansokolowski.healthcarewatch.model.notification.SmsNotification
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.

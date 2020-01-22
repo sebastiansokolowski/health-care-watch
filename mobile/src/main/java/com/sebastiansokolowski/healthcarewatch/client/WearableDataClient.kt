@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.BuildConfig
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
-import java.util.*
 
 /**
  * Created by Sebastian Sokołowski on 17.03.19.
@@ -28,16 +28,9 @@ class WearableDataClient(context: Context) {
     fun sendStartMeasurementEvent(measurementSettings: MeasurementSettings) {
         Log.d(TAG, "sendStartMeasurementEvent measurementSettings: $measurementSettings")
 
-        val putDataMapReq = PutDataMapRequest.create(DataClientPaths.MEASUREMENT_START_DATA)
+        val putDataMapReq = PutDataMapRequest.create(DataClientPaths.MEASUREMENT_START_DATA_PATH)
         putDataMapReq.dataMap.apply {
-            putInt(DataClientPaths.MEASUREMENT_START_DATA_SAMPLING_US, measurementSettings.samplingUs)
-            putStringArrayList(DataClientPaths.MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS, measurementSettings.healthCareEvents)
-            putLong(DataClientPaths.MEASUREMENT_START_DATA_TIMESTAMP, Date().time)
-
-            putInt(DataClientPaths.MEASUREMENT_START_DATA_FALL_THRESHOLD, measurementSettings.fallSettings.threshold)
-            putBoolean(DataClientPaths.MEASUREMENT_START_DATA_FALL_STEP_DETECTOR, measurementSettings.fallSettings.stepDetector)
-            putInt(DataClientPaths.MEASUREMENT_START_DATA_FALL_TIME_OF_INACTIVITY_S, measurementSettings.fallSettings.timeOfInactivity)
-            putInt(DataClientPaths.MEASUREMENT_START_DATA_FALL_ACTIVITY_THRESHOLD, measurementSettings.fallSettings.activityThreshold)
+            putString(DataClientPaths.MEASUREMENT_START_DATA_JSON, Gson().toJson(measurementSettings))
         }
 
         sendData(putDataMapReq)

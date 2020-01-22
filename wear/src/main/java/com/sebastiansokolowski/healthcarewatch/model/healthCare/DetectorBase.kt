@@ -1,6 +1,6 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare
 
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
 import io.reactivex.subjects.PublishSubject
 
 /**

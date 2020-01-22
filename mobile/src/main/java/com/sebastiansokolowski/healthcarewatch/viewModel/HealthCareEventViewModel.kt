@@ -3,7 +3,7 @@ package com.sebastiansokolowski.healthcarewatch.viewModel
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.sebastiansokolowski.healthcarewatch.util.SingleEvent

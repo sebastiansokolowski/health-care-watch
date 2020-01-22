@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
 import com.sebastiansokolowski.shared.dataModel.FallSettings
 import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import java.util.concurrent.TimeUnit
 
 /**
@@ -45,7 +45,7 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
     }
 
     @SuppressLint("ApplySharedPref")
-    fun saveSupportedHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
+    fun saveSupportedHealthCareEvents(healthCareEvents: Set<HealthCareEventType>) {
         sharedPreferences.edit()?.apply {
             val values = healthCareEvents.map { sensor -> sensor.name }.toSet()
             putStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, values)

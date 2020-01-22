@@ -3,7 +3,7 @@ package com.sebastiansokolowski.healthcarewatch.utils
 import android.hardware.Sensor
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.engine.*
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 
 /**
  * Created by Sebastian Sokołowski on 06.08.19.

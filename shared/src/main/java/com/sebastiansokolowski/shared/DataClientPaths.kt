@@ -18,27 +18,15 @@ class DataClientPaths {
 
         //data
         const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH = "/supported_health_care_events"
-        const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES = "types"
-        const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_TIMESTAMP = "timestamp"
+        const val SUPPORTED_HEALTH_CARE_EVENTS_MAP_JSON = "json"
 
-        const val DATA_MAP_PATH = "/sensor"
-        const val DATA_MAP_SENSOR_EVENT_VALUES_KEY = "values"
-        const val DATA_MAP_SENSOR_EVENT_SENSOR_TYPE = "sensor"
-        const val DATA_MAP_SENSOR_EVENT_ACCURACY_KEY = "accuracy"
-        const val DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY = "timestamp"
+        const val HEALTH_SENSOR_MAP_PATH = "/sensor"
+        const val HEALTH_SENSOR_MAP_JSON = "json"
 
         const val HEALTH_CARE_MAP_PATH = "/health_care"
-        const val HEALTH_CARE_TYPE = "type"
-        const val HEALTH_CARE_EVENT_DATA = "event_data"
-        const val HEALTH_CARE_TIMESTAMP = "timestamp"
+        const val HEALTH_CARE_MAP_JSON = "json"
 
-        const val MEASUREMENT_START_DATA = "/measurement_start_data"
-        const val MEASUREMENT_START_DATA_SAMPLING_US = SettingsSharedPreferences.SAMPLING_US
-        const val MEASUREMENT_START_DATA_HEALTH_CARE_EVENTS = SettingsSharedPreferences.SENSORS
-        const val MEASUREMENT_START_DATA_FALL_THRESHOLD = SettingsSharedPreferences.FALL_THRESHOLD
-        const val MEASUREMENT_START_DATA_FALL_STEP_DETECTOR = SettingsSharedPreferences.FALL_STEP_DETECTOR
-        const val MEASUREMENT_START_DATA_FALL_TIME_OF_INACTIVITY_S = SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S
-        const val MEASUREMENT_START_DATA_FALL_ACTIVITY_THRESHOLD = SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD
-        const val MEASUREMENT_START_DATA_TIMESTAMP = "timestamp"
+        const val MEASUREMENT_START_DATA_PATH = "/measurement_start_data"
+        const val MEASUREMENT_START_DATA_JSON = "json"
     }
 }

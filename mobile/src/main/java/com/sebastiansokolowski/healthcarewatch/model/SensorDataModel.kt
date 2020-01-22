@@ -5,12 +5,15 @@ import android.content.Intent
 import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
+import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEvent
 import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventData
 import com.sebastiansokolowski.healthcarewatch.service.MeasurementService
 import com.sebastiansokolowski.shared.DataClientPaths
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
 import io.objectbox.BoxStore
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -31,7 +34,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     val sensorsObservable: PublishSubject<SensorEventData> = PublishSubject.create()
     val heartRateObservable: BehaviorSubject<SensorEventData> = BehaviorSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
-    val supportedHealthCareEventsObservable: PublishSubject<List<HealthCareEventType>> = PublishSubject.create()
+    val supportedHealthCareEventsObservable: PublishSubject<Set<HealthCareEventType>> = PublishSubject.create()
 
     init {
         Wearable.getDataClient(context).addListener(this)
@@ -49,7 +52,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
         measurementStateObservable.onNext(measurementState)
     }
 
-    private fun notifySupportedHealthCareEventsObservable(healthCareEvents: List<HealthCareEventType>) {
+    private fun notifySupportedHealthCareEventsObservable(healthCareEvents: Set<HealthCareEventType>) {
         supportedHealthCareEventsObservable.onNext(healthCareEvents)
         supportedHealthCareEventsObservable.onComplete()
     }
@@ -124,81 +127,63 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 return
             }
             when (event.dataItem.uri.path) {
-                DataClientPaths.DATA_MAP_PATH -> {
+                DataClientPaths.HEALTH_SENSOR_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val type = getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE)
-                        val accuracy = getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY)
-                        val timestamp = getLong(DataClientPaths.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY)
-                        val values = getFloatArray(DataClientPaths.DATA_MAP_SENSOR_EVENT_VALUES_KEY)
+                        val json = getString(DataClientPaths.HEALTH_SENSOR_MAP_JSON)
+                        val sensorEvent = Gson().fromJson(json, HealthSensorEvent::class.java)
 
-                        val sensorEvent = SensorEventData().apply {
-                            this.type = type
-                            this.accuracy = accuracy
-                            this.timestamp = timestamp
-                            this.values = values
+                        val sensorEventData = createSensorEventDataEntity(sensorEvent)
+
+                        if (sensorEventData.type == Sensor.TYPE_HEART_RATE) {
+                            notifyHeartRateObservable(sensorEventData)
                         }
+                        notifySensorsObservable(sensorEventData)
 
-                        if (type == Sensor.TYPE_HEART_RATE) {
-                            notifyHeartRateObservable(sensorEvent)
-                        }
-                        notifySensorsObservable(sensorEvent)
-
-                        Log.d(TAG, "sensorEvent=$sensorEvent")
+                        Log.d(TAG, "sensorEvent=$sensorEventData")
                     }
                 }
                 DataClientPaths.HEALTH_CARE_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val type = getString(DataClientPaths.HEALTH_CARE_TYPE)
-                        val eventDataMap = getDataMap(DataClientPaths.HEALTH_CARE_EVENT_DATA)
-                        val sensorEventData = createSensorEventData(eventDataMap)
+                        val json = getString(DataClientPaths.HEALTH_CARE_MAP_JSON)
+                        val healthCareEvent = Gson().fromJson(json, com.sebastiansokolowski.shared.dataModel.HealthCareEvent::class.java)
 
-                        val healthCareEvent = HealthCareEvent().apply {
-                            try {
-                                this.careEvent = HealthCareEventType.valueOf(type)
-                            } catch (e: IllegalArgumentException) {
-                                return@forEach
-                            }
-                            this.sensorEventData.target = sensorEventData
-                        }
+                        val healthCareEventEntity = createHealthCareEvent(healthCareEvent)
 
                         val eventBox = boxStore.boxFor(HealthCareEvent::class.java)
-                        eventBox.put(healthCareEvent)
+                        eventBox.put(healthCareEventEntity)
 
-                        notificationModel.notifyHealthCareEvent(healthCareEvent)
+                        notificationModel.notifyHealthCareEvent(healthCareEventEntity)
 
-                        Log.d(TAG, "healthCareEvent=$healthCareEvent")
+                        Log.d(TAG, "healthCareEvent=$healthCareEventEntity")
                     }
                 }
                 DataClientPaths.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val supportedHealthCareEventsNames = getStringArrayList(DataClientPaths.SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES)
-                        val supportedHealthCareEvents = supportedHealthCareEventsNames.mapNotNull {
-                            try {
-                                HealthCareEventType.valueOf(it)
-                            } catch (e: IllegalArgumentException) {
-                                null
-                            }
-                        }
-                        notifySupportedHealthCareEventsObservable(supportedHealthCareEvents)
+                        val json = getString(DataClientPaths.HEALTH_CARE_MAP_JSON)
+                        val healthCareEventTypesSupported = Gson().fromJson(json, SupportedHealthCareEventTypes::class.java)
 
-                        Log.d(TAG, "supported health care events :$supportedHealthCareEventsNames")
+                        notifySupportedHealthCareEventsObservable(healthCareEventTypesSupported.supportedTypes)
+
+                        Log.d(TAG, "supported health care events :$healthCareEventTypesSupported")
                     }
                 }
             }
         }
     }
 
-    private fun createSensorEventData(dataMap: DataMap): SensorEventData {
-        val type = dataMap.getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE)
-        val accuracy = dataMap.getInt(DataClientPaths.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY)
-        val timestamp = dataMap.getLong(DataClientPaths.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY)
-        val values = dataMap.getFloatArray(DataClientPaths.DATA_MAP_SENSOR_EVENT_VALUES_KEY)
-
+    private fun createSensorEventDataEntity(healthSensorEvent: HealthSensorEvent): SensorEventData {
         return SensorEventData().apply {
-            this.type = type
-            this.accuracy = accuracy
-            this.timestamp = timestamp
-            this.values = values
+            this.type = healthSensorEvent.type
+            this.accuracy = healthSensorEvent.accuracy
+            this.timestamp = healthSensorEvent.timestamp
+            this.values = healthSensorEvent.values
+        }
+    }
+
+    private fun createHealthCareEvent(healthCareEvent: com.sebastiansokolowski.shared.dataModel.HealthCareEvent): HealthCareEvent {
+        return HealthCareEvent().apply {
+            this.careEvent = healthCareEvent.healthCareEventType
+            this.sensorEventData.target = createSensorEventDataEntity(healthCareEvent.healthSensorEvent)
         }
     }
 }

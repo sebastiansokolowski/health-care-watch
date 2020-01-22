@@ -2,7 +2,7 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.

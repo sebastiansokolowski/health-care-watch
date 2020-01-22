@@ -1,9 +1,9 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare
 
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
+import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.subjects.PublishSubject
 
 /**
@@ -30,7 +30,7 @@ abstract class HealthCareEngineBase {
     }
 
     fun notifyHealthCareEvent(healthSensorEvent: HealthSensorEvent) {
-        val healthCareEvent = HealthCareEvent(healthSensorEvent, getHealthCareEventType())
+        val healthCareEvent = HealthCareEvent(getHealthCareEventType(), healthSensorEvent)
         healthCareEventObservable.onNext(healthCareEvent)
     }
 

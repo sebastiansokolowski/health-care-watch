@@ -1,4 +1,4 @@
-package com.sebastiansokolowski.shared.healthCare
+package com.sebastiansokolowski.shared.dataModel
 
 /**
  * Created by Sebastian Sokołowski on 24.06.19.

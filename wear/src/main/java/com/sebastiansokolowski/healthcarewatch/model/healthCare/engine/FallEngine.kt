@@ -2,13 +2,13 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
 import android.util.Log
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.ActivityDetector
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject

@@ -6,8 +6,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.healthcarewatch.utils.HealthCareEnginesUtils
+import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
+import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.shared.dataModel.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -58,8 +59,8 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
     fun notifySupportedHealthCareEvents() {
         val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
         val supportedHealthCareEngines = HealthCareEnginesUtils.getSupportedHealthCareEngines(sensors)
-        val supportedHealthCareEvents = supportedHealthCareEngines.map { it.getHealthCareEventType() }
-        wearableDataClient.sendSupportedHealthCareEvents(supportedHealthCareEvents)
+        val supportedHealthCareEvents = supportedHealthCareEngines.map { it.getHealthCareEventType() }.toSet()
+        wearableDataClient.sendSupportedHealthCareEvents(SupportedHealthCareEventTypes(supportedHealthCareEvents))
     }
 
     fun startMeasurement(measurementSettings: MeasurementSettings) {
@@ -116,10 +117,9 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
             }
 
             val sensorEventWrapper = HealthSensorEvent(
-                    sensor.name ?: "empty",
                     sensor.type,
-                    accuracy,
-                    values.copyOf()
+                    values.copyOf(),
+                    accuracy
             )
 
             notifySensorsObservable(sensorEventWrapper)

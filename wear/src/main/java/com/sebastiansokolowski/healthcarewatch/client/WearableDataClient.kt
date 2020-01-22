@@ -4,25 +4,18 @@ import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.BuildConfig
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthCareEvent
-import com.sebastiansokolowski.healthcarewatch.dataModel.HealthSensorEvent
 import com.sebastiansokolowski.shared.DataClientPaths
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_PATH
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_ACCURACY_KEY
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_SENSOR_TYPE
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.DATA_MAP_SENSOR_EVENT_VALUES_KEY
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_EVENT_DATA
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_PATH
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_TIMESTAMP
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_TYPE
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_SENSOR_MAP_JSON
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_SENSOR_MAP_PATH
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_TIMESTAMP
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES
-import com.sebastiansokolowski.shared.healthCare.HealthCareEventType
-import java.util.*
-import kotlin.collections.ArrayList
+import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
+import com.sebastiansokolowski.shared.dataModel.HealthSensorEvent
 
 
 /**
@@ -53,14 +46,12 @@ class WearableDataClient(context: Context) {
         sendMessage(DataClientPaths.REQUEST_START_MEASUREMENT)
     }
 
-    fun sendSupportedHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
-        Log.d(TAG, "sendSupportedHealthCareEvents healthCareEvents: $healthCareEvents")
+    fun sendSupportedHealthCareEvents(supportedHealthCareEventTypes: SupportedHealthCareEventTypes) {
+        Log.d(TAG, "sendSupportedHealthCareEvents healthCareEventTypesSupported: $supportedHealthCareEventTypes")
 
-        val healthCareEventNames = healthCareEvents.map { it.name }
         val putDataMapReq = PutDataMapRequest.create(SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            putStringArrayList(SUPPORTED_HEALTH_CARE_EVENTS_MAP_TYPES, healthCareEventNames.toCollection(ArrayList()))
-            putLong(SUPPORTED_HEALTH_CARE_EVENTS_MAP_TIMESTAMP, Date().time)
+            putString(SUPPORTED_HEALTH_CARE_EVENTS_MAP_JSON, Gson().toJson(supportedHealthCareEventTypes))
         }
 
         send(putDataMapReq, true)
@@ -71,32 +62,21 @@ class WearableDataClient(context: Context) {
 
         val putDataMapReq = PutDataMapRequest.create(HEALTH_CARE_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            putString(HEALTH_CARE_TYPE, healthCareEvent.healthCareEventType.name)
-            putDataMap(HEALTH_CARE_EVENT_DATA, setSensorEventDataMap(DataMap(), healthCareEvent.healthSensorEvent))
-            putLong(HEALTH_CARE_TIMESTAMP, System.currentTimeMillis())
+            putString(HEALTH_CARE_MAP_JSON, Gson().toJson(healthCareEvent))
         }
 
         send(putDataMapReq, true)
     }
 
     fun sendSensorEvent(eventHealth: HealthSensorEvent) {
-        Log.v(TAG, "sendSensorEvent event=${eventHealth.name}")
+        Log.v(TAG, "sendSensorEvent type=${eventHealth.type}")
 
-        val putDataMapReq = PutDataMapRequest.create(DATA_MAP_PATH)
+        val putDataMapReq = PutDataMapRequest.create(HEALTH_SENSOR_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            setSensorEventDataMap(this, eventHealth)
+            putString(HEALTH_SENSOR_MAP_JSON, Gson().toJson(eventHealth))
         }
 
         send(putDataMapReq, liveData)
-    }
-
-    private fun setSensorEventDataMap(dataMap: DataMap, eventHealth: HealthSensorEvent): DataMap {
-        return dataMap.apply {
-            putFloatArray(DATA_MAP_SENSOR_EVENT_VALUES_KEY, eventHealth.values)
-            putInt(DATA_MAP_SENSOR_EVENT_SENSOR_TYPE, eventHealth.type)
-            putInt(DATA_MAP_SENSOR_EVENT_ACCURACY_KEY, eventHealth.accuracy)
-            putLong(DATA_MAP_SENSOR_EVENT_TIMESTAMP_KEY, eventHealth.timestamp)
-        }
     }
 
     private fun sendMessage(message: String) {
