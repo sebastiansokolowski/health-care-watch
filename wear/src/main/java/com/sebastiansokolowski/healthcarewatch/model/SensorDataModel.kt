@@ -11,6 +11,7 @@ import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 /**
@@ -76,7 +77,8 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
 
-            val registered = sensorManager.registerListener(this, sensor, measurementSettings.samplingUs)
+            val registered = sensorManager.registerListener(this, sensor,
+                    TimeUnit.MILLISECONDS.toMicros(measurementSettings.samplingMs.toLong()).toInt())
             if (!registered) {
                 Log.e(TAG, "error register sensorEvent: $sensorId")
             } else {

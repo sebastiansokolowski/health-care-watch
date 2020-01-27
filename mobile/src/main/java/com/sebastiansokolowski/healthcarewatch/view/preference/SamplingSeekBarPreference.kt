@@ -16,7 +16,7 @@ class SamplingSeekBarPreference : SeekBarPreference {
     init {
         min = 100
         max = 9000
-        setDefaultValue(MeasurementSettings().samplingUs)
+        setDefaultValue(MeasurementSettings().samplingMs)
     }
 
 

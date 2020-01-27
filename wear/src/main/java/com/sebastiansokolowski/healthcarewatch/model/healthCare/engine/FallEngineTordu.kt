@@ -28,7 +28,7 @@ class FallEngineTordu : HealthCareEngineBase() {
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
+    private data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
 
     override fun startEngine() {
         stepDetector.startDetector()
