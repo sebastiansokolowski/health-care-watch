@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.settings.EpilepsySettings
 import com.sebastiansokolowski.shared.dataModel.settings.FallSettings
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 
@@ -20,13 +21,18 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val fallStepDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_STEP_DETECTOR, defaultMeasurementSettings.fallSettings.stepDetector)
         val fallTimeOfInactivityS = sharedPreferences.getInt(SettingsSharedPreferences.FALL_TIME_OF_INACTIVITY_S, defaultMeasurementSettings.fallSettings.timeOfInactivity)
         val fallActivityThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_ACTIVITY_THRESHOLD, defaultMeasurementSettings.fallSettings.activityThreshold)
+        //epilepsy
+        val epilepsyThreshold = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_THRESHOLD, defaultMeasurementSettings.epilepsySettings.threshold)
+        val epilepsyTime = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_TIME, defaultMeasurementSettings.epilepsySettings.timeS)
+
 
         val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
                 ?: emptySet()
 
         val fallSettings = FallSettings(fallThreshold, fallStepDetector, fallTimeOfInactivityS, fallActivityThreshold)
+        val epilepsySettings = EpilepsySettings(epilepsyThreshold, epilepsyTime)
 
-        return MeasurementSettings(samplingMs, healthCareEvents, fallSettings)
+        return MeasurementSettings(samplingMs, healthCareEvents, fallSettings, epilepsySettings)
     }
 
     fun getSupportedHealthCareEventTypes(): List<HealthCareEventType> {

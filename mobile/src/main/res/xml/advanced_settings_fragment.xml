@@ -35,4 +35,18 @@
             android:title="Wartość progowa bezruchu" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/health_care_event_epilepsy_title">
+
+        <com.sebastiansokolowski.healthcarewatch.view.preference.EpilepsyThresholdSeekBarPreference
+            android:key="epilepsy_threshold"
+            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako atak."
+            android:title="Wartość progowa ataku" />
+
+        <com.sebastiansokolowski.healthcarewatch.view.preference.EpilepsyTimeThresholdSeekBarPreference
+            android:key="epilepsy_time"
+            android:summary="Czas po którym nastąpi rozpoznanie zdarzenia jako atak lub nie."
+            android:title="Czas wykrycia (s)" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

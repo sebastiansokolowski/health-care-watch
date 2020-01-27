@@ -16,6 +16,9 @@ class SettingsSharedPreferences {
         const val FALL_STEP_DETECTOR = "fall_step_detector"
         const val FALL_TIME_OF_INACTIVITY_S = "fall_time_of_inactivity_s"
         const val FALL_ACTIVITY_THRESHOLD = "fall_activity_threshold"
+        const val EPILEPSY_THRESHOLD = "epilepsy_threshold"
+        const val EPILEPSY_TIME = "epilepsy_time"
+
 
         // wear
         const val SENSORS = "sensors"
