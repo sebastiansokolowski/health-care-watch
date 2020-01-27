@@ -30,7 +30,7 @@ class FallEngine : HealthCareEngineBase() {
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
+    private data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
 
     private fun createActivityDetector(): ActivityDetector {
         val activityDetector = ActivityDetector(measurementSettings.fallSettings.activityThreshold, measurementSettings.fallSettings.timeOfInactivity.toLong())
@@ -114,7 +114,6 @@ class FallEngine : HealthCareEngineBase() {
 
     override fun requiredSensors(): Set<Int> {
         return setOf(Sensor.TYPE_LINEAR_ACCELERATION,
-                Sensor.TYPE_GYROSCOPE,
                 Sensor.TYPE_STEP_DETECTOR)
     }
 }
