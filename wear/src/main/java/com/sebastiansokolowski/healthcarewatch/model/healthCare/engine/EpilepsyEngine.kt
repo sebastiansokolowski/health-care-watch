@@ -43,14 +43,17 @@ class EpilepsyEngine : HealthCareEngineBase() {
                     acceDataList
                 }
                 .subscribe {
+                    var positiveEvents = 0
                     it.forEach {
-                        if (it.acceCurrent < measurementSettings.epilepsySettings.threshold) {
-                            return@subscribe
+                        if (it.acceCurrent >= measurementSettings.epilepsySettings.threshold) {
+                            positiveEvents++
                         }
                     }
 
-                    Log.d(TAG, "epilepsy detected!!")
-                    notifyHealthCareEvent(it.last().sensorEvent)
+                    if (positiveEvents / it.size.toDouble() > measurementSettings.epilepsySettings.percentOfPositiveSignals / 100.toDouble()) {
+                        Log.d(TAG, "epilepsy detected!!")
+                        notifyHealthCareEvent(it.last().sensorEvent)
+                    }
                 }
                 .let {
                     compositeDisposable.add(it)
