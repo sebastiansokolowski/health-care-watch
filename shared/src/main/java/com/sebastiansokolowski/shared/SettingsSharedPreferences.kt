@@ -18,6 +18,7 @@ class SettingsSharedPreferences {
         const val FALL_ACTIVITY_THRESHOLD = "fall_activity_threshold"
         const val EPILEPSY_THRESHOLD = "epilepsy_threshold"
         const val EPILEPSY_TIME = "epilepsy_time"
+        const val EPILEPSY_PERCENT_OF_POSITIVE_EVENTS = "epilepsy_percent_of_positive_events"
 
 
         // wear

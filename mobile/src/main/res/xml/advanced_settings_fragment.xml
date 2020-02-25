@@ -62,6 +62,13 @@
             android:summary="Czas po którym nastąpi rozpoznanie zdarzenia jako atak lub nie."
             android:title="Czas wykrycia (s)" />
 
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomSeekBarPreference
+            android:key="epilepsy_percent_of_positive_events"
+            custom:myMinValue="0"
+            custom:myMaxValue="100"
+            android:summary="Procent pozytywnych zdarzeń po którym atak zostanie wykryty"
+            android:title="Procent pozytywnych zdarzeń" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
