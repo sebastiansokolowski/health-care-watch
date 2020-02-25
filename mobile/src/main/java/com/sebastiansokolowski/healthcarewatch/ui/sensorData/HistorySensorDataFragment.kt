@@ -208,8 +208,6 @@ class HistorySensorDataFragment : DaggerFragment() {
             }
 
             when (sensorAdapterItem) {
-                SensorAdapterItem.GRAVITY,
-                SensorAdapterItem.ACCELEROMETER,
                 SensorAdapterItem.LINEAR_ACCELERATION -> {
                     val xLineDataSet = LineDataSet(it.xData, "x")
                     xLineDataSet.setColor(colorLineDataX, 100)

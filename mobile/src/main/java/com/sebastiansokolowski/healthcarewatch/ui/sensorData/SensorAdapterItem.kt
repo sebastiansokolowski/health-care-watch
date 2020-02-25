@@ -8,7 +8,5 @@ import android.hardware.Sensor
 enum class SensorAdapterItem(val sensorId: Int) {
     HEART_RATE(Sensor.TYPE_HEART_RATE),
     STEP_COUNTER(Sensor.TYPE_STEP_COUNTER),
-    GRAVITY(Sensor.TYPE_GRAVITY),
-    ACCELEROMETER(Sensor.TYPE_ACCELEROMETER),
     LINEAR_ACCELERATION(Sensor.TYPE_LINEAR_ACCELERATION)
 }
