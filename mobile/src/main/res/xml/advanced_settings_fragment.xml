@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
     <PreferenceCategory android:title="@string/settings_watch_category">
 
-        <com.sebastiansokolowski.healthcarewatch.view.preference.SamplingSeekBarPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomSeekBarPreference
             android:key="sampling_us"
             android:summary="Częstotliwość odświerzania danych z czujników"
+            custom:myMinValue="100"
+            custom:myMaxValue="9000"
             android:title="@string/settings_sampling_time" />
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/health_care_event_fall_title">
 
-        <com.sebastiansokolowski.healthcarewatch.view.preference.FallThresholdSeekBarPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomSeekBarPreference
             android:key="fall_threshold"
+            custom:myMinValue="10"
+            custom:myMaxValue="40"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek"
             android:title="@string/settings_fall_threshold" />
 
@@ -24,26 +30,35 @@
             android:summary="Zdarzenie zostanie wykryte wyłącznie w ruchu"
             android:title="@string/settings_fall_step_detector" />
 
-        <com.sebastiansokolowski.healthcarewatch.view.preference.TimeOfInactivitySeekBarPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomSeekBarPreference
             android:key="fall_time_of_inactivity_s"
+            custom:myMinValue="0"
+            custom:myMaxValue="10"
             android:summary="Czas w bezruchu po upadku po którym zdarzenie zostanie rozpoznane jako upadek"
             android:title="Czas bezruchu (s)" />
 
-        <com.sebastiansokolowski.healthcarewatch.view.preference.ActivityThresholdSeekBarPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomSeekBarPreference
             android:key="fall_activity_threshold"
+            custom:myMinValue="1"
+            custom:myMaxValue="5"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako ruch"
             android:title="Wartość progowa bezruchu" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/health_care_event_epilepsy_title">
 
-        <com.sebastiansokolowski.healthcarewatch.view.preference.EpilepsyThresholdSeekBarPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomSeekBarPreference
+            app:showSeekBarValue="true"
             android:key="epilepsy_threshold"
+            custom:myMinValue="1"
+            custom:myMaxValue="10"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako atak."
             android:title="Wartość progowa ataku" />
 
-        <com.sebastiansokolowski.healthcarewatch.view.preference.EpilepsyTimeThresholdSeekBarPreference
+        <com.sebastiansokolowski.healthcarewatch.view.preference.CustomSeekBarPreference
             android:key="epilepsy_time"
+            custom:myMinValue="10"
+            custom:myMaxValue="60"
             android:summary="Czas po którym nastąpi rozpoznanie zdarzenia jako atak lub nie."
             android:title="Czas wykrycia (s)" />
 
