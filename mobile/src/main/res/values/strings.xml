@@ -18,7 +18,8 @@
     <string name="health_care_event_epilepsy_message">Detected motion was very high.</string>
     <string name="health_care_event_hearth_rate_anomaly_message">Detected hearth rate didn\'t looks normal.</string>
     <string name="unit_hearth_rate" translatable="false">bpm</string>
-    <string name="unit_gravity" translatable="false">gravity</string>
+    <string name="unit_fall" translatable="false">m/s2</string>
+    <string name="unit_epilepsy" translatable="false">%</string>
     <string name="event_list_empty">No events</string>
     <string name="sensor_data_min">MIN</string>
     <string name="sensor_data_max">MAX</string>

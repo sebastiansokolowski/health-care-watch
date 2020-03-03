@@ -22,7 +22,7 @@ class HealthCareEventHelper(val context: Context) {
         return when (healthCareEventType) {
             HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_title)
             HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_title)
-            HealthCareEventType.FALL-> context.getString(R.string.health_care_event_fall_title)
+            HealthCareEventType.FALL -> context.getString(R.string.health_care_event_fall_title)
             HealthCareEventType.FALL_TORDU -> context.getString(R.string.health_care_event_fall_tordu_title)
             else -> healthCareEventType.name
         }
@@ -38,11 +38,12 @@ class HealthCareEventHelper(val context: Context) {
     }
 
     fun getEventInfo(healthCareEventEntity: HealthCareEventEntity): String {
-        val value = healthCareEventEntity.sensorEventEntity.target?.values?.get(0) ?: return "null"
+        val value = Utils.format(healthCareEventEntity.value, 2)
         return when (healthCareEventEntity.careEvent) {
-            HealthCareEventType.EPILEPSY -> value.toString() + context.getString(R.string.unit_gravity)
-            HealthCareEventType.HEARTH_RATE_ANOMALY -> value.toString() + context.getString(R.string.unit_hearth_rate)
-            HealthCareEventType.FALL, HealthCareEventType.FALL_TORDU -> value.toString() + context.getString(R.string.unit_gravity)
+            HealthCareEventType.EPILEPSY -> value + " " + context.getString(R.string.unit_epilepsy)
+            HealthCareEventType.HEARTH_RATE_ANOMALY -> value + " " + context.getString(R.string.unit_hearth_rate)
+            HealthCareEventType.FALL -> value + " " + context.getString(R.string.unit_fall)
+            HealthCareEventType.FALL_TORDU -> value
             else -> "null"
         }
     }
