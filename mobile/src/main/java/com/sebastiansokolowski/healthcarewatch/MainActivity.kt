@@ -4,7 +4,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.view.MenuItem
 import com.sebastiansokolowski.healthcarewatch.client.WearableDataClient
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
@@ -108,4 +110,9 @@ class MainActivity : DaggerAppCompatActivity() {
         setBottomNavigationSelectedItem(fragment)
     }
 
+    fun showDialog(dialogFragment: DialogFragment) {
+        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.addToBackStack(null)
+        dialogFragment.show(fragmentTransaction, "dialog")
+    }
 }

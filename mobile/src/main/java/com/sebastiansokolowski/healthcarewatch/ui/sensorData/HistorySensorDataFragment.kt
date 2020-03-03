@@ -16,10 +16,12 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.sebastiansokolowski.healthcarewatch.MainActivity
 import com.sebastiansokolowski.healthcarewatch.R
 import com.sebastiansokolowski.healthcarewatch.dataModel.StatisticData
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
+import com.sebastiansokolowski.healthcarewatch.ui.dialog.HealthCareEventDetailsDialogFragment
 import com.sebastiansokolowski.healthcarewatch.util.SafeCall
 import com.sebastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
 import com.sebastiansokolowski.healthcarewatch.util.Utils
@@ -116,6 +118,14 @@ class HistorySensorDataFragment : DaggerFragment() {
                 val adapter = HealthCareEventAdapter(context, list, historySensorDataViewModel)
                 adapter.setEmptyView(health_care_events_empty_view)
                 health_care_events_lv.adapter = adapter
+            }
+        })
+        historySensorDataViewModel.healthCareEventEntityDetails.observe(this, Observer {
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    val mainActivity: MainActivity = activity as MainActivity
+                    mainActivity.showDialog(HealthCareEventDetailsDialogFragment.newInstance(it))
+                }
             }
         })
         historySensorDataViewModel.healthCareEventEntityToRestore.observe(this, Observer {

@@ -59,11 +59,16 @@ class HealthCareEventAdapter(val context: Context, private val healthCareEventEn
             foreground_container.setOnClickListener {
                 healthCareEventAdapterItemListener.onClickItem(item)
             }
+            foreground_container.setOnLongClickListener {
+                healthCareEventAdapterItemListener.onLongClickItem(item)
+                true
+            }
         }
     }
 
     interface HealthCareEventAdapterItemListener {
         fun onClickItem(healthCareEventEntity: HealthCareEventEntity)
+        fun onLongClickItem(healthCareEventEntity: HealthCareEventEntity)
         fun onDeleteItem(healthCareEventEntity: HealthCareEventEntity)
     }
 

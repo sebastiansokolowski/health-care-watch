@@ -16,6 +16,7 @@ import com.sebastiansokolowski.healthcarewatch.R
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.model.SetupModel
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
+import com.sebastiansokolowski.healthcarewatch.ui.dialog.HealthCareEventDetailsDialogFragment
 import com.sebastiansokolowski.healthcarewatch.util.SafeCall
 import com.sebastiansokolowski.healthcarewatch.util.SingleEvent
 import com.sebastiansokolowski.healthcarewatch.viewModel.HomeViewModel
@@ -74,6 +75,14 @@ class HomeFragment : DaggerFragment() {
                 val adapter = HealthCareEventAdapter(context, list, homeViewModel)
                 adapter.setEmptyView(health_care_events_empty_view)
                 health_care_events_lv.adapter = adapter
+            }
+        })
+        homeViewModel.healthCareEventEntityDetails.observe(this, Observer {
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    val mainActivity: MainActivity = activity as MainActivity
+                    mainActivity.showDialog(HealthCareEventDetailsDialogFragment.newInstance(it))
+                }
             }
         })
         homeViewModel.healthCareEventEntityToRestore.observe(this, Observer {
