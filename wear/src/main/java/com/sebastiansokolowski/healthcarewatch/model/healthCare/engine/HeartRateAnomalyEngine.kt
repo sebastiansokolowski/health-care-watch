@@ -4,9 +4,9 @@ import android.hardware.Sensor
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -52,7 +52,7 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
 
                     if (heartRate > getMaxHeartRate() || heartRate < getMinHeartRate()) {
                         if (!anomalyState) {
-                            notifyHealthCareEvent(sensorEventData)
+                            notifyHealthCareEvent(sensorEventData, heartRate.toFloat(), sensorEventData.toString())
                             anomalyState = true
                         }
                     } else {

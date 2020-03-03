@@ -184,7 +184,10 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     private fun createHealthCareEvent(healthCareEvent: HealthCareEvent): HealthCareEventEntity {
         return HealthCareEventEntity().apply {
             this.careEvent = healthCareEvent.healthCareEventType
+            this.value = healthCareEvent.value
             this.sensorEventEntity.target = createSensorEventDataEntity(healthCareEvent.sensorEvent)
+            this.details = healthCareEvent.details
+            this.measurementSettings = healthCareEvent.measurementSettings
         }
     }
 }

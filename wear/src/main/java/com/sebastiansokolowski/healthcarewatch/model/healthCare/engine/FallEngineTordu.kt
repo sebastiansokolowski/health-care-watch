@@ -5,9 +5,9 @@ import android.util.Log
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -71,7 +71,7 @@ class FallEngineTordu : HealthCareEngineBase() {
                         Log.d(TAG, "isStepDetected=${stepDetector.isStepDetected()}")
 
                         if (stepDetector.isStepDetected()) {
-                            notifyHealthCareEvent(it.last().sensorEvent)
+                            notifyHealthCareEvent(it.last().sensorEvent, counter.toFloat(), it.toString())
                         }
                     }
                 }

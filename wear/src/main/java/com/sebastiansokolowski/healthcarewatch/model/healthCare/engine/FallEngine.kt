@@ -6,9 +6,9 @@ import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngine
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.ActivityDetector
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -75,10 +75,10 @@ class FallEngine : HealthCareEngineBase() {
                             Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
 
                             if (measurementSettings.fallSettings.timeOfInactivity > 0) {
-                                checkPostFallActivity(max.sensorEvent)
+                                checkPostFallActivity(max.sensorEvent, diff.toFloat(), it.toString())
                             } else {
                                 Log.d(TAG, "fall detected!!")
-                                notifyHealthCareEvent(max.sensorEvent)
+                                notifyHealthCareEvent(max.sensorEvent, diff.toFloat(), it.toString())
                             }
                         }
                     }
@@ -88,13 +88,13 @@ class FallEngine : HealthCareEngineBase() {
                 }
     }
 
-    fun checkPostFallActivity(sensorEvent: SensorEvent) {
+    fun checkPostFallActivity(sensorEvent: SensorEvent, value: Float, details: String) {
         Log.d(TAG, "checkPostFallActivity")
         val activityDetector = createActivityDetector()
         activityDetector.activityStateObservable.subscribe { activity ->
             if (!activity) {
                 Log.d(TAG, "fall detected!!")
-                notifyHealthCareEvent(sensorEvent)
+                notifyHealthCareEvent(sensorEvent, value, details)
             }
         }.let {
             compositeDisposable.add(it)

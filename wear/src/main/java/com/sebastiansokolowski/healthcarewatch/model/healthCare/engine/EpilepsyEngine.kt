@@ -49,10 +49,12 @@ class EpilepsyEngine : HealthCareEngineBase() {
                             positiveEvents++
                         }
                     }
+                    val percentOfPositiveSignals = positiveEvents / it.size.toDouble()
+                    val targetPercentOfPositiveSignals = measurementSettings.epilepsySettings.percentOfPositiveSignals / 100.toDouble()
 
-                    if (positiveEvents / it.size.toDouble() > measurementSettings.epilepsySettings.percentOfPositiveSignals / 100.toDouble()) {
+                    if (percentOfPositiveSignals >= targetPercentOfPositiveSignals) {
                         Log.d(TAG, "epilepsy detected!!")
-                        notifyHealthCareEvent(it.last().sensorEvent)
+                        notifyHealthCareEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat(), it.toString())
                     }
                 }
                 .let {

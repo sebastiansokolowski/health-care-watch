@@ -5,7 +5,6 @@ import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
-import io.objectbox.annotation.Uid
 import io.objectbox.relation.ToOne
 
 /**
@@ -15,12 +14,15 @@ import io.objectbox.relation.ToOne
 class HealthCareEventEntity {
     @Id
     var id: Long = 0
+
+    var value: Float = 0f
+
     lateinit var sensorEventEntity: ToOne<SensorEventEntity>
     @Convert(converter = HealthCareEventConverter::class, dbType = String::class)
     lateinit var careEvent: HealthCareEventType
 
-    override fun toString(): String {
-        return "HealthCareEvent(id=$id, sensorEventData=$sensorEventEntity, careEvent=$careEvent)"
-    }
+    lateinit var details: String
+
+    lateinit var measurementSettings: String
 
 }
