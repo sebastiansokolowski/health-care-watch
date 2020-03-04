@@ -10,6 +10,7 @@
     <string name="setup_connecting_btn">Connecting</string>
     <string name="measurement_sync_data_btn">Sync data</string>
     <string name="dialog_licences_title">About</string>
+    <string name="share_measurement_data_title">Share measurement data</string>
     <string name="action_ok" translatable="false">Ok</string>
     <string name="action_undo">UNDO</string>
     <string name="settings_health_care_events_not_synced">Please connect to watch earlier.</string>

@@ -3,9 +3,12 @@ package com.sebastiansokolowski.healthcarewatch.viewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.Transformations
+import android.net.Uri
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity_
 import com.sebastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.sebastiansokolowski.healthcarewatch.model.SetupModel
+import com.sebastiansokolowski.healthcarewatch.model.ShareDataModel
+import com.sebastiansokolowski.healthcarewatch.util.SingleEvent
 import io.objectbox.BoxStore
 import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
@@ -18,9 +21,10 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HomeViewModel
-@Inject constructor(private val setupModel: SetupModel, private val sensorDataModel: SensorDataModel, boxStore: BoxStore) : HealthCareEventViewModel(boxStore) {
+@Inject constructor(private val setupModel: SetupModel, private val sensorDataModel: SensorDataModel, private val shareDataModel: ShareDataModel, boxStore: BoxStore) : HealthCareEventViewModel(boxStore) {
 
     private val disposables = CompositeDisposable()
+
 
     init {
         initHealthCarEvents()
@@ -35,6 +39,10 @@ class HomeViewModel
     }
     val heartRate: LiveData<String> by lazy {
         initHeartRateLiveData()
+    }
+
+    val fileToShare: LiveData<SingleEvent<Uri>> by lazy {
+        initFileToShareLiveData()
     }
 
     override fun initHealthCarEvents() {
@@ -73,12 +81,22 @@ class HomeViewModel
         return LiveDataReactiveStreams.fromPublisher(measurementStateFlowable)
     }
 
+    private fun initFileToShareLiveData(): LiveData<SingleEvent<Uri>> {
+        val fileToShareFlowable = shareDataModel.fileToShareObservable.toFlowable(BackpressureStrategy.LATEST)
+        return LiveDataReactiveStreams.fromPublisher(fileToShareFlowable)
+    }
+
+    fun shareMeasurementData() {
+        shareDataModel.shareMeasurementData()
+    }
+
     fun toggleMeasurementState() {
         sensorDataModel.toggleMeasurementState()
     }
 
     override fun onCleared() {
         disposables.clear()
+        shareDataModel.clear()
         super.onCleared()
     }
 }

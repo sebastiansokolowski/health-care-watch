@@ -3,6 +3,8 @@ package com.sebastiansokolowski.healthcarewatch.ui
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
@@ -118,6 +120,13 @@ class HomeFragment : DaggerFragment() {
                 }
             }
         })
+        homeViewModel.fileToShare.observe(this, Observer {
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    showShareScreen(it)
+                }
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -131,8 +140,22 @@ class HomeFragment : DaggerFragment() {
                 showLicencesDialog()
                 return true
             }
+            R.id.share_measurements -> {
+                homeViewModel.shareMeasurementData()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showShareScreen(uri: Uri) {
+        val shareIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_STREAM, uri)
+            type = "text/*"
+            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+        }
+        startActivity(shareIntent)
     }
 
     private fun showLicencesDialog() {

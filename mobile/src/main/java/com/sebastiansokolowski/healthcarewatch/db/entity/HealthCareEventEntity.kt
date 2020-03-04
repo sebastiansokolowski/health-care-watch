@@ -1,5 +1,6 @@
 package com.sebastiansokolowski.healthcarewatch.db.entity
 
+import com.google.gson.annotations.Expose
 import com.sebastiansokolowski.healthcarewatch.db.converter.HealthCareEventConverter
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import io.objectbox.annotation.Convert
@@ -15,14 +16,19 @@ class HealthCareEventEntity {
     @Id
     var id: Long = 0
 
+    @Expose
     var value: Float = 0f
 
     lateinit var sensorEventEntity: ToOne<SensorEventEntity>
+
+    @Expose
     @Convert(converter = HealthCareEventConverter::class, dbType = String::class)
     lateinit var careEvent: HealthCareEventType
 
+    @Expose
     lateinit var details: String
 
+    @Expose
     lateinit var measurementSettings: String
 
 }
