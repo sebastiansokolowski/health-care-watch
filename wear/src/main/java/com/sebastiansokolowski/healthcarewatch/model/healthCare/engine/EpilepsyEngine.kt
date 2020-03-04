@@ -2,6 +2,7 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
 import android.util.Log
+import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
@@ -54,7 +55,7 @@ class EpilepsyEngine : HealthCareEngineBase() {
 
                     if (percentOfPositiveSignals >= targetPercentOfPositiveSignals) {
                         Log.d(TAG, "epilepsy detected!!")
-                        notifyHealthCareEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat(), it.toString())
+                        notifyHealthCareEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat(), Gson().toJson(it))
                     }
                 }
                 .let {

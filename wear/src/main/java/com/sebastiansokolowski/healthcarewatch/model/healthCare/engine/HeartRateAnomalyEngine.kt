@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
+import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
@@ -52,7 +53,7 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
 
                     if (heartRate > getMaxHeartRate() || heartRate < getMinHeartRate()) {
                         if (!anomalyState) {
-                            notifyHealthCareEvent(sensorEventData, heartRate.toFloat(), sensorEventData.toString())
+                            notifyHealthCareEvent(sensorEventData, heartRate.toFloat(), Gson().toJson(sensorEventData))
                             anomalyState = true
                         }
                     } else {

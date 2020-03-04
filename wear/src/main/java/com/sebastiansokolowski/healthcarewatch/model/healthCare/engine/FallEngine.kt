@@ -2,6 +2,7 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
 import android.util.Log
+import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.ActivityDetector
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
@@ -75,10 +76,10 @@ class FallEngine : HealthCareEngineBase() {
                             Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
 
                             if (measurementSettings.fallSettings.timeOfInactivity > 0) {
-                                checkPostFallActivity(max.sensorEvent, diff.toFloat(), it.toString())
+                                checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson(it))
                             } else {
                                 Log.d(TAG, "fall detected!!")
-                                notifyHealthCareEvent(max.sensorEvent, diff.toFloat(), it.toString())
+                                notifyHealthCareEvent(max.sensorEvent, diff.toFloat(), Gson().toJson(it))
                             }
                         }
                     }

@@ -2,6 +2,7 @@ package com.sebastiansokolowski.healthcarewatch.model.healthCare.engine
 
 import android.hardware.Sensor
 import android.util.Log
+import com.google.gson.Gson
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.HealthCareEngineBase
 import com.sebastiansokolowski.healthcarewatch.model.healthCare.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
@@ -71,7 +72,7 @@ class FallEngineTordu : HealthCareEngineBase() {
                         Log.d(TAG, "isStepDetected=${stepDetector.isStepDetected()}")
 
                         if (stepDetector.isStepDetected()) {
-                            notifyHealthCareEvent(it.last().sensorEvent, counter.toFloat(), it.toString())
+                            notifyHealthCareEvent(it.last().sensorEvent, counter.toFloat(), Gson().toJson(it))
                         }
                     }
                 }
