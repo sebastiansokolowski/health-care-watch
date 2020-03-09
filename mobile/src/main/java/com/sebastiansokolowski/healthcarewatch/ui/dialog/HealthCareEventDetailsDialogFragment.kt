@@ -27,8 +27,9 @@ class HealthCareEventDetailsDialogFragment : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         var message: String = arguments?.getString(MESSAGE_KEY) ?: "empty"
-        message = message.replace(", ", ",\n")
-        message = message.replace("),", "),\n")
+        message = message.replace(" ", "")
+        message = message.replace(",", ",\n")
+        message = message.replace("{", "{\n")
         message = message.replace("(", "(\n")
         message = message.replace("[", "[\n")
 
