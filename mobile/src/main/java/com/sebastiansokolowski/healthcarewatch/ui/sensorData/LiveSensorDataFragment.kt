@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TableRow
 import android.widget.TextView
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthcarewatch.R
@@ -142,17 +143,9 @@ class LiveSensorDataFragment : DaggerFragment() {
 
             when (sensorAdapterItem) {
                 SensorAdapterItem.LINEAR_ACCELERATION -> {
-                    val xLineDataSet = LineDataSet(it.xData, "x")
-                    xLineDataSet.setColor(colorLineDataX, 100)
-                    xLineDataSet.setCircleColor(colorLineDataX)
-
-                    val yLineDataSet = LineDataSet(it.yData, "y")
-                    yLineDataSet.setColor(colorLineDataY, 100)
-                    yLineDataSet.setCircleColor(colorLineDataY)
-
-                    val zLineDataSet = LineDataSet(it.zData, "z")
-                    zLineDataSet.setColor(colorLineDataZ, 100)
-                    zLineDataSet.setCircleColor(colorLineDataZ)
+                    val xLineDataSet = createLineDataSet(it.xData, "x", colorLineDataX)
+                    val yLineDataSet = createLineDataSet(it.yData, "y", colorLineDataY)
+                    val zLineDataSet = createLineDataSet(it.zData, "z", colorLineDataZ)
 
                     lineDataSetList.add(xLineDataSet)
                     lineDataSetList.add(yLineDataSet)
@@ -165,9 +158,7 @@ class LiveSensorDataFragment : DaggerFragment() {
                 else -> {
                     val title = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
 
-                    val xLineDataSet = LineDataSet(it.xData, title)
-                    xLineDataSet.setColor(colorLineDataX, 100)
-                    xLineDataSet.setCircleColor(colorLineDataX)
+                    val xLineDataSet = createLineDataSet(it.xData, title, colorLineDataX)
 
                     lineDataSetList.add(xLineDataSet)
 
@@ -180,6 +171,15 @@ class LiveSensorDataFragment : DaggerFragment() {
             chart_lc.notifyDataSetChanged()
             chart_lc.invalidate()
         })
+    }
+
+    private fun createLineDataSet(data: MutableList<Entry>, label: String, color: Int): LineDataSet {
+        val lineDataSet = LineDataSet(data, label)
+        lineDataSet.setColor(color, 100)
+        lineDataSet.setDrawCircles(false)
+        lineDataSet.lineWidth = 2f
+
+        return lineDataSet
     }
 
 }
