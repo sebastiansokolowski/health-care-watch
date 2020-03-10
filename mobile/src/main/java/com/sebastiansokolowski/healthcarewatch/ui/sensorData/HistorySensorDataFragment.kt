@@ -5,31 +5,20 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TableRow
-import android.widget.TextView
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthcarewatch.MainActivity
 import com.sebastiansokolowski.healthcarewatch.R
-import com.sebastiansokolowski.healthcarewatch.dataModel.StatisticData
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
 import com.sebastiansokolowski.healthcarewatch.ui.dialog.HealthCareEventDetailsDialogFragment
 import com.sebastiansokolowski.healthcarewatch.util.SafeCall
-import com.sebastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
-import com.sebastiansokolowski.healthcarewatch.util.Utils
 import com.sebastiansokolowski.healthcarewatch.view.CustomMarkerView
-import com.sebastiansokolowski.healthcarewatch.view.DateValueFormatter
 import com.sebastiansokolowski.healthcarewatch.viewModel.HistoryDataViewModel
 import com.sebastiansokolowski.healthcarewatch.viewModel.HistorySensorDataViewModel
-import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.sensor_data_fragment.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -37,10 +26,9 @@ import javax.inject.Inject
 /**
  * Created by Sebastian Sokołowski on 06.06.19.
  */
-class HistorySensorDataFragment : DaggerFragment() {
+class HistorySensorDataFragment : SensorDataFragmentBase() {
 
     companion object {
-        private const val SENSOR_TYPE_KEY = "SENSOR_TYPE_KEY"
 
         fun newInstance(sensorAdapterItem: SensorAdapterItem): HistorySensorDataFragment {
             val fragment = HistorySensorDataFragment()
@@ -58,20 +46,15 @@ class HistorySensorDataFragment : DaggerFragment() {
 
     private lateinit var historySensorDataViewModel: HistorySensorDataViewModel
     private lateinit var historyDataViewModel: HistoryDataViewModel
-    private var sensorAdapterItem: SensorAdapterItem = SensorAdapterItem.HEART_RATE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        arguments?.let {
-            val sensorTypeIndex = it.getInt(SENSOR_TYPE_KEY)
-            sensorAdapterItem = SensorAdapterItem.values()[sensorTypeIndex]
-        }
         historySensorDataViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(HistorySensorDataViewModel::class.java)
         historyDataViewModel = ViewModelProviders.of(parentFragment!!, viewModelFactory)
                 .get(HistoryDataViewModel::class.java)
-        historySensorDataViewModel.setSensorType(sensorAdapterItem.sensorId)
+        historySensorDataViewModel.setSensorType(sensorType.sensorId)
         historySensorDataViewModel.refreshView()
     }
 
@@ -87,7 +70,7 @@ class HistorySensorDataFragment : DaggerFragment() {
         })
         historyDataViewModel.healthCareEventEntityToShow.observe(this, Observer {
             it?.let {
-                if (it.sensorEventEntity.target.type == sensorAdapterItem.sensorId) {
+                if (it.sensorEventEntity.target.type == sensorType.sensorId) {
                     historySensorDataViewModel.showHealthCareEvent(it)
                     historyDataViewModel.healthCareEventEntityToShow.postValue(null)
                 }
@@ -145,36 +128,7 @@ class HistorySensorDataFragment : DaggerFragment() {
                 highlightValue(it)
             }
         })
-        initChart(sensorAdapterItem)
-    }
-
-    private fun addStatisticRow(title: String, statisticData: StatisticData) {
-        val tableRow = TableRow(context)
-
-        val titleTv = createStatisticTextView()
-        val minValueTv = createStatisticTextView()
-        val maxValueTv = createStatisticTextView()
-        val averageValueTv = createStatisticTextView()
-
-        titleTv.text = title
-        minValueTv.text = Utils.format(statisticData.min, 2)
-        maxValueTv.text = Utils.format(statisticData.max, 2)
-        averageValueTv.text = Utils.format(statisticData.average, 2)
-
-        tableRow.addView(titleTv)
-        tableRow.addView(minValueTv)
-        tableRow.addView(maxValueTv)
-        tableRow.addView(averageValueTv)
-
-        statistics_table.addView(tableRow)
-    }
-
-    private fun createStatisticTextView(): TextView {
-        val textView = TextView(context)
-        textView.gravity = Gravity.CENTER
-        textView.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT, 1f)
-
-        return textView
+        initChart(sensorType)
     }
 
     private fun highlightValue(entry: Entry) {
@@ -195,72 +149,12 @@ class HistorySensorDataFragment : DaggerFragment() {
         chart_lc.setTouchEnabled(true)
 
         historySensorDataViewModel.chartLiveData.observe(this, Observer {
-            if (it == null || it.xData.isEmpty() && it.yData.isEmpty() && it.zData.isEmpty()) {
-                chart_lc.clear()
-                return@Observer
-            }
-
-            val lineDataSetList = mutableListOf<LineDataSet>()
-
-            var colorLineDataX = 0
-            var colorLineDataY = 0
-            var colorLineDataZ = 0
-
-            context?.let { context ->
-                colorLineDataX = ContextCompat.getColor(context, R.color.chart_x_color)
-                colorLineDataY = ContextCompat.getColor(context, R.color.chart_y_color)
-                colorLineDataZ = ContextCompat.getColor(context, R.color.chart_z_color)
-            }
-
-            //remove previous data
-            if (statistics_table.childCount > 1) {
-                statistics_table.removeViews(1, statistics_table.childCount - 1)
-            }
-
-            when (sensorAdapterItem) {
-                SensorAdapterItem.LINEAR_ACCELERATION -> {
-                    val xLineDataSet = createLineDataSet(it.xData, "x", colorLineDataX)
-                    val yLineDataSet = createLineDataSet(it.yData, "y", colorLineDataY)
-                    val zLineDataSet = createLineDataSet(it.zData, "z", colorLineDataZ)
-
-                    lineDataSetList.add(xLineDataSet)
-                    lineDataSetList.add(yLineDataSet)
-                    lineDataSetList.add(zLineDataSet)
-
-                    addStatisticRow("x", it.xStatisticData)
-                    addStatisticRow("y", it.yStatisticData)
-                    addStatisticRow("z", it.zStatisticData)
-                }
-                else -> {
-                    val title = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
-
-                    val xLineDataSet = createLineDataSet(it.xData, title, colorLineDataX)
-
-                    lineDataSetList.add(xLineDataSet)
-
-                    addStatisticRow("x", it.xStatisticData)
-                }
-            }
-
-            chart_lc.xAxis.valueFormatter = DateValueFormatter()
-            chart_lc.data = LineData(lineDataSetList.toList())
-            chart_lc.notifyDataSetChanged()
-            chart_lc.invalidate()
-
+            fillChart(sensorAdapterItem, it)
 
             historySensorDataViewModel.entryHighlighted.value?.let {
                 highlightValue(it)
             }
         })
-    }
-
-    private fun createLineDataSet(data: MutableList<Entry>, label: String, color: Int): LineDataSet {
-        val lineDataSet = LineDataSet(data, label)
-        lineDataSet.setColor(color, 100)
-        lineDataSet.setDrawCircles(false)
-        lineDataSet.lineWidth = 2f
-
-        return lineDataSet
     }
 
     private fun showRestoreDeletedItemSnackBar(healthCareEventEntity: HealthCareEventEntity) {
