@@ -19,6 +19,8 @@ package com.sebastiansokolowski.healthcarewatch.di
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.sebastiansokolowski.healthcarewatch.viewModel.*
+import com.sebastiansokolowski.healthcarewatch.viewModel.sensorData.HistorySensorDataViewModel
+import com.sebastiansokolowski.healthcarewatch.viewModel.sensorData.LiveSensorDataViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

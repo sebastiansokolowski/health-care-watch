@@ -72,14 +72,14 @@ class HomeFragment : DaggerFragment() {
                 heart_rate_iv.startAnimation()
             }
         })
-        homeViewModel.healthCareEventsEntity.observe(this, Observer {
+        homeViewModel.healthCareEvents.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
                 val adapter = HealthCareEventAdapter(context, list, homeViewModel)
                 adapter.setEmptyView(health_care_events_empty_view)
                 health_care_events_lv.adapter = adapter
             }
         })
-        homeViewModel.healthCareEventEntityDetails.observe(this, Observer {
+        homeViewModel.healthCareEventDetails.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     val mainActivity: MainActivity = activity as MainActivity
@@ -87,7 +87,7 @@ class HomeFragment : DaggerFragment() {
                 }
             }
         })
-        homeViewModel.healthCareEventEntityToRestore.observe(this, Observer {
+        homeViewModel.healthCareEventToRestore.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showRestoreDeletedItemSnackBar(it)
@@ -99,7 +99,7 @@ class HomeFragment : DaggerFragment() {
             homeViewModel.toggleMeasurementState()
         }
 
-        homeViewModel.healthCareEventEntitySelected.observe(this, Observer {
+        homeViewModel.healthCareEventSelected.observe(this, Observer {
             it?.let {
                 showHealthCareEventInHistoryFragment(it)
             }

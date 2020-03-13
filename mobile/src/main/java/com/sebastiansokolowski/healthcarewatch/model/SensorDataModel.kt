@@ -33,6 +33,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     private var saveDataDisposable: Disposable? = null
 
     val sensorsObservable: PublishSubject<SensorEventEntity> = PublishSubject.create()
+    val healthCareEventObservable: PublishSubject<HealthCareEventEntity> = PublishSubject.create()
     val heartRateObservable: BehaviorSubject<SensorEventEntity> = BehaviorSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
     val supportedHealthCareEventsObservable: PublishSubject<Set<HealthCareEventType>> = PublishSubject.create()
@@ -47,6 +48,11 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     private fun notifySensorsObservable(sensorEventEntity: SensorEventEntity) {
         sensorsObservable.onNext(sensorEventEntity)
+    }
+
+    private fun notifyHealthCareEventObservable(healthCareEventEntity: HealthCareEventEntity) {
+        notificationModel.notifyHealthCareEvent(healthCareEventEntity)
+        healthCareEventObservable.onNext(healthCareEventEntity)
     }
 
     private fun notifyMeasurementStateObservable(measurementState: Boolean) {
@@ -153,7 +159,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         val eventBox = boxStore.boxFor(HealthCareEventEntity::class.java)
                         eventBox.put(healthCareEventEntity)
 
-                        notificationModel.notifyHealthCareEvent(healthCareEventEntity)
+                        notifyHealthCareEventObservable(healthCareEventEntity)
 
                         Log.d(TAG, "healthCareEvent=$healthCareEventEntity")
                     }

@@ -4,15 +4,18 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.Transformations
 import android.net.Uri
+import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity_
+import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthcarewatch.model.SensorDataModel
 import com.sebastiansokolowski.healthcarewatch.model.SetupModel
 import com.sebastiansokolowski.healthcarewatch.model.ShareDataModel
 import com.sebastiansokolowski.healthcarewatch.util.SingleEvent
+import com.sebastiansokolowski.healthcarewatch.viewModel.sensorData.SensorEventViewModel
 import io.objectbox.BoxStore
 import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -21,13 +24,10 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HomeViewModel
-@Inject constructor(private val setupModel: SetupModel, private val sensorDataModel: SensorDataModel, private val shareDataModel: ShareDataModel, boxStore: BoxStore) : HealthCareEventViewModel(boxStore) {
-
-    private val disposables = CompositeDisposable()
-
+@Inject constructor(private val setupModel: SetupModel, private val sensorDataModel: SensorDataModel, private val shareDataModel: ShareDataModel, boxStore: BoxStore) : SensorEventViewModel(boxStore) {
 
     init {
-        initHealthCarEvents()
+        refreshView()
     }
 
     val setupState: LiveData<SetupModel.SetupStep> by lazy {
@@ -45,18 +45,16 @@ class HomeViewModel
         initFileToShareLiveData()
     }
 
-    override fun initHealthCarEvents() {
+    override fun getHealthCareEventsObservable(): Observable<MutableList<HealthCareEventEntity>> {
         val query = healthCareEventEntityBox.query()
                 .orderDesc(HealthCareEventEntity_.__ID_PROPERTY)
                 .build()
 
-        val disposable = RxQuery.observable(query)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    healthCareEventsEntity.postValue(it)
-                }
-        disposables.add(disposable)
+        return RxQuery.observable(query)
+    }
+
+    override fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>? {
+        return null
     }
 
     private fun initHeartRateLiveData(): LiveData<String> {
@@ -95,7 +93,6 @@ class HomeViewModel
     }
 
     override fun onCleared() {
-        disposables.clear()
         shareDataModel.clear()
         super.onCleared()
     }

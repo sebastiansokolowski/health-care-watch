@@ -1,92 +1,94 @@
-package com.sebastiansokolowski.healthcarewatch.viewModel
+package com.sebastiansokolowski.healthcarewatch.viewModel.sensorData
 
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthcarewatch.dataModel.ChartData
 import com.sebastiansokolowski.healthcarewatch.dataModel.StatisticData
 import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity
-import com.sebastiansokolowski.healthcarewatch.db.entity.HealthCareEventEntity_
 import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity
-import com.sebastiansokolowski.healthcarewatch.db.entity.SensorEventEntity_
+import com.sebastiansokolowski.healthcarewatch.ui.adapter.HealthCareEventAdapter
+import com.sebastiansokolowski.healthcarewatch.util.SingleEvent
+import io.objectbox.Box
 import io.objectbox.BoxStore
-import io.objectbox.reactive.DataSubscriptionList
-import io.objectbox.rx.RxQuery
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
-import javax.inject.Inject
 
 /**
- * Created by Sebastian Sokołowski on 10.03.19.
+ * Created by Sebastian Sokołowski on 28.06.19.
  */
-class HistorySensorDataViewModel
-@Inject constructor(boxStore: BoxStore) : HealthCareEventViewModel(boxStore) {
+abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), HealthCareEventAdapter.HealthCareEventAdapterItemListener {
+    private val TAG = javaClass.canonicalName
 
     private val disposables = CompositeDisposable()
-    private val subscriptions = DataSubscriptionList()
 
-    val showLoadingProgressBar: MutableLiveData<Boolean> = MutableLiveData()
+    val healthCareEventEntityBox: Box<HealthCareEventEntity> = boxStore.boxFor(HealthCareEventEntity::class.java)
+    val sensorEventEntityBox: Box<SensorEventEntity> = boxStore.boxFor(SensorEventEntity::class.java)
 
-    val showStatisticsContainer: MutableLiveData<Boolean> = MutableLiveData()
+    val healthCareEvents: MutableLiveData<List<HealthCareEventEntity>> = MutableLiveData()
+    val healthCareEventSelected: MutableLiveData<HealthCareEventEntity> = MutableLiveData()
+    val healthCareEventDetails: MutableLiveData<SingleEvent<HealthCareEventEntity>> = MutableLiveData()
+    val healthCareEventToRestore: MutableLiveData<SingleEvent<HealthCareEventEntity>> = MutableLiveData()
 
     val chartLiveData: MutableLiveData<ChartData> = MutableLiveData()
-
+    val showLoadingProgressBar: MutableLiveData<Boolean> = MutableLiveData()
+    val showStatisticsContainer: MutableLiveData<Boolean> = MutableLiveData()
     val entryHighlighted: MutableLiveData<Entry> = MutableLiveData()
 
-    private var currentDate = Date()
-    private var sensorType: Int = 0
+    var currentDate = Date()
+    var sensorType: Int = 0
 
-    fun setCurrentDate(date: Date) {
+    fun changeCurrentDate(date: Date) {
         currentDate = date
         entryHighlighted.postValue(null)
         refreshView()
     }
 
-    fun setSensorType(sensorType: Int) {
-        this.sensorType = sensorType
+    fun refreshView() {
+        initHealthCarEvents()
+        if (getSensorEventsObservable() != null) {
+            initSensorEvents()
+        }
     }
 
-    override fun initHealthCarEvents() {
-        val startDayTimestamp = getStartDayTimestamp(currentDate.time)
-        val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
+    //HealthCareEventAdapterItemListener
 
-        val query = healthCareEventEntityBox.query()
-                .orderDesc(HealthCareEventEntity_.__ID_PROPERTY)
-                .apply {
-                    link(HealthCareEventEntity_.sensorEventEntity)
-                            .between(SensorEventEntity_.timestamp, startDayTimestamp, endDayTimestamp)
-                            .equal(SensorEventEntity_.type, sensorType.toLong())
-                }.build()
+    override fun onClickItem(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventSelected.postValue(healthCareEventEntity)
+    }
 
-        val disposable = RxQuery.observable(query)
-                .subscribeOn(Schedulers.io())
+    override fun onLongClickItem(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventDetails.postValue(SingleEvent(healthCareEventEntity))
+    }
+
+    override fun onDeleteItem(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventEntityBox.remove(healthCareEventEntity)
+        healthCareEventToRestore.postValue(SingleEvent(healthCareEventEntity))
+    }
+
+    //
+
+    abstract fun getHealthCareEventsObservable(): Observable<MutableList<HealthCareEventEntity>>
+
+    abstract fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>?
+
+    private fun initHealthCarEvents() {
+        val disposable = getHealthCareEventsObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    healthCareEventsEntity.postValue(it)
+                    healthCareEvents.postValue(it)
                 }
         disposables.add(disposable)
     }
 
-    fun refreshView() {
-        initHealthCarEvents()
-        initHistoryLiveData()
-    }
-
-    private fun initHistoryLiveData() {
+    private fun initSensorEvents() {
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
-        val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
-        val box = boxStore.boxFor(SensorEventEntity::class.java)
-        val query = box.query().apply {
-            equal(SensorEventEntity_.type, sensorType.toLong())
-            between(SensorEventEntity_.timestamp, startDayTimestamp, endDayTimestamp)
-        }.build()
-
-
-        val disposable = RxQuery.observable(query)
-                .take(1)
+        val disposable = getSensorEventsObservable()!!
                 .subscribeOn(Schedulers.io())
                 .map {
                     val chartData = ChartData()
@@ -139,7 +141,20 @@ class HistorySensorDataViewModel
         statisticData.average = statisticData.sum / statisticData.count
     }
 
-    private fun getStartDayTimestamp(timestamp: Long): Long {
+    private fun createEntry(sensorEventEntity: SensorEventEntity, lastMidnightTimestamp: Long, index: Int): Entry? {
+        var entry: Entry? = null
+
+        if (sensorEventEntity.values.isNotEmpty()) {
+            val timestampFromMidnight: Int = (sensorEventEntity.timestamp - lastMidnightTimestamp).toInt()
+
+            entry = Entry(timestampFromMidnight.toFloat(), sensorEventEntity.values[index], sensorEventEntity.values)
+        }
+        return entry
+    }
+
+    //
+
+    fun getStartDayTimestamp(timestamp: Long): Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = timestamp
         calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -150,22 +165,15 @@ class HistorySensorDataViewModel
         return calendar.timeInMillis
     }
 
-    private fun getEndDayTimestamp(startDayTimestamp: Long): Long {
+    fun getEndDayTimestamp(startDayTimestamp: Long): Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = startDayTimestamp
         calendar.add(Calendar.DAY_OF_MONTH, 1)
         return calendar.timeInMillis
     }
 
-    private fun createEntry(sensorEventEntity: SensorEventEntity, lastMidnightTimestamp: Long, index: Int): Entry? {
-        var entry: Entry? = null
-
-        if (sensorEventEntity.values.isNotEmpty()) {
-            val timestampFromMidnight: Int = (sensorEventEntity.timestamp - lastMidnightTimestamp).toInt()
-
-            entry = Entry(timestampFromMidnight.toFloat(), sensorEventEntity.values[index], sensorEventEntity.values)
-        }
-        return entry
+    fun restoreDeletedEvent(healthCareEventEntity: HealthCareEventEntity) {
+        healthCareEventEntityBox.put(healthCareEventEntity)
     }
 
     fun showHealthCareEvent(healthCareEventEntity: HealthCareEventEntity) {
@@ -179,7 +187,6 @@ class HistorySensorDataViewModel
 
     override fun onCleared() {
         disposables.clear()
-        subscriptions.cancel()
         super.onCleared()
     }
 }
