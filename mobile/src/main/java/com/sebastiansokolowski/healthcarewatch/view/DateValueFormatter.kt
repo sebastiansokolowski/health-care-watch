@@ -8,7 +8,6 @@ import com.sebastiansokolowski.healthcarewatch.util.EntryHelper
  */
 class DateValueFormatter : ValueFormatter() {
 
-
     override fun getFormattedValue(value: Float): String {
         return EntryHelper.getDate(value)
     }

@@ -25,6 +25,7 @@ import com.sebastiansokolowski.healthcarewatch.util.SafeCall
 import com.sebastiansokolowski.healthcarewatch.util.SensorAdapterItemHelper
 import com.sebastiansokolowski.healthcarewatch.util.Utils
 import com.sebastiansokolowski.healthcarewatch.view.CustomMarkerView
+import com.sebastiansokolowski.healthcarewatch.view.DataValueFormatter
 import com.sebastiansokolowski.healthcarewatch.view.DateValueFormatter
 import com.sebastiansokolowski.healthcarewatch.viewModel.sensorData.SensorEventViewModel
 import dagger.android.support.DaggerFragment
@@ -217,6 +218,7 @@ open class SensorDataFragment : DaggerFragment() {
         lineDataSet.setColor(color, 100)
         lineDataSet.setDrawCircles(false)
         lineDataSet.lineWidth = 2f
+        lineDataSet.valueFormatter = DataValueFormatter()
 
         return lineDataSet
     }
