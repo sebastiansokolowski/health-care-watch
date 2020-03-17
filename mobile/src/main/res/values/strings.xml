@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Health Care Watch</string>
+    <string name="app_name">mHealth Guard</string>
     <string name="licences"><![CDATA[     <ul>     <li>Icon made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a></li>     <li>Heart beat animation <a href="https://github.com/IhorKlimov/Android-Animations">Android-Animations</a></li>     </ul> ]]></string>
     <string name="notification_alert_title">Alert!</string>
     <string name="notification_measurement_title">Health Care Watch running</string>
