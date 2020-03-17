@@ -1,0 +1,59 @@
+package com.sebastiansokolowski.healthguard.util
+
+import android.content.Context
+import com.sebastiansokolowski.healthguard.R
+import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import java.text.SimpleDateFormat
+import java.util.*
+
+/**
+ * Created by Sebastian Sokołowski on 26.06.19.
+ */
+class HealthCareEventHelper(val context: Context) {
+
+    private val dtf = SimpleDateFormat("HH:mm:ss yyy-MM-dd")
+
+    fun getTitle(healthCareEventEntity: HealthCareEventEntity): String {
+        return getTitle(healthCareEventEntity.careEvent)
+    }
+
+    fun getTitle(healthCareEventType: HealthCareEventType): String {
+        return when (healthCareEventType) {
+            HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_title)
+            HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_title)
+            HealthCareEventType.FALL -> context.getString(R.string.health_care_event_fall_title)
+            HealthCareEventType.FALL_TORDU -> context.getString(R.string.health_care_event_fall_tordu_title)
+            else -> healthCareEventType.name
+        }
+    }
+
+    fun getDate(healthCareEventEntity: HealthCareEventEntity): String {
+        val timestamp = healthCareEventEntity.sensorEventEntity.target?.timestamp ?: return "null"
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = timestamp
+
+        return dtf.format(calendar.time)
+    }
+
+    fun getEventInfo(healthCareEventEntity: HealthCareEventEntity): String {
+        val value = Utils.format(healthCareEventEntity.value, 2)
+        return when (healthCareEventEntity.careEvent) {
+            HealthCareEventType.EPILEPSY -> value + " " + context.getString(R.string.unit_epilepsy)
+            HealthCareEventType.HEARTH_RATE_ANOMALY -> value + " " + context.getString(R.string.unit_hearth_rate)
+            HealthCareEventType.FALL -> value + " " + context.getString(R.string.unit_fall)
+            HealthCareEventType.FALL_TORDU -> value
+            else -> "null"
+        }
+    }
+
+    fun getMessage(healthCareEventEntity: HealthCareEventEntity): String {
+        return when (healthCareEventEntity.careEvent) {
+            HealthCareEventType.EPILEPSY -> context.getString(R.string.health_care_event_epilepsy_message)
+            HealthCareEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_care_event_hearth_rate_anomaly_message)
+            HealthCareEventType.FALL, HealthCareEventType.FALL_TORDU -> context.getString(R.string.health_care_event_fall_message)
+            else -> "null"
+        }
+    }
+}
