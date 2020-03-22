@@ -5,12 +5,11 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat
 import android.util.AttributeSet
 import android.view.View
-import android.widget.ImageView
 
 /**
  * Created by Sebastian Sokołowski on 22.06.19.
  */
-class CustomAnimation : ImageView {
+class CustomAnimation : android.support.v7.widget.AppCompatImageView {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
