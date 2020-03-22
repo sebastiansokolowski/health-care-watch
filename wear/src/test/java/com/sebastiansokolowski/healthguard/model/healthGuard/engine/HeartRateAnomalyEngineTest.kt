@@ -51,7 +51,7 @@ class HeartRateAnomalyEngineTest {
         val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(30f))
         healthSensorObservable.onNext(sensorEvent)
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(sensorEvent) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(sensorEvent, any(), any()) }
     }
 
     @Test
@@ -69,6 +69,6 @@ class HeartRateAnomalyEngineTest {
         healthSensorObservable.onNext(sensorEvent4)
         healthSensorObservable.onNext(sensorEvent5)
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
     }
 }

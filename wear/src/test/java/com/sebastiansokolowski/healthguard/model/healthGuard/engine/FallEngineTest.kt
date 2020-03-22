@@ -55,7 +55,7 @@ class FallEngineTest {
     fun testFallDetect_shouldNotify() {
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(any()) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any()) }
     }
 
     @Test
@@ -63,7 +63,7 @@ class FallEngineTest {
         every { stepDetector.isStepDetected() } returns false
         triggerFall()
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
     }
 
     @Test
@@ -73,18 +73,18 @@ class FallEngineTest {
 
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(any()) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any()) }
     }
 
     @Test
     fun testFallDetect_WhenPostFallDetectionIsEnabled_shouldNotNotify() {
         every { measurementSettings.fallSettings.activityThreshold } returns 3
-         every { measurementSettings.fallSettings.timeOfInactivity } returns 5
+        every { measurementSettings.fallSettings.timeOfInactivity } returns 5
 
         triggerFall()
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
-        verify(exactly = 1) { testObj.checkPostFallActivity(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
+        verify(exactly = 1) { testObj.checkPostFallActivity(any(), any(), any()) }
     }
 
     private fun triggerFall() {
@@ -110,6 +110,6 @@ class FallEngineTest {
             healthSensorObservable.onNext(sensorEvent)
         }
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
     }
 }
