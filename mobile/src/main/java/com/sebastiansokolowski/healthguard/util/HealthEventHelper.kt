@@ -12,7 +12,7 @@ import java.util.*
  */
 class HealthEventHelper(val context: Context) {
 
-    private val dtf = SimpleDateFormat("HH:mm:ss yyy-MM-dd")
+    private val dtf = SimpleDateFormat("HH:mm:ss yyy-MM-dd", Locale.getDefault())
 
     fun getTitle(healthEventEntity: HealthEventEntity): String {
         return getTitle(healthEventEntity.event)

@@ -61,7 +61,7 @@ class HistoryDataFragment : DaggerFragment() {
 
         historyDataViewModel.currentDateLiveData.observe(this, Observer {
             it?.let { date ->
-                val dateTimeFormatter = SimpleDateFormat("yyyy/MM/dd")
+                val dateTimeFormatter = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
                 current_date_tv.text = dateTimeFormatter.format(date)
 
                 setCurrentDateNextBtnEnable(!DateUtils.isToday(date.time))

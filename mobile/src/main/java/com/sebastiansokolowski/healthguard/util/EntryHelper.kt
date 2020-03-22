@@ -8,7 +8,7 @@ import java.util.*
  */
 class EntryHelper {
     companion object {
-        private val dtf = SimpleDateFormat("HH:mm:ss")
+        private val dtf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
 
         fun getDate(value: Float): String {
             val timestampFromMidnight = value.toInt()
