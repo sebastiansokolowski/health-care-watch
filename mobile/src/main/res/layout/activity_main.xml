@@ -24,7 +24,9 @@
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/darker_gray"
+        android:background="@color/colorPrimaryDark"
+        app:itemIconTint="@drawable/navigation_bar_selector"
+        app:itemTextColor="@drawable/navigation_bar_selector"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/main_bottom_navigation" />
