@@ -38,8 +38,8 @@ class MessageReceiverService : WearableListenerService() {
             DataClientPaths.STOP_LIVE_DATA -> {
                 wearableDataClient.liveData = false
             }
-            DataClientPaths.GET_SUPPORTED_HEALTH_CARE_EVENTS -> {
-                sensorDataModel.notifySupportedHealthCareEvents()
+            DataClientPaths.GET_SUPPORTED_HEALTH_EVENTS -> {
+                sensorDataModel.notifySupportedHealthEvents()
             }
             else -> super.onMessageReceived(event)
         }

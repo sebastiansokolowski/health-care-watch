@@ -75,10 +75,10 @@ class HistoryDataFragment : DaggerFragment() {
         }
 
         val mainActivity: MainActivity = activity as MainActivity
-        mainActivity.healthCareEventEntitySelected.observe(this, Observer {
+        mainActivity.healthEventEntitySelected.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
-                    historyDataViewModel.showHealthCareEvent(it)
+                    historyDataViewModel.showHealthEvent(it)
                 }
             }
         })

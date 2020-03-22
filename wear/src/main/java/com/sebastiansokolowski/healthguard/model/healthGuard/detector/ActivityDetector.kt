@@ -1,8 +1,8 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.detector
+package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
 import android.hardware.Sensor
 import android.util.Log
-import com.sebastiansokolowski.healthguard.model.healthCare.DetectorBase
+import com.sebastiansokolowski.healthguard.model.healthGuard.DetectorBase
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject

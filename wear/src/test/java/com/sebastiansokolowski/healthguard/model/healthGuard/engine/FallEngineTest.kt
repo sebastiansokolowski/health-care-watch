@@ -1,9 +1,9 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.engine
+package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthguard.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
-import com.sebastiansokolowski.healthguard.model.healthCare.detector.StepDetector
-import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.mockk.every
@@ -26,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 class FallEngineTest {
 
     private val healthSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
-    private val notifyObservable: PublishSubject<HealthCareEvent> = PublishSubject.create()
+    private val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
 
     @SpyK
     var testObj = FallEngine()
@@ -55,7 +55,7 @@ class FallEngineTest {
     fun testFallDetect_shouldNotify() {
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthCareEvent(any()) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(any()) }
     }
 
     @Test
@@ -63,7 +63,7 @@ class FallEngineTest {
         every { stepDetector.isStepDetected() } returns false
         triggerFall()
 
-        verify(exactly = 0) { testObj.notifyHealthCareEvent(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
     }
 
     @Test
@@ -73,7 +73,7 @@ class FallEngineTest {
 
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthCareEvent(any()) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(any()) }
     }
 
     @Test
@@ -83,7 +83,7 @@ class FallEngineTest {
 
         triggerFall()
 
-        verify(exactly = 0) { testObj.notifyHealthCareEvent(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
         verify(exactly = 1) { testObj.checkPostFallActivity(any()) }
     }
 
@@ -110,6 +110,6 @@ class FallEngineTest {
             healthSensorObservable.onNext(sensorEvent)
         }
 
-        verify(exactly = 0) { testObj.notifyHealthCareEvent(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
     }
 }

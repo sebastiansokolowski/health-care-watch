@@ -15,7 +15,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/health_care_event_fall_title">
+    <PreferenceCategory android:title="@string/health_event_fall_title">
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="fall_threshold"
@@ -45,7 +45,7 @@
             android:title="Wartość progowa bezruchu" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/health_care_event_epilepsy_title">
+    <PreferenceCategory android:title="@string/health_event_epilepsy_title">
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             app:showSeekBarValue="true"

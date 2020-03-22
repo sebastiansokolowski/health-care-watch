@@ -6,8 +6,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthguard.client.WearableDataClient
-import com.sebastiansokolowski.healthguard.utils.HealthCareEnginesUtils
-import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
+import com.sebastiansokolowski.healthguard.utils.HealthEnginesUtils
+import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -17,12 +17,12 @@ import kotlin.math.roundToInt
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
  */
-class SensorDataModel(measurementModel: MeasurementModel, private val wearableDataClient: WearableDataClient, private val sensorManager: SensorManager, private val healthCareModel: HealthCareModel) : SensorEventListener {
+class SensorDataModel(measurementModel: MeasurementModel, private val wearableDataClient: WearableDataClient, private val sensorManager: SensorManager, private val healthGuardModel: HealthGuardModel) : SensorEventListener {
     private val TAG = javaClass.canonicalName
 
     init {
         measurementModel.sensorDataModel = this
-        healthCareModel.sensorDataModel = this
+        healthGuardModel.sensorDataModel = this
     }
 
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
@@ -56,23 +56,23 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         }
     }
 
-    fun notifySupportedHealthCareEvents() {
+    fun notifySupportedHealthEvents() {
         val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
-        val supportedHealthCareEngines = HealthCareEnginesUtils.getSupportedHealthCareEngines(sensors)
-        val supportedHealthCareEvents = supportedHealthCareEngines.map { it.getHealthCareEventType() }.toSet()
-        wearableDataClient.sendSupportedHealthCareEvents(SupportedHealthCareEventTypes(supportedHealthCareEvents))
+        val supportedHealthEngines = HealthEnginesUtils.getSupportedHealthEngines(sensors)
+        val supportedHealthEvents = supportedHealthEngines.map { it.getHealthEventType() }.toSet()
+        wearableDataClient.sendSupportedHealthEvents(SupportedHealthEventTypes(supportedHealthEvents))
     }
 
     fun startMeasurement(measurementSettings: MeasurementSettings) {
         if (measurementRunning) {
             return
         }
-        val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(measurementSettings.healthCareEvents)
-        val sensors = healthCareEngines.flatMap { it.requiredSensors() }.toSet()
+        val healthEngines = HealthEnginesUtils.getHealthEngines(measurementSettings.healthEvents)
+        val sensors = healthEngines.flatMap { it.requiredSensors() }.toSet()
 
         changeMeasurementState(true)
 
-        healthCareModel.startEngines(measurementSettings)
+        healthGuardModel.startEngines(measurementSettings)
 
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
@@ -93,7 +93,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         }
         changeMeasurementState(false)
 
-        healthCareModel.stopEngines()
+        healthGuardModel.stopEngines()
 
         sensorManager.unregisterListener(this)
     }

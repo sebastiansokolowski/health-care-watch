@@ -2,9 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="Settings">
 
-    <PreferenceCategory android:title="@string/settings_health_care_events_category">
+    <PreferenceCategory android:title="@string/settings_health_events_category">
         <com.sebastiansokolowski.healthguard.view.preference.CustomMultiSelectListPreference
-            android:key="health_care_events"
+            android:key="health_events"
             android:title="@string/settings_select_events" />
         <Preference
             android:key="advanced_settings"

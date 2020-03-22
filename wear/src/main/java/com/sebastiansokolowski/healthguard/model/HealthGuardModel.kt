@@ -2,9 +2,9 @@ package com.sebastiansokolowski.healthguard.model
 
 import android.annotation.SuppressLint
 import com.sebastiansokolowski.healthguard.client.WearableDataClient
-import com.sebastiansokolowski.healthguard.model.healthCare.HealthCareEngineBase
-import com.sebastiansokolowski.healthguard.utils.HealthCareEnginesUtils
-import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
+import com.sebastiansokolowski.healthguard.utils.HealthEnginesUtils
+import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
@@ -13,11 +13,11 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class HealthCareModel(private val wearableDataClient: WearableDataClient) {
+class HealthGuardModel(private val wearableDataClient: WearableDataClient) {
     private val TAG = javaClass.canonicalName
 
-    private val healthCareEngines = mutableListOf<HealthCareEngineBase>()
-    private val notifyObservable: PublishSubject<HealthCareEvent> = PublishSubject.create()
+    private val healthEngines = mutableListOf<HealthGuardEngineBase>()
+    private val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
 
     lateinit var sensorDataModel: SensorDataModel
 
@@ -26,23 +26,23 @@ class HealthCareModel(private val wearableDataClient: WearableDataClient) {
     }
 
     fun startEngines(measurementSettings: MeasurementSettings) {
-        val healthCareEngines = HealthCareEnginesUtils.getHealthCareEngines(measurementSettings.healthCareEvents)
+        val healthEngines = HealthEnginesUtils.getHealthEngines(measurementSettings.healthEvents)
 
-        healthCareEngines.forEach {
+        healthEngines.forEach {
             it.setupEngine(sensorDataModel.sensorsObservable, notifyObservable, measurementSettings)
 
             it.startEngine()
 
-            this.healthCareEngines.add(it)
+            this.healthEngines.add(it)
         }
     }
 
     fun stopEngines() {
-        healthCareEngines.forEach {
+        healthEngines.forEach {
             it.stopEngine()
         }
 
-        healthCareEngines.clear()
+        healthEngines.clear()
     }
 
     @SuppressLint("CheckResult")
@@ -55,8 +55,8 @@ class HealthCareModel(private val wearableDataClient: WearableDataClient) {
                 }
     }
 
-    private fun notifyAlert(healthCareEvent: HealthCareEvent) {
-        wearableDataClient.sendHealthCareEvent(healthCareEvent)
+    private fun notifyAlert(healthEvent: HealthEvent) {
+        wearableDataClient.sendHealthEvent(healthEvent)
     }
 
 }

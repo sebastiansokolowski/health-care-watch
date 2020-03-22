@@ -1,9 +1,9 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.engine
+package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthguard.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
-import com.sebastiansokolowski.healthguard.model.healthCare.detector.StepDetector
-import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
+import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.mockk.every
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 class HeartRateAnomalyEngineTest {
 
     private val healthSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
-    private val notifyObservable: PublishSubject<HealthCareEvent> = PublishSubject.create()
+    private val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
 
     @SpyK
     var testObj: HeartRateAnomalyEngine = HeartRateAnomalyEngine()
@@ -51,7 +51,7 @@ class HeartRateAnomalyEngineTest {
         val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(30f))
         healthSensorObservable.onNext(sensorEvent)
 
-        verify(exactly = 1) { testObj.notifyHealthCareEvent(sensorEvent) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(sensorEvent) }
     }
 
     @Test
@@ -69,6 +69,6 @@ class HeartRateAnomalyEngineTest {
         healthSensorObservable.onNext(sensorEvent4)
         healthSensorObservable.onNext(sensorEvent5)
 
-        verify(exactly = 0) { testObj.notifyHealthCareEvent(any()) }
+        verify(exactly = 0) { testObj.notifyHealthEvent(any()) }
     }
 }

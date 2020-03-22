@@ -1,12 +1,12 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.engine
+package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
 import android.util.Log
 import com.google.gson.Gson
-import com.sebastiansokolowski.healthguard.model.healthCare.HealthCareEngineBase
-import com.sebastiansokolowski.healthguard.model.healthCare.detector.StepDetector
-import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.HealthEvent
+import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
@@ -18,13 +18,13 @@ import kotlin.math.sqrt
 /**
  * Created by Sebastian Sokołowski on 21.09.19.
  */
-class FallEngineTordu : HealthCareEngineBase() {
+class FallEngineTordu : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private val stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
@@ -72,7 +72,7 @@ class FallEngineTordu : HealthCareEngineBase() {
                         Log.d(TAG, "isStepDetected=${stepDetector.isStepDetected()}")
 
                         if (stepDetector.isStepDetected()) {
-                            notifyHealthCareEvent(it.last().sensorEvent, counter.toFloat(), Gson().toJson(it))
+                            notifyHealthEvent(it.last().sensorEvent, counter.toFloat(), Gson().toJson(it))
                         }
                     }
                 }
@@ -87,8 +87,8 @@ class FallEngineTordu : HealthCareEngineBase() {
         compositeDisposable.clear()
     }
 
-    override fun getHealthCareEventType(): HealthCareEventType {
-        return HealthCareEventType.FALL_TORDU
+    override fun getHealthEventType(): HealthEventType {
+        return HealthEventType.FALL_TORDU
     }
 
     override fun requiredSensors(): Set<Int> {

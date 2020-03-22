@@ -50,10 +50,10 @@ class WearableDataClient(context: Context) {
         sendMessage(DataClientPaths.GET_MEASUREMENT)
     }
 
-    fun getSupportedHealthCareEvents() {
-        Log.d(TAG, "getSupportedHealthCareEvents")
+    fun getSupportedHealthEvents() {
+        Log.d(TAG, "getSupportedHealthEvents")
 
-        sendMessage(DataClientPaths.GET_SUPPORTED_HEALTH_CARE_EVENTS)
+        sendMessage(DataClientPaths.GET_SUPPORTED_HEALTH_EVENTS)
     }
 
     private fun sendMessage(message: String) {
@@ -98,5 +98,5 @@ class WearableDataClient(context: Context) {
         }
     }
 
-    data class Settings(val samplingUs: Int, val healthCareEvents: Set<String>)
+    data class Settings(val samplingUs: Int, val healthEvents: Set<String>)
 }

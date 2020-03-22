@@ -1,6 +1,6 @@
 package com.sebastiansokolowski.healthguard.viewModel.sensorData
 
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import io.objectbox.BoxStore
@@ -20,11 +20,11 @@ class LiveSensorDataViewModel
     private val disposables = CompositeDisposable()
 
     private val sensorEventsObservable: BehaviorSubject<MutableList<SensorEventEntity>> = BehaviorSubject.createDefault(mutableListOf())
-    private val healthCareEventsObservable: BehaviorSubject<MutableList<HealthCareEventEntity>> = BehaviorSubject.createDefault(mutableListOf())
+    private val healthEventsObservable: BehaviorSubject<MutableList<HealthEventEntity>> = BehaviorSubject.createDefault(mutableListOf())
 
     init {
         initSensorEvents()
-        initHealthCareEvents()
+        initHealthEvents()
     }
 
     private fun initSensorEvents() {
@@ -42,23 +42,23 @@ class LiveSensorDataViewModel
         disposables.add(disposable)
     }
 
-    private fun initHealthCareEvents() {
-        val healthCareEventEntities = mutableListOf<HealthCareEventEntity>()
+    private fun initHealthEvents() {
+        val healthEventEntities = mutableListOf<HealthEventEntity>()
 
-        val disposable = sensorDataModel.healthCareEventObservable
+        val disposable = sensorDataModel.healthEventObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.sensorEventEntity.target?.type == sensorType }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    healthCareEventEntities.add(it)
-                    healthCareEventsObservable.onNext(healthCareEventEntities)
+                    healthEventEntities.add(it)
+                    healthEventsObservable.onNext(healthEventEntities)
                 }
 
         disposables.add(disposable)
     }
 
-    override fun getHealthCareEventsObservable(): Observable<MutableList<HealthCareEventEntity>> {
-        return healthCareEventsObservable
+    override fun getHealthEventsObservable(): Observable<MutableList<HealthEventEntity>> {
+        return healthEventsObservable
     }
 
     override fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>> {

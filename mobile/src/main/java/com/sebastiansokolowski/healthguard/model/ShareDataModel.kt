@@ -5,7 +5,7 @@ import android.net.Uri
 import android.support.v4.content.FileProvider
 import com.google.gson.GsonBuilder
 import com.sebastiansokolowski.healthguard.BuildConfig
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import io.objectbox.Box
 import io.objectbox.BoxStore
@@ -23,14 +23,14 @@ import java.io.FileOutputStream
  */
 class ShareDataModel(val context: Context, val boxStore: BoxStore) {
 
-    private val healthCareEventEntityBox: Box<HealthCareEventEntity> = boxStore.boxFor(HealthCareEventEntity::class.java)
+    private val healthEventEntityBox: Box<HealthEventEntity> = boxStore.boxFor(HealthEventEntity::class.java)
 
     val fileToShareObservable: PublishSubject<SingleEvent<Uri>> = PublishSubject.create()
 
     private val disposables = CompositeDisposable()
 
     fun shareMeasurementData() {
-        val query = healthCareEventEntityBox.query().build()
+        val query = healthEventEntityBox.query().build()
         val disposable = RxQuery.observable(query)
                 .take(1)
                 .subscribeOn(Schedulers.io())

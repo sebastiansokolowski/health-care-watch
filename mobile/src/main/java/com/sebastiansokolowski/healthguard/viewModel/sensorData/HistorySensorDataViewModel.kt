@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard.viewModel.sensorData
 
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity_
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity_
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity_
 import io.objectbox.BoxStore
@@ -15,14 +15,14 @@ import javax.inject.Inject
 class HistorySensorDataViewModel
 @Inject constructor(boxStore: BoxStore) : SensorEventViewModel(boxStore) {
 
-    override fun getHealthCareEventsObservable(): Observable<MutableList<HealthCareEventEntity>> {
+    override fun getHealthEventsObservable(): Observable<MutableList<HealthEventEntity>> {
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
         val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
-        val query = healthCareEventEntityBox.query()
-                .orderDesc(HealthCareEventEntity_.__ID_PROPERTY)
+        val query = healthEventEntityBox.query()
+                .orderDesc(HealthEventEntity_.__ID_PROPERTY)
                 .apply {
-                    link(HealthCareEventEntity_.sensorEventEntity)
+                    link(HealthEventEntity_.sensorEventEntity)
                             .between(SensorEventEntity_.timestamp, startDayTimestamp, endDayTimestamp)
                             .equal(SensorEventEntity_.type, sensorType.toLong())
                 }.build()

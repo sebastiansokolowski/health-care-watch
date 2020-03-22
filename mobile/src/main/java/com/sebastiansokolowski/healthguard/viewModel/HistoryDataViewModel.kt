@@ -2,7 +2,7 @@ package com.sebastiansokolowski.healthguard.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.ui.sensorData.SensorAdapterItem
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import java.util.*
@@ -16,7 +16,7 @@ class HistoryDataViewModel
 
     val currentDateLiveData: MutableLiveData<Date> = MutableLiveData()
     val viewPagerToShow: MutableLiveData<SingleEvent<Int>> = MutableLiveData()
-    val healthCareEventEntityToShow: MutableLiveData<HealthCareEventEntity> = MutableLiveData()
+    val healthEventEntityToShow: MutableLiveData<HealthEventEntity> = MutableLiveData()
 
     init {
         val currentDate = Date()
@@ -39,17 +39,17 @@ class HistoryDataViewModel
         changeCurrentDateDay(1)
     }
 
-    fun showHealthCareEvent(healthCareEventEntity: HealthCareEventEntity) {
+    fun showHealthEvent(healthEventEntity: HealthEventEntity) {
         val sensorAdapterItem = SensorAdapterItem.values()
-                .find { it.sensorId == healthCareEventEntity.sensorEventEntity.target?.type }
+                .find { it.sensorId == healthEventEntity.sensorEventEntity.target?.type }
 
         sensorAdapterItem?.let {
             val calendar = Calendar.getInstance()
-            calendar.timeInMillis = healthCareEventEntity.sensorEventEntity.target.timestamp
+            calendar.timeInMillis = healthEventEntity.sensorEventEntity.target.timestamp
 
             currentDateLiveData.postValue(calendar.time)
             viewPagerToShow.postValue(SingleEvent(sensorAdapterItem.ordinal))
-            healthCareEventEntityToShow.postValue(healthCareEventEntity)
+            healthEventEntityToShow.postValue(healthEventEntity)
         }
     }
 }

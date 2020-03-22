@@ -6,9 +6,9 @@ import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthguard.dataModel.ChartData
 import com.sebastiansokolowski.healthguard.dataModel.StatisticData
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
-import com.sebastiansokolowski.healthguard.ui.adapter.HealthCareEventAdapter
+import com.sebastiansokolowski.healthguard.ui.adapter.HealthEventAdapter
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import io.objectbox.Box
 import io.objectbox.BoxStore
@@ -21,18 +21,18 @@ import java.util.*
 /**
  * Created by Sebastian Sokołowski on 28.06.19.
  */
-abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), HealthCareEventAdapter.HealthCareEventAdapterItemListener {
+abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), HealthEventAdapter.HealthEventAdapterItemListener {
     private val TAG = javaClass.canonicalName
 
     private val disposables = CompositeDisposable()
 
-    val healthCareEventEntityBox: Box<HealthCareEventEntity> = boxStore.boxFor(HealthCareEventEntity::class.java)
+    val healthEventEntityBox: Box<HealthEventEntity> = boxStore.boxFor(HealthEventEntity::class.java)
     val sensorEventEntityBox: Box<SensorEventEntity> = boxStore.boxFor(SensorEventEntity::class.java)
 
-    val healthCareEvents: MutableLiveData<List<HealthCareEventEntity>> = MutableLiveData()
-    val healthCareEventSelected: MutableLiveData<HealthCareEventEntity> = MutableLiveData()
-    val healthCareEventDetails: MutableLiveData<SingleEvent<HealthCareEventEntity>> = MutableLiveData()
-    val healthCareEventToRestore: MutableLiveData<SingleEvent<HealthCareEventEntity>> = MutableLiveData()
+    val healthEvents: MutableLiveData<List<HealthEventEntity>> = MutableLiveData()
+    val healthEventSelected: MutableLiveData<HealthEventEntity> = MutableLiveData()
+    val healthEventDetails: MutableLiveData<SingleEvent<HealthEventEntity>> = MutableLiveData()
+    val healthEventToRestore: MutableLiveData<SingleEvent<HealthEventEntity>> = MutableLiveData()
 
     val chartLiveData: MutableLiveData<ChartData> = MutableLiveData()
     val showLoadingProgressBar: MutableLiveData<Boolean> = MutableLiveData()
@@ -49,38 +49,38 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     }
 
     fun refreshView() {
-        initHealthCarEvents()
+        initHealthEvents()
         if (getSensorEventsObservable() != null) {
             initSensorEvents()
         }
     }
 
-    //HealthCareEventAdapterItemListener
+    //HealthEventAdapterItemListener
 
-    override fun onClickItem(healthCareEventEntity: HealthCareEventEntity) {
-        healthCareEventSelected.postValue(healthCareEventEntity)
+    override fun onClickItem(healthEventEntity: HealthEventEntity) {
+        healthEventSelected.postValue(healthEventEntity)
     }
 
-    override fun onLongClickItem(healthCareEventEntity: HealthCareEventEntity) {
-        healthCareEventDetails.postValue(SingleEvent(healthCareEventEntity))
+    override fun onLongClickItem(healthEventEntity: HealthEventEntity) {
+        healthEventDetails.postValue(SingleEvent(healthEventEntity))
     }
 
-    override fun onDeleteItem(healthCareEventEntity: HealthCareEventEntity) {
-        healthCareEventEntityBox.remove(healthCareEventEntity)
-        healthCareEventToRestore.postValue(SingleEvent(healthCareEventEntity))
+    override fun onDeleteItem(healthEventEntity: HealthEventEntity) {
+        healthEventEntityBox.remove(healthEventEntity)
+        healthEventToRestore.postValue(SingleEvent(healthEventEntity))
     }
 
     //
 
-    abstract fun getHealthCareEventsObservable(): Observable<MutableList<HealthCareEventEntity>>
+    abstract fun getHealthEventsObservable(): Observable<MutableList<HealthEventEntity>>
 
     abstract fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>?
 
-    private fun initHealthCarEvents() {
-        val disposable = getHealthCareEventsObservable()
+    private fun initHealthEvents() {
+        val disposable = getHealthEventsObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    healthCareEvents.postValue(it)
+                    healthEvents.postValue(it)
                 }
         disposables.add(disposable)
     }
@@ -172,12 +172,12 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
         return calendar.timeInMillis
     }
 
-    fun restoreDeletedEvent(healthCareEventEntity: HealthCareEventEntity) {
-        healthCareEventEntityBox.put(healthCareEventEntity)
+    fun restoreDeletedEvent(healthEventEntity: HealthEventEntity) {
+        healthEventEntityBox.put(healthEventEntity)
     }
 
-    fun showHealthCareEvent(healthCareEventEntity: HealthCareEventEntity) {
-        healthCareEventEntity.sensorEventEntity.target?.let { sensorEventData ->
+    fun showHealthEvent(healthEventEntity: HealthEventEntity) {
+        healthEventEntity.sensorEventEntity.target?.let { sensorEventData ->
             val startDayTimestamp = getStartDayTimestamp(sensorEventData.timestamp)
             createEntry(sensorEventData, startDayTimestamp, 0)?.let { entry ->
                 entryHighlighted.postValue(entry)

@@ -92,9 +92,9 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                             settingsViewModel.setupPreference(preference)
                         }
                     }
-                    SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
+                    SettingsSharedPreferences.HEALTH_EVENTS -> {
                         if (settingsViewModel.setupModel.setupComplete.value != SetupModel.SetupStep.COMPLETED) {
-                            Toast.makeText(context, getString(R.string.settings_health_care_events_not_synced), Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, getString(R.string.settings_health_events_not_synced), Toast.LENGTH_LONG).show()
                         } else {
                             settingsViewModel.setupPreference(preference)
                         }

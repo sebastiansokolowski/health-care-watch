@@ -9,7 +9,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.view.MenuItem
 import com.sebastiansokolowski.healthguard.client.WearableDataClient
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.service.MessageReceiverService
 import com.sebastiansokolowski.healthguard.ui.*
 import com.sebastiansokolowski.healthguard.util.SingleEvent
@@ -23,7 +23,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private lateinit var bottomNavigationView: BottomNavigationView
 
-    val healthCareEventEntitySelected: MutableLiveData<SingleEvent<HealthCareEventEntity>> = MutableLiveData()
+    val healthEventEntitySelected: MutableLiveData<SingleEvent<HealthEventEntity>> = MutableLiveData()
 
     @Inject
     lateinit var wearableDataClient: WearableDataClient

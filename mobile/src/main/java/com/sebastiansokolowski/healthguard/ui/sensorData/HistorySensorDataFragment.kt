@@ -52,11 +52,11 @@ class HistorySensorDataFragment : SensorDataFragment() {
                 historySensorDataViewModel.changeCurrentDate(it)
             }
         })
-        historyDataViewModel.healthCareEventEntityToShow.observe(this, Observer {
+        historyDataViewModel.healthEventEntityToShow.observe(this, Observer {
             it?.let {
                 if (it.sensorEventEntity.target.type == sensorType.sensorId) {
-                    historySensorDataViewModel.showHealthCareEvent(it)
-                    historyDataViewModel.healthCareEventEntityToShow.postValue(null)
+                    historySensorDataViewModel.showHealthEvent(it)
+                    historyDataViewModel.healthEventEntityToShow.postValue(null)
                 }
             }
         })

@@ -4,8 +4,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
 import android.arch.lifecycle.Transformations
 import android.net.Uri
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity_
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity_
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.healthguard.model.SetupModel
@@ -16,8 +16,6 @@ import io.objectbox.BoxStore
 import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -45,9 +43,9 @@ class HomeViewModel
         initFileToShareLiveData()
     }
 
-    override fun getHealthCareEventsObservable(): Observable<MutableList<HealthCareEventEntity>> {
-        val query = healthCareEventEntityBox.query()
-                .orderDesc(HealthCareEventEntity_.__ID_PROPERTY)
+    override fun getHealthEventsObservable(): Observable<MutableList<HealthEventEntity>> {
+        val query = healthEventEntityBox.query()
+                .orderDesc(HealthEventEntity_.__ID_PROPERTY)
                 .build()
 
         return RxQuery.observable(query)

@@ -18,9 +18,9 @@ import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.dataModel.ChartData
 import com.sebastiansokolowski.healthguard.dataModel.StatisticData
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
-import com.sebastiansokolowski.healthguard.ui.adapter.HealthCareEventAdapter
-import com.sebastiansokolowski.healthguard.ui.dialog.HealthCareEventDetailsDialogFragment
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
+import com.sebastiansokolowski.healthguard.ui.adapter.HealthEventAdapter
+import com.sebastiansokolowski.healthguard.ui.dialog.HealthEventDetailsDialogFragment
 import com.sebastiansokolowski.healthguard.util.SafeCall
 import com.sebastiansokolowski.healthguard.util.SensorAdapterItemHelper
 import com.sebastiansokolowski.healthguard.util.Utils
@@ -87,31 +87,31 @@ open class SensorDataFragment : DaggerFragment() {
                 statistics_container.visibility = View.INVISIBLE
             }
         })
-        sensorEventViewModel.healthCareEvents.observe(this, Observer {
+        sensorEventViewModel.healthEvents.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
-                val adapter = HealthCareEventAdapter(context, list, sensorEventViewModel)
-                adapter.setEmptyView(health_care_events_empty_view)
-                health_care_events_lv.adapter = adapter
+                val adapter = HealthEventAdapter(context, list, sensorEventViewModel)
+                adapter.setEmptyView(health_events_empty_view)
+                health_events_lv.adapter = adapter
             }
         })
-        sensorEventViewModel.healthCareEventDetails.observe(this, Observer {
+        sensorEventViewModel.healthEventDetails.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     val mainActivity: MainActivity = activity as MainActivity
-                    mainActivity.showDialog(HealthCareEventDetailsDialogFragment.newInstance(it))
+                    mainActivity.showDialog(HealthEventDetailsDialogFragment.newInstance(it))
                 }
             }
         })
-        sensorEventViewModel.healthCareEventToRestore.observe(this, Observer {
+        sensorEventViewModel.healthEventToRestore.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showRestoreDeletedItemSnackBar(it)
                 }
             }
         })
-        sensorEventViewModel.healthCareEventSelected.observe(this, Observer {
+        sensorEventViewModel.healthEventSelected.observe(this, Observer {
             it?.let {
-                sensorEventViewModel.showHealthCareEvent(it)
+                sensorEventViewModel.showHealthEvent(it)
             }
         })
         sensorEventViewModel.entryHighlighted.observe(this, Observer {
@@ -223,11 +223,11 @@ open class SensorDataFragment : DaggerFragment() {
         return lineDataSet
     }
 
-    private fun showRestoreDeletedItemSnackBar(healthCareEventEntity: HealthCareEventEntity) {
+    private fun showRestoreDeletedItemSnackBar(healthEventEntity: HealthEventEntity) {
         view?.let {
             val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
             snackbar.setAction(getString(R.string.action_undo)) {
-                sensorEventViewModel.restoreDeletedEvent(healthCareEventEntity)
+                sensorEventViewModel.restoreDeletedEvent(healthEventEntity)
             }
             snackbar.show()
         }

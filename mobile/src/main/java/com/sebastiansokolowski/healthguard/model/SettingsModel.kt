@@ -3,7 +3,7 @@ package com.sebastiansokolowski.healthguard.model
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.EpilepsySettings
 import com.sebastiansokolowski.shared.dataModel.settings.FallSettings
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
@@ -63,23 +63,23 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val epilepsyPercentOfPositiveEvents = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_PERCENT_OF_POSITIVE_EVENTS, defaultMeasurementSettings.epilepsySettings.percentOfPositiveSignals)
 
 
-        val healthCareEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, emptySet())
+        val healthEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_EVENTS, emptySet())
                 ?: emptySet()
 
         val fallSettings = FallSettings(fallThreshold, fallStepDetector, fallTimeOfInactivityS, fallActivityThreshold)
         val epilepsySettings = EpilepsySettings(epilepsyThreshold, epilepsyTime, epilepsyPercentOfPositiveEvents)
 
-        return MeasurementSettings(samplingMs, healthCareEvents, fallSettings, epilepsySettings)
+        return MeasurementSettings(samplingMs, healthEvents, fallSettings, epilepsySettings)
     }
 
-    fun getSupportedHealthCareEventTypes(): List<HealthCareEventType> {
-        val healthCareEventsName = sharedPreferences
-                .getStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, emptySet())
+    fun getSupportedHealthEventTypes(): List<HealthEventType> {
+        val healthEventsName = sharedPreferences
+                .getStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_EVENTS, emptySet())
                 ?: emptySet()
 
-        return healthCareEventsName.mapNotNull {
+        return healthEventsName.mapNotNull {
             try {
-                HealthCareEventType.valueOf(it)
+                HealthEventType.valueOf(it)
             } catch (e: IllegalArgumentException) {
                 null
             }
@@ -87,19 +87,19 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
     }
 
     @SuppressLint("ApplySharedPref")
-    fun saveSupportedHealthCareEvents(healthCareEvents: Set<HealthCareEventType>) {
+    fun saveSupportedHealthEvents(healthEvents: Set<HealthEventType>) {
         sharedPreferences.edit()?.apply {
-            val values = healthCareEvents.map { sensor -> sensor.name }.toSet()
-            putStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_CARE_EVENTS, values)
+            val values = healthEvents.map { sensor -> sensor.name }.toSet()
+            putStringSet(SettingsSharedPreferences.SUPPORTED_HEALTH_EVENTS, values)
             commit()
         }
     }
 
     @SuppressLint("ApplySharedPref")
-    fun saveHealthCareEvents(healthCareEvents: List<HealthCareEventType>) {
+    fun saveHealthEvents(healthEvents: List<HealthEventType>) {
         sharedPreferences.edit()?.apply {
-            val values = healthCareEvents.map { sensor -> sensor.name }.toSet()
-            putStringSet(SettingsSharedPreferences.HEALTH_CARE_EVENTS, values)
+            val values = healthEvents.map { sensor -> sensor.name }.toSet()
+            putStringSet(SettingsSharedPreferences.HEALTH_EVENTS, values)
             commit()
         }
     }

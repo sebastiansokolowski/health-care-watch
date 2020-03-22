@@ -7,14 +7,14 @@ import com.google.android.gms.wearable.*
 import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.shared.DataClientPaths
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_JSON
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_CARE_MAP_PATH
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_MAP_JSON
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_MAP_PATH
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_JSON
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH
-import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.SupportedHealthCareEventTypes
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_JSON
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_PATH
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENT_MAP_JSON
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENT_MAP_PATH
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_EVENTS_MAP_JSON
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_EVENTS_MAP_PATH
+import com.sebastiansokolowski.shared.dataModel.HealthEvent
+import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 
 
@@ -46,23 +46,23 @@ class WearableDataClient(context: Context) {
         sendMessage(DataClientPaths.REQUEST_START_MEASUREMENT)
     }
 
-    fun sendSupportedHealthCareEvents(supportedHealthCareEventTypes: SupportedHealthCareEventTypes) {
-        Log.d(TAG, "sendSupportedHealthCareEvents healthCareEventTypesSupported: $supportedHealthCareEventTypes")
+    fun sendSupportedHealthEvents(supportedHealthEventTypes: SupportedHealthEventTypes) {
+        Log.d(TAG, "sendSupportedHealthEvents healthEventTypesSupported: $supportedHealthEventTypes")
 
-        val putDataMapReq = PutDataMapRequest.create(SUPPORTED_HEALTH_CARE_EVENTS_MAP_PATH)
+        val putDataMapReq = PutDataMapRequest.create(SUPPORTED_HEALTH_EVENTS_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            putString(SUPPORTED_HEALTH_CARE_EVENTS_MAP_JSON, Gson().toJson(supportedHealthCareEventTypes))
+            putString(SUPPORTED_HEALTH_EVENTS_MAP_JSON, Gson().toJson(supportedHealthEventTypes))
         }
 
         send(putDataMapReq, true)
     }
 
-    fun sendHealthCareEvent(healthCareEvent: HealthCareEvent) {
-        Log.d(TAG, "sendHealthCareEvent sensorEvent=${healthCareEvent.sensorEvent}")
+    fun sendHealthEvent(healthEvent: HealthEvent) {
+        Log.d(TAG, "sendHealthEvent sensorEvent=${healthEvent.sensorEvent}")
 
-        val putDataMapReq = PutDataMapRequest.create(HEALTH_CARE_MAP_PATH)
+        val putDataMapReq = PutDataMapRequest.create(HEALTH_EVENT_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            putString(HEALTH_CARE_MAP_JSON, Gson().toJson(healthCareEvent))
+            putString(HEALTH_EVENT_MAP_JSON, Gson().toJson(healthEvent))
         }
 
         send(putDataMapReq, true)
@@ -71,9 +71,9 @@ class WearableDataClient(context: Context) {
     fun sendSensorEvent(event: SensorEvent) {
         Log.v(TAG, "sendSensorEvent type=${event.type}")
 
-        val putDataMapReq = PutDataMapRequest.create(SENSOR_MAP_PATH)
+        val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENT_MAP_PATH)
         putDataMapReq.dataMap.apply {
-            putString(SENSOR_MAP_JSON, Gson().toJson(event))
+            putString(SENSOR_EVENT_MAP_JSON, Gson().toJson(event))
         }
 
         send(putDataMapReq, liveData)

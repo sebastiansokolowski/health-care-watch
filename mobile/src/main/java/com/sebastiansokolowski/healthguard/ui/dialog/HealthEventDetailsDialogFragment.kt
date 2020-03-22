@@ -5,20 +5,20 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import com.sebastiansokolowski.healthguard.R
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 
 /**
  * Created by Sebastian Sokołowski on 02.03.20.
  */
-class HealthCareEventDetailsDialogFragment : DialogFragment() {
+class HealthEventDetailsDialogFragment : DialogFragment() {
     companion object {
         private const val MESSAGE_KEY = "message"
 
-        fun newInstance(healthCareEventEntity: HealthCareEventEntity): HealthCareEventDetailsDialogFragment {
-            val dialog = HealthCareEventDetailsDialogFragment()
+        fun newInstance(healthEventEntity: HealthEventEntity): HealthEventDetailsDialogFragment {
+            val dialog = HealthEventDetailsDialogFragment()
 
             val bundle = Bundle()
-            bundle.putString(MESSAGE_KEY, healthCareEventEntity.details + "\n\n\n\n" + healthCareEventEntity.measurementSettings)
+            bundle.putString(MESSAGE_KEY, healthEventEntity.details + "\n\n\n\n" + healthEventEntity.measurementSettings)
             dialog.arguments = bundle
 
             return dialog

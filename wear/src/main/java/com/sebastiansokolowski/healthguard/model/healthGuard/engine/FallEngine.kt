@@ -1,13 +1,13 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.engine
+package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
 import android.util.Log
 import com.google.gson.Gson
-import com.sebastiansokolowski.healthguard.model.healthCare.HealthCareEngineBase
-import com.sebastiansokolowski.healthguard.model.healthCare.detector.ActivityDetector
-import com.sebastiansokolowski.healthguard.model.healthCare.detector.StepDetector
-import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.ActivityDetector
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.HealthEvent
+import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
@@ -20,13 +20,13 @@ import kotlin.math.sqrt
 /**
  * Created by Sebastian Sokołowski on 21.09.19.
  */
-class FallEngine : HealthCareEngineBase() {
+class FallEngine : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     var stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
@@ -79,7 +79,7 @@ class FallEngine : HealthCareEngineBase() {
                                 checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson(it))
                             } else {
                                 Log.d(TAG, "fall detected!!")
-                                notifyHealthCareEvent(max.sensorEvent, diff.toFloat(), Gson().toJson(it))
+                                notifyHealthEvent(max.sensorEvent, diff.toFloat(), Gson().toJson(it))
                             }
                         }
                     }
@@ -95,7 +95,7 @@ class FallEngine : HealthCareEngineBase() {
         activityDetector.activityStateObservable.subscribe { activity ->
             if (!activity) {
                 Log.d(TAG, "fall detected!!")
-                notifyHealthCareEvent(sensorEvent, value, details)
+                notifyHealthEvent(sensorEvent, value, details)
             }
         }.let {
             compositeDisposable.add(it)
@@ -109,8 +109,8 @@ class FallEngine : HealthCareEngineBase() {
         compositeDisposable.clear()
     }
 
-    override fun getHealthCareEventType(): HealthCareEventType {
-        return HealthCareEventType.FALL
+    override fun getHealthEventType(): HealthEventType {
+        return HealthEventType.FALL
     }
 
     override fun requiredSensors(): Set<Int> {

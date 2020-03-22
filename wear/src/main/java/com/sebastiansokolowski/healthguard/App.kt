@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard
 
 import com.sebastiansokolowski.healthguard.di.DaggerAppComponent
-import com.sebastiansokolowski.healthguard.model.HealthCareModel
+import com.sebastiansokolowski.healthguard.model.HealthGuardModel
 import com.sebastiansokolowski.healthguard.utils.LogUtils
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
@@ -13,7 +13,7 @@ import javax.inject.Inject
 class App : DaggerApplication() {
 
     @Inject
-    lateinit var healthCareModel: HealthCareModel
+    lateinit var healthGuardModel: HealthGuardModel
 
     override fun onCreate() {
         super.onCreate()

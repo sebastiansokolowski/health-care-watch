@@ -21,26 +21,26 @@ class SetupModel(private val wearableDataClient: WearableDataClient, private val
     }
 
     init {
-        getSupportedHealthCareEvents()
+        getSupportedHealthEvents()
     }
 
     @SuppressLint("CheckResult")
-    private fun getSupportedHealthCareEvents() {
+    private fun getSupportedHealthEvents() {
         var disposable: Disposable? = null
-        disposable = sensorDataModel.supportedHealthCareEventsObservable
+        disposable = sensorDataModel.supportedHealthEventsObservable
                 .subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS) {
-                    getSupportedHealthCareEvents()
+                    getSupportedHealthEvents()
                 }
                 .subscribe {
-                    settingsModel.saveSupportedHealthCareEvents(it)
+                    settingsModel.saveSupportedHealthEvents(it)
                     setDefaultHealthCateEvents()
                     getMeasurementState()
                     disposable?.dispose()
                 }
 
         setupComplete.onNext(SetupStep.CONNECTING)
-        wearableDataClient.getSupportedHealthCareEvents()
+        wearableDataClient.getSupportedHealthEvents()
     }
 
     @SuppressLint("CheckResult")
@@ -62,8 +62,8 @@ class SetupModel(private val wearableDataClient: WearableDataClient, private val
 
     private fun setDefaultHealthCateEvents() {
         if (!settingsModel.isFirstSetupCompleted()) {
-            val supportedHealthCareEvents = settingsModel.getSupportedHealthCareEventTypes()
-            settingsModel.saveHealthCareEvents(supportedHealthCareEvents)
+            val supportedHealthEvents = settingsModel.getSupportedHealthEventTypes()
+            settingsModel.saveHealthEvents(supportedHealthEvents)
             settingsModel.setFirstSetupCompleted()
         }
     }

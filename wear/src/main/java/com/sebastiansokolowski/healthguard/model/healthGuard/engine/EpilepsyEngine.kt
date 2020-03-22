@@ -1,10 +1,10 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.engine
+package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
 import android.util.Log
 import com.google.gson.Gson
-import com.sebastiansokolowski.healthguard.model.healthCare.HealthCareEngineBase
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
+import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -15,7 +15,7 @@ import kotlin.math.sqrt
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class EpilepsyEngine : HealthCareEngineBase() {
+class EpilepsyEngine : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -55,7 +55,7 @@ class EpilepsyEngine : HealthCareEngineBase() {
 
                     if (percentOfPositiveSignals >= targetPercentOfPositiveSignals) {
                         Log.d(TAG, "epilepsy detected!!")
-                        notifyHealthCareEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat(), Gson().toJson(it))
+                        notifyHealthEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat(), Gson().toJson(it))
                     }
                 }
                 .let {
@@ -67,8 +67,8 @@ class EpilepsyEngine : HealthCareEngineBase() {
         compositeDisposable.clear()
     }
 
-    override fun getHealthCareEventType(): HealthCareEventType {
-        return HealthCareEventType.EPILEPSY
+    override fun getHealthEventType(): HealthEventType {
+        return HealthEventType.EPILEPSY
     }
 
     override fun requiredSensors(): Set<Int> {

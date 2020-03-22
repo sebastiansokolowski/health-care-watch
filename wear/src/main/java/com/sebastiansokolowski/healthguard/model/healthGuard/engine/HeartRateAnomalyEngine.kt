@@ -1,11 +1,11 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.engine
+package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
 import com.google.gson.Gson
-import com.sebastiansokolowski.healthguard.model.healthCare.HealthCareEngineBase
-import com.sebastiansokolowski.healthguard.model.healthCare.detector.StepDetector
-import com.sebastiansokolowski.shared.dataModel.HealthCareEvent
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
+import com.sebastiansokolowski.shared.dataModel.HealthEvent
+import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
@@ -15,7 +15,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class HeartRateAnomalyEngine : HealthCareEngineBase() {
+class HeartRateAnomalyEngine : HealthGuardEngineBase() {
 
     /*
         running mode is off
@@ -33,11 +33,11 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
         )
     }
 
-    override fun getHealthCareEventType(): HealthCareEventType {
-        return HealthCareEventType.HEARTH_RATE_ANOMALY
+    override fun getHealthEventType(): HealthEventType {
+        return HealthEventType.HEARTH_RATE_ANOMALY
     }
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthCareEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
@@ -53,7 +53,7 @@ class HeartRateAnomalyEngine : HealthCareEngineBase() {
 
                     if (heartRate > getMaxHeartRate() || heartRate < getMinHeartRate()) {
                         if (!anomalyState) {
-                            notifyHealthCareEvent(sensorEventData, heartRate.toFloat(), Gson().toJson(sensorEventData))
+                            notifyHealthEvent(sensorEventData, heartRate.toFloat(), Gson().toJson(sensorEventData))
                             anomalyState = true
                         }
                     } else {

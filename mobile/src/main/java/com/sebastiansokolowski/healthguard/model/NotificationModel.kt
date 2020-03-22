@@ -2,10 +2,10 @@ package com.sebastiansokolowski.healthguard.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.model.notification.AndroidNotification
 import com.sebastiansokolowski.healthguard.model.notification.SmsNotification
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.shared.dataModel.HealthEventType
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
@@ -22,8 +22,8 @@ class NotificationModel(context: Context, private val prefs: SharedPreferences) 
         return prefs.getBoolean("sms_notification_enabled", false)
     }
 
-    fun notifyHealthCareEvent(healthCareEventEntity: HealthCareEventEntity) {
-        val message = createMessage(healthCareEventEntity) ?: return
+    fun notifyHealthEvent(healthEventEntity: HealthEventEntity) {
+        val message = createMessage(healthEventEntity) ?: return
 
         if (isAndroidNotificationEnabled()) {
             androidNotificationModel.showAlertNotification(message)
@@ -33,12 +33,12 @@ class NotificationModel(context: Context, private val prefs: SharedPreferences) 
         }
     }
 
-    private fun createMessage(healthCareEventEntity: HealthCareEventEntity): String? {
-        return when (healthCareEventEntity.careEvent) {
-            HealthCareEventType.EPILEPSY -> {
+    private fun createMessage(healthEventEntity: HealthEventEntity): String? {
+        return when (healthEventEntity.event) {
+            HealthEventType.EPILEPSY -> {
                 ""
             }
-            HealthCareEventType.HEARTH_RATE_ANOMALY -> {
+            HealthEventType.HEARTH_RATE_ANOMALY -> {
                 ""
             }
             else -> null

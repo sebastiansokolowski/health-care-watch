@@ -1,7 +1,7 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.detector
+package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthguard.model.healthCare.SensorEventMock.Companion.getMockedSensorEventWrapper
+import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension

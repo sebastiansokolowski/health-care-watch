@@ -15,10 +15,10 @@ import android.view.*
 import android.widget.TextView
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
-import com.sebastiansokolowski.healthguard.db.entity.HealthCareEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.model.SetupModel
-import com.sebastiansokolowski.healthguard.ui.adapter.HealthCareEventAdapter
-import com.sebastiansokolowski.healthguard.ui.dialog.HealthCareEventDetailsDialogFragment
+import com.sebastiansokolowski.healthguard.ui.adapter.HealthEventAdapter
+import com.sebastiansokolowski.healthguard.ui.dialog.HealthEventDetailsDialogFragment
 import com.sebastiansokolowski.healthguard.util.SafeCall
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import com.sebastiansokolowski.healthguard.viewModel.HomeViewModel
@@ -72,22 +72,22 @@ class HomeFragment : DaggerFragment() {
                 heart_rate_iv.startAnimation()
             }
         })
-        homeViewModel.healthCareEvents.observe(this, Observer {
+        homeViewModel.healthEvents.observe(this, Observer {
             SafeCall.safeLet(context, it) { context, list ->
-                val adapter = HealthCareEventAdapter(context, list, homeViewModel)
-                adapter.setEmptyView(health_care_events_empty_view)
-                health_care_events_lv.adapter = adapter
+                val adapter = HealthEventAdapter(context, list, homeViewModel)
+                adapter.setEmptyView(health_events_empty_view)
+                health_events_lv.adapter = adapter
             }
         })
-        homeViewModel.healthCareEventDetails.observe(this, Observer {
+        homeViewModel.healthEventDetails.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     val mainActivity: MainActivity = activity as MainActivity
-                    mainActivity.showDialog(HealthCareEventDetailsDialogFragment.newInstance(it))
+                    mainActivity.showDialog(HealthEventDetailsDialogFragment.newInstance(it))
                 }
             }
         })
-        homeViewModel.healthCareEventToRestore.observe(this, Observer {
+        homeViewModel.healthEventToRestore.observe(this, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showRestoreDeletedItemSnackBar(it)
@@ -99,9 +99,9 @@ class HomeFragment : DaggerFragment() {
             homeViewModel.toggleMeasurementState()
         }
 
-        homeViewModel.healthCareEventSelected.observe(this, Observer {
+        homeViewModel.healthEventSelected.observe(this, Observer {
             it?.let {
-                showHealthCareEventInHistoryFragment(it)
+                showHealthEventInHistoryFragment(it)
             }
         })
         homeViewModel.setupState.observe(this, Observer {
@@ -176,19 +176,19 @@ class HomeFragment : DaggerFragment() {
         }
     }
 
-    private fun showRestoreDeletedItemSnackBar(healthCareEventEntity: HealthCareEventEntity) {
+    private fun showRestoreDeletedItemSnackBar(healthEventEntity: HealthEventEntity) {
         view?.let {
             val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
             snackbar.setAction(getString(R.string.action_undo)) {
-                homeViewModel.restoreDeletedEvent(healthCareEventEntity)
+                homeViewModel.restoreDeletedEvent(healthEventEntity)
             }
             snackbar.show()
         }
     }
 
-    private fun showHealthCareEventInHistoryFragment(healthCareEventEntity: HealthCareEventEntity) {
+    private fun showHealthEventInHistoryFragment(healthEventEntity: HealthEventEntity) {
         val mainActivity: MainActivity = activity as MainActivity
         mainActivity.showFragment(HistoryDataFragment())
-        mainActivity.healthCareEventEntitySelected.postValue(SingleEvent(healthCareEventEntity))
+        mainActivity.healthEventEntitySelected.postValue(SingleEvent(healthEventEntity))
     }
 }

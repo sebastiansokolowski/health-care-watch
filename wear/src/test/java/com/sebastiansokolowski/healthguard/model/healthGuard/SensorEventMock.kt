@@ -1,4 +1,4 @@
-package com.sebastiansokolowski.healthguard.model.healthCare
+package com.sebastiansokolowski.healthguard.model.healthGuard
 
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.mockk.every

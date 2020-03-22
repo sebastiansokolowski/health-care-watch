@@ -1,13 +1,13 @@
-package com.sebastiansokolowski.healthguard.model.healthCare.engine
+package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthguard.model.healthCare.HealthCareEngineBase
-import com.sebastiansokolowski.shared.dataModel.HealthCareEventType
+import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
+import com.sebastiansokolowski.shared.dataModel.HealthEventType
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class AllSensorsEngine : HealthCareEngineBase() {
+class AllSensorsEngine : HealthGuardEngineBase() {
 
     override fun requiredSensors(): Set<Int> {
         return setOf(Sensor.TYPE_HEART_RATE,
@@ -23,8 +23,8 @@ class AllSensorsEngine : HealthCareEngineBase() {
     override fun stopEngine() {
     }
 
-    override fun getHealthCareEventType(): HealthCareEventType {
-        return HealthCareEventType.ALL_SENSORS
+    override fun getHealthEventType(): HealthEventType {
+        return HealthEventType.ALL_SENSORS
     }
 
 }

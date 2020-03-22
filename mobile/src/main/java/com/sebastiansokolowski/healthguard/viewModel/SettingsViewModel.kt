@@ -7,7 +7,7 @@ import android.provider.ContactsContract
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.healthguard.model.SettingsModel
 import com.sebastiansokolowski.healthguard.model.SetupModel
-import com.sebastiansokolowski.healthguard.util.HealthCareEventHelper
+import com.sebastiansokolowski.healthguard.util.HealthEventHelper
 import com.sebastiansokolowski.healthguard.view.preference.CustomMultiSelectListPreference
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
 import javax.inject.Inject
@@ -18,11 +18,11 @@ import javax.inject.Inject
 class SettingsViewModel
 @Inject constructor(context: Context, private val settingsModel: SettingsModel, private val sensorDataModel: SensorDataModel, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
 
-    private val healthCareEventHelper = HealthCareEventHelper(context)
+    private val healthEventHelper = HealthEventHelper(context)
 
     fun onSharedPreferenceChanged(key: String) {
         when (key) {
-            SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
+            SettingsSharedPreferences.HEALTH_EVENTS -> {
                 if (sensorDataModel.measurementRunning) {
                     sensorDataModel.stopMeasurement()
                     sensorDataModel.requestStartMeasurement()
@@ -36,8 +36,8 @@ class SettingsViewModel
             SettingsSharedPreferences.CONTACTS -> {
                 setContacts(preference)
             }
-            SettingsSharedPreferences.HEALTH_CARE_EVENTS -> {
-                setSupportedHealthCareEvents(preference)
+            SettingsSharedPreferences.HEALTH_EVENTS -> {
+                setSupportedHealthEvents(preference)
             }
         }
     }
@@ -71,14 +71,14 @@ class SettingsViewModel
         preference.setValues(names.toTypedArray(), values.toTypedArray())
     }
 
-    private fun setSupportedHealthCareEvents(preference: CustomMultiSelectListPreference) {
+    private fun setSupportedHealthEvents(preference: CustomMultiSelectListPreference) {
         val names = mutableListOf<String>()
         val values = mutableListOf<String>()
 
-        val healthCareEventTypesName = settingsModel.getSupportedHealthCareEventTypes()
+        val healthEventTypesName = settingsModel.getSupportedHealthEventTypes()
 
-        healthCareEventTypesName.forEach {
-            names.add(healthCareEventHelper.getTitle(it))
+        healthEventTypesName.forEach {
+            names.add(healthEventHelper.getTitle(it))
             values.add(it.name)
         }
 
