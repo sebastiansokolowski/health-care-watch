@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryLight">#BFDBF7</color>
+    <color name="colorPrimary">#1F7A8C</color>
+    <color name="colorPrimaryDark">#053C5E</color>
+    <color name="colorAccent">#A31621</color>
+
+    <color name="health_event_text_color">#FFF</color>
+    <color name="chart_no_data_info_color">#000</color>
+
+    <color name="chart_x_color">#67a1e0</color>
+    <color name="chart_y_color">#dddf65</color>
+    <color name="chart_z_color">#e06967</color>
+</resources>

@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         android:orientation="vertical">
 
         <TextView
@@ -19,6 +20,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="---"
+            android:textColor="@android:color/white"
             android:textSize="30sp"
             app:layout_box="all" />
 
@@ -33,7 +35,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="START" />
+                android:background="@drawable/measurement_button_selector"
+                android:text="START"
+                android:textColor="@android:color/white" />
         </FrameLayout>
 
     </LinearLayout>
