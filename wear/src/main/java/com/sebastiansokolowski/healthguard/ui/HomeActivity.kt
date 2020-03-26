@@ -6,9 +6,13 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
+import android.view.View
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.service.MessageReceiverService
 import com.sebastiansokolowski.healthguard.service.SensorService
+import com.sebastiansokolowski.healthguard.view.DataValueFormatter
 import com.sebastiansokolowski.healthguard.viewModel.HomeViewModel
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,6 +46,7 @@ class HomeActivity : WearableFragmentActivity() {
         btn_measurement_start.setOnClickListener {
             homeViewModel.toggleMeasurementState()
         }
+        initHeartRateLineChart()
 
         homeViewModel.measurementState.observe(this, Observer {
             it?.let {
@@ -53,6 +58,29 @@ class HomeActivity : WearableFragmentActivity() {
                 setHeartRateView(it)
             }
         })
+        homeViewModel.chartData.observe(this, Observer {
+            it?.let {
+                val lineDataSet = LineDataSet(it, "")
+                lineDataSet.setDrawCircles(true)
+                lineDataSet.color = ContextCompat.getColor(this, R.color.colorPrimaryLight)
+                lineDataSet.valueTextColor = ContextCompat.getColor(this, R.color.white)
+                lineDataSet.valueFormatter = DataValueFormatter()
+
+                lc_heart_rate.data = LineData(lineDataSet)
+                lc_heart_rate.notifyDataSetChanged()
+                lc_heart_rate.invalidate()
+            }
+        })
+    }
+
+    private fun initHeartRateLineChart() {
+        lc_heart_rate.setNoDataText("")
+        lc_heart_rate.isClickable = false
+        lc_heart_rate.description.isEnabled = false
+        lc_heart_rate.legend.isEnabled = false
+        lc_heart_rate.axisLeft.isEnabled = false
+        lc_heart_rate.axisRight.isEnabled = false
+        lc_heart_rate.xAxis.isEnabled = false
     }
 
     private fun setMeasurementButtonView(running: Boolean) {
@@ -90,12 +118,12 @@ class HomeActivity : WearableFragmentActivity() {
     private fun updateDisplay() {
         if (isAmbient()) {
             container.setBackgroundColor(ContextCompat.getColor(this, android.R.color.black))
-            tv_heart_rate.setTextColor(ContextCompat.getColor(this, android.R.color.white))
             tv_heart_rate.paint.isAntiAlias = false
+            lc_heart_rate.visibility = View.INVISIBLE
         } else {
-            container.background = null
-            tv_heart_rate.setTextColor(ContextCompat.getColor(this, android.R.color.black))
+            container.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
             tv_heart_rate.paint.isAntiAlias = true
+            lc_heart_rate.visibility = View.VISIBLE
         }
     }
 

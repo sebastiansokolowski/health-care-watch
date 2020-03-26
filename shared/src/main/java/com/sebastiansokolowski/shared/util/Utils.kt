@@ -1,4 +1,4 @@
-package com.sebastiansokolowski.healthguard.util
+package com.sebastiansokolowski.shared.util
 
 import java.text.DecimalFormat
 

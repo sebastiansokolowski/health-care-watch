@@ -12,7 +12,6 @@ import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
-import kotlin.math.roundToInt
 
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
@@ -26,7 +25,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
     }
 
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
-    val heartRateObservable: PublishSubject<Int> = PublishSubject.create()
+    val heartRateObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     var measurementRunning = false
@@ -104,17 +103,8 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.apply {
-            if (sensor == null) {
+            if (sensor == null || values == null || values.isEmpty()) {
                 return@apply
-            }
-
-            when (sensor.type) {
-                Sensor.TYPE_HEART_RATE -> {
-                    val sensorValue = values[0]
-
-                    val heartRate = sensorValue.roundToInt()
-                    heartRateObservable.onNext(heartRate)
-                }
             }
 
             val sensorEventWrapper = com.sebastiansokolowski.shared.dataModel.SensorEvent(
@@ -123,8 +113,13 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
                     accuracy
             )
 
-            notifySensorsObservable(sensorEventWrapper)
+            when (sensor.type) {
+                Sensor.TYPE_HEART_RATE -> {
+                    heartRateObservable.onNext(sensorEventWrapper)
+                }
+            }
 
+            notifySensorsObservable(sensorEventWrapper)
             wearableDataClient.sendSensorEvent(sensorEventWrapper)
         }
     }
