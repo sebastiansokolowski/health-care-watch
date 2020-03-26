@@ -23,11 +23,11 @@ import com.sebastiansokolowski.healthguard.ui.adapter.HealthEventAdapter
 import com.sebastiansokolowski.healthguard.ui.dialog.HealthEventDetailsDialogFragment
 import com.sebastiansokolowski.healthguard.util.SafeCall
 import com.sebastiansokolowski.healthguard.util.SensorAdapterItemHelper
-import com.sebastiansokolowski.healthguard.util.Utils
 import com.sebastiansokolowski.healthguard.view.CustomMarkerView
 import com.sebastiansokolowski.healthguard.view.DataValueFormatter
 import com.sebastiansokolowski.healthguard.view.DateValueFormatter
 import com.sebastiansokolowski.healthguard.viewModel.sensorData.SensorEventViewModel
+import com.sebastiansokolowski.shared.util.Utils
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.sensor_data_fragment.*
 import java.util.concurrent.TimeUnit

@@ -8,7 +8,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.utils.MPPointF
 import com.sebastiansokolowski.healthguard.util.EntryHelper
 import com.sebastiansokolowski.healthguard.util.SafeCall
-import com.sebastiansokolowski.healthguard.util.Utils
+import com.sebastiansokolowski.shared.util.Utils
 import kotlinx.android.synthetic.main.custom_marker_view.view.*
 
 /**

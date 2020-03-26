@@ -4,6 +4,7 @@ import android.content.Context
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
+import com.sebastiansokolowski.shared.util.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 

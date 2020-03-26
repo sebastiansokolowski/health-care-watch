@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard.view
 
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.sebastiansokolowski.healthguard.util.Utils
+import com.sebastiansokolowski.shared.util.Utils
 import kotlin.math.abs
 
 /**
