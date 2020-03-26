@@ -34,6 +34,7 @@ class MessageReceiverService : WearableListenerService() {
             }
             DataClientPaths.START_LIVE_DATA -> {
                 wearableDataClient.liveData = true
+                wearableDataClient.syncSensorData(true)
             }
             DataClientPaths.STOP_LIVE_DATA -> {
                 wearableDataClient.liveData = false

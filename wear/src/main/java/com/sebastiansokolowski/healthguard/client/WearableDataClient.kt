@@ -1,5 +1,6 @@
 package com.sebastiansokolowski.healthguard.client
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
@@ -9,13 +10,18 @@ import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_PATH
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENTS_MAP_ARRAY_LIST
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENTS_MAP_PATH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENT_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENT_MAP_PATH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_EVENTS_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_EVENTS_MAP_PATH
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
-import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
+import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -24,9 +30,17 @@ import com.sebastiansokolowski.shared.dataModel.SensorEvent
 class WearableDataClient(context: Context) {
     private val TAG = javaClass.canonicalName
 
+    private val maxSizeOfDataToSend = 500
+
     private val dataClient: DataClient = Wearable.getDataClient(context)
     private val messageClient: MessageClient = Wearable.getMessageClient(context)
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
+
+    private val sensorDataToSend = ArrayList<String>()
+
+    init {
+        startSensorDataSynchronizer()
+    }
 
     var liveData = false
 
@@ -37,6 +51,35 @@ class WearableDataClient(context: Context) {
             sendMessage(DataClientPaths.START_MEASUREMENT)
         } else {
             sendMessage(DataClientPaths.STOP_MEASUREMENT)
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    fun startSensorDataSynchronizer() {
+        Observable.interval(5, TimeUnit.MINUTES)
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    syncSensorData(false)
+                }
+    }
+
+    fun syncSensorData(urgent: Boolean) {
+        val dataToSync = ArrayList<String>()
+        synchronized(sensorDataToSend) {
+            Log.d(TAG, "syncSensorData size=${sensorDataToSend.size}")
+            dataToSync.addAll(sensorDataToSend)
+            sensorDataToSend.clear()
+        }
+
+        dataToSync.chunked(maxSizeOfDataToSend).iterator().forEach {
+            Log.v(TAG, "syncSensorData chunked size=${it.size}")
+
+            val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENTS_MAP_PATH)
+            putDataMapReq.dataMap.apply {
+                putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, dataToSync)
+            }
+
+            send(putDataMapReq, urgent)
         }
     }
 
@@ -71,12 +114,19 @@ class WearableDataClient(context: Context) {
     fun sendSensorEvent(event: SensorEvent) {
         Log.v(TAG, "sendSensorEvent type=${event.type}")
 
+        if (!liveData) {
+            synchronized(sensorDataToSend) {
+                sensorDataToSend.add(Gson().toJson(event))
+            }
+            return
+        }
+
         val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENT_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putString(SENSOR_EVENT_MAP_JSON, Gson().toJson(event))
         }
 
-        send(putDataMapReq, liveData)
+        send(putDataMapReq, true)
     }
 
     private fun sendMessage(message: String) {

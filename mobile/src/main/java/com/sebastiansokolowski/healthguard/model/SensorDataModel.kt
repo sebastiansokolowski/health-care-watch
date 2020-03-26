@@ -149,6 +149,23 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         Log.d(TAG, "sensorEvent=$sensorEventData")
                     }
                 }
+                DataClientPaths.SENSOR_EVENTS_MAP_PATH -> {
+                    DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
+                        val sensorEventsJson = getStringArrayList(DataClientPaths.SENSOR_EVENTS_MAP_ARRAY_LIST)
+
+                        val dataToSave = mutableListOf<SensorEventEntity>()
+                        sensorEventsJson.forEach {
+                            val sensorEvent = Gson().fromJson(it, SensorEvent::class.java)
+                            val sensorEventData = createSensorEventDataEntity(sensorEvent)
+                            dataToSave.add(sensorEventData)
+                        }
+
+                        val eventBox = boxStore.boxFor(SensorEventEntity::class.java)
+                        eventBox.put(dataToSave)
+
+                        Log.d(TAG, "sensorEvents size=${sensorEventsJson.size}")
+                    }
+                }
                 DataClientPaths.HEALTH_EVENT_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
                         val json = getString(DataClientPaths.HEALTH_EVENT_MAP_JSON)

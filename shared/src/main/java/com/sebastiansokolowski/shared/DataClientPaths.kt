@@ -23,6 +23,9 @@ class DataClientPaths {
         const val SENSOR_EVENT_MAP_PATH = "/sensor_event"
         const val SENSOR_EVENT_MAP_JSON = "json"
 
+        const val SENSOR_EVENTS_MAP_PATH = "/sensor_events"
+        const val SENSOR_EVENTS_MAP_ARRAY_LIST = "sensors"
+
         const val HEALTH_EVENT_MAP_PATH = "/health_event"
         const val HEALTH_EVENT_MAP_JSON = "json"
 
