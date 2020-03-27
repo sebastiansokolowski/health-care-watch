@@ -48,6 +48,8 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         }
     }
 
+    //get
+
     fun getMeasurementSettings(): MeasurementSettings {
         val defaultMeasurementSettings = MeasurementSettings()
 
@@ -86,6 +88,24 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         }
     }
 
+    fun getPhoneNumbers(): MutableSet<String>? {
+        return sharedPreferences.getStringSet(SettingsSharedPreferences.CONTACTS, mutableSetOf())
+    }
+
+    fun isFirstSetupCompleted(): Boolean {
+        return sharedPreferences.getBoolean(SettingsSharedPreferences.FIRST_SETUP_COMPLETED, false)
+    }
+
+    fun isAndroidNotificationEnabled(): Boolean {
+        return sharedPreferences.getBoolean(SettingsSharedPreferences.ANDROID_NOTIFICATIONS, true)
+    }
+
+    fun isSmsNotificationEnabled(): Boolean {
+        return sharedPreferences.getBoolean(SettingsSharedPreferences.SMS_NOTIFICATIONS, false)
+    }
+
+    //set
+
     @SuppressLint("ApplySharedPref")
     fun saveSupportedHealthEvents(healthEvents: Set<HealthEventType>) {
         sharedPreferences.edit()?.apply {
@@ -102,10 +122,6 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
             putStringSet(SettingsSharedPreferences.HEALTH_EVENTS, values)
             commit()
         }
-    }
-
-    fun isFirstSetupCompleted(): Boolean {
-        return sharedPreferences.getBoolean(SettingsSharedPreferences.FIRST_SETUP_COMPLETED, false)
     }
 
     @SuppressLint("ApplySharedPref")

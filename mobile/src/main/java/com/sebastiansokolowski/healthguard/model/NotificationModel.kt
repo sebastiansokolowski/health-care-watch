@@ -1,7 +1,6 @@
 package com.sebastiansokolowski.healthguard.model
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.model.notification.AndroidNotification
 import com.sebastiansokolowski.healthguard.model.notification.SmsNotification
@@ -10,25 +9,17 @@ import com.sebastiansokolowski.shared.dataModel.HealthEventType
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class NotificationModel(context: Context, private val prefs: SharedPreferences) {
+class NotificationModel(context: Context, private val settingsModel: SettingsModel) {
     private val androidNotificationModel = AndroidNotification(context)
-    private val smsNotificationModel = SmsNotification(prefs)
-
-    private fun isAndroidNotificationEnabled(): Boolean {
-        return prefs.getBoolean("android_notification_enabled", false)
-    }
-
-    private fun isSmsNotificationEnabled(): Boolean {
-        return prefs.getBoolean("sms_notification_enabled", false)
-    }
+    private val smsNotificationModel = SmsNotification(settingsModel)
 
     fun notifyHealthEvent(healthEventEntity: HealthEventEntity) {
         val message = createMessage(healthEventEntity) ?: return
 
-        if (isAndroidNotificationEnabled()) {
+        if (settingsModel.isAndroidNotificationEnabled()) {
             androidNotificationModel.showAlertNotification(message)
         }
-        if (isSmsNotificationEnabled()) {
+        if (settingsModel.isSmsNotificationEnabled()) {
             smsNotificationModel.sendSms(message)
         }
     }

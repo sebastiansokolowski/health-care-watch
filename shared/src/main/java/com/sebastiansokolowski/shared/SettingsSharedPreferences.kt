@@ -10,6 +10,8 @@ class SettingsSharedPreferences {
         const val HEALTH_EVENTS = "health_events"
         const val SUPPORTED_HEALTH_EVENTS = "supported_health_events"
         const val FIRST_SETUP_COMPLETED = "first_setup_completed"
+        const val ANDROID_NOTIFICATIONS = "android_notifications_enabled"
+        const val SMS_NOTIFICATIONS = "sms_notification_enabled"
         // mobile and wear
         const val SAMPLING_US = "sampling_us"
         const val FALL_THRESHOLD = "fall_threshold"

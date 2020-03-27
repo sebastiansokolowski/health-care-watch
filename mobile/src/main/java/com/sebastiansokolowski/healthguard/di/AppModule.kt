@@ -45,8 +45,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideNotificationModel(app: Application, prefs: SharedPreferences): NotificationModel =
-            NotificationModel(app, prefs)
+    fun provideNotificationModel(context: Context, settingsModel: SettingsModel): NotificationModel =
+            NotificationModel(context, settingsModel)
 
     @Provides
     @Singleton

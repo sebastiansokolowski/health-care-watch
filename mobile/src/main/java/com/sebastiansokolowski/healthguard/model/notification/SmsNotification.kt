@@ -1,14 +1,14 @@
 package com.sebastiansokolowski.healthguard.model.notification
 
-import android.content.SharedPreferences
 import android.telephony.SmsManager
+import com.sebastiansokolowski.healthguard.model.SettingsModel
 
 /**
  * Created by Sebastian Sokołowski on 10.05.19.
  */
-class SmsNotification(private val prefs: SharedPreferences) {
+class SmsNotification(private val settingsModel: SettingsModel) {
     fun sendSms(message: String) {
-        val numbersToNotify = getPhoneNumbers()
+        val numbersToNotify = settingsModel.getPhoneNumbers()
 
         numbersToNotify?.let {
             val smsManager = SmsManager.getDefault()
@@ -16,9 +16,5 @@ class SmsNotification(private val prefs: SharedPreferences) {
                 smsManager.sendTextMessage(it, null, message, null, null)
             }
         }
-    }
-
-    private fun getPhoneNumbers(): MutableSet<String>? {
-        return prefs.getStringSet("contacts", mutableSetOf())
     }
 }
