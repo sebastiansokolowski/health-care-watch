@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
+import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.client.WearableDataClient
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import io.reactivex.BackpressureStrategy
@@ -89,32 +90,47 @@ class HomeViewModel
     }
 
     fun requestPermissions(activity: Activity) {
-//        if (ContextCompat.checkSelfPermission(activity,
-//                        Manifest.permission.BODY_SENSORS)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(activity,
-//                    arrayOf(Manifest.permission.BODY_SENSORS),
-//                    MY_PERMISSIONS_REQUEST_BODY_SENSORS)
-//            sensorDataModel.stopMeasurement()
-//        }
-        if (ContextCompat.checkSelfPermission(activity,
-                        Manifest.permission.BODY_SENSORS)
-                != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(activity,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+        val missingPermissions = getMissingPermissions(activity)
+        if (missingPermissions.isNotEmpty()) {
             ActivityCompat.requestPermissions(activity,
-                    arrayOf(Manifest.permission.BODY_SENSORS, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    missingPermissions,
                     MY_PERMISSIONS_REQUEST_BODY_SENSORS)
             sensorDataModel.stopMeasurement()
         }
     }
 
+    private fun getMissingPermissions(activity: Activity): Array<String> {
+        val missingPermissions = mutableListOf<String>()
+
+        val bodySensorPermissionGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.BODY_SENSORS) == PackageManager.PERMISSION_GRANTED
+        val writePermissionGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        val bootCompletedPermissionGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.RECEIVE_BOOT_COMPLETED) == PackageManager.PERMISSION_GRANTED
+
+        if (!bodySensorPermissionGranted) {
+            missingPermissions.add(Manifest.permission.BODY_SENSORS)
+        }
+        if (BuildConfig.DEBUG && !writePermissionGranted) {
+            missingPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+        if (!bootCompletedPermissionGranted) {
+            missingPermissions.add(Manifest.permission.RECEIVE_BOOT_COMPLETED)
+        }
+
+        return missingPermissions.toTypedArray()
+    }
+
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when (requestCode) {
             MY_PERMISSIONS_REQUEST_BODY_SENSORS -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    wearableDataClient.requestStartMeasurement()
+                permissions.forEachIndexed { index: Int, s: String ->
+                    if (s == Manifest.permission.BODY_SENSORS) {
+                        val grantResult = grantResults.getOrNull(index)
+                        grantResult?.let {
+                            if (it == PackageManager.PERMISSION_GRANTED) {
+                                wearableDataClient.requestStartMeasurement()
+                            }
+                        }
+                    }
                 }
             }
         }
