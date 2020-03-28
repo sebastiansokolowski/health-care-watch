@@ -114,6 +114,9 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 .subscribeOn(Schedulers.io())
                 .buffer(10, TimeUnit.SECONDS)
                 .subscribe {
+                    if (it.isEmpty()) {
+                        return@subscribe
+                    }
                     Log.d(TAG, "save data to database")
                     val eventBox = boxStore.boxFor(SensorEventEntity::class.java)
                     eventBox.put(it)
