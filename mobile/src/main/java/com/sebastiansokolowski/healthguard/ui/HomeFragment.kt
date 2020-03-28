@@ -21,6 +21,7 @@ import com.sebastiansokolowski.healthguard.ui.adapter.HealthEventAdapter
 import com.sebastiansokolowski.healthguard.ui.dialog.HealthEventDetailsDialogFragment
 import com.sebastiansokolowski.healthguard.util.SafeCall
 import com.sebastiansokolowski.healthguard.util.SingleEvent
+import com.sebastiansokolowski.healthguard.view.CustomSnackbar
 import com.sebastiansokolowski.healthguard.viewModel.HomeViewModel
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.home_fragment.*
@@ -178,7 +179,7 @@ class HomeFragment : DaggerFragment() {
 
     private fun showRestoreDeletedItemSnackBar(healthEventEntity: HealthEventEntity) {
         view?.let {
-            val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
+            val snackbar = CustomSnackbar(it.context).make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
             snackbar.setAction(getString(R.string.action_undo)) {
                 homeViewModel.restoreDeletedEvent(healthEventEntity)
             }

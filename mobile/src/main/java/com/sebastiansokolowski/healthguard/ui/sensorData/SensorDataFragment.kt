@@ -24,6 +24,7 @@ import com.sebastiansokolowski.healthguard.ui.dialog.HealthEventDetailsDialogFra
 import com.sebastiansokolowski.healthguard.util.SafeCall
 import com.sebastiansokolowski.healthguard.util.SensorAdapterItemHelper
 import com.sebastiansokolowski.healthguard.view.CustomMarkerView
+import com.sebastiansokolowski.healthguard.view.CustomSnackbar
 import com.sebastiansokolowski.healthguard.view.DataValueFormatter
 import com.sebastiansokolowski.healthguard.view.DateValueFormatter
 import com.sebastiansokolowski.healthguard.viewModel.sensorData.SensorEventViewModel
@@ -225,7 +226,7 @@ open class SensorDataFragment : DaggerFragment() {
 
     private fun showRestoreDeletedItemSnackBar(healthEventEntity: HealthEventEntity) {
         view?.let {
-            val snackbar = Snackbar.make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
+            val snackbar = CustomSnackbar(it.context).make(it, getString(R.string.restore_deleted_item_title), Snackbar.LENGTH_LONG)
             snackbar.setAction(getString(R.string.action_undo)) {
                 sensorEventViewModel.restoreDeletedEvent(healthEventEntity)
             }
