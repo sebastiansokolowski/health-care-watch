@@ -49,6 +49,10 @@ class HealthEventHelper(val context: Context) {
         }
     }
 
+    fun getNotificationMessage(healthEventEntity: HealthEventEntity): String {
+        return getTitle(healthEventEntity) + "\n" + getEventInfo(healthEventEntity) + "\n" + getMessage(healthEventEntity)
+    }
+
     fun getMessage(healthEventEntity: HealthEventEntity): String {
         return when (healthEventEntity.event) {
             HealthEventType.EPILEPSY -> context.getString(R.string.health_event_epilepsy_message)

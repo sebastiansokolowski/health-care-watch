@@ -4,14 +4,15 @@ import android.content.Context
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.model.notification.AndroidNotification
 import com.sebastiansokolowski.healthguard.model.notification.SmsNotification
-import com.sebastiansokolowski.shared.dataModel.HealthEventType
+import com.sebastiansokolowski.healthguard.util.HealthEventHelper
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class NotificationModel(context: Context, private val settingsModel: SettingsModel) {
+class NotificationModel(val context: Context, private val settingsModel: SettingsModel) {
     private val androidNotificationModel = AndroidNotification(context)
     private val smsNotificationModel = SmsNotification(settingsModel)
+    private val healthEventHelper = HealthEventHelper(context)
 
     fun notifyHealthEvent(healthEventEntity: HealthEventEntity) {
         val message = createMessage(healthEventEntity) ?: return
@@ -25,14 +26,6 @@ class NotificationModel(context: Context, private val settingsModel: SettingsMod
     }
 
     private fun createMessage(healthEventEntity: HealthEventEntity): String? {
-        return when (healthEventEntity.event) {
-            HealthEventType.EPILEPSY -> {
-                ""
-            }
-            HealthEventType.HEARTH_RATE_ANOMALY -> {
-                ""
-            }
-            else -> null
-        }
+        return healthEventHelper.getNotificationMessage(healthEventEntity)
     }
 }
