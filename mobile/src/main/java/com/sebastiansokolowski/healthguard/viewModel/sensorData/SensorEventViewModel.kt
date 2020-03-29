@@ -49,9 +49,9 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     }
 
     fun refreshView() {
-        initHealthEvents()
+        refreshHealthEvents()
         if (getSensorEventsObservable() != null) {
-            initSensorEvents()
+            refreshSensorEvents()
         }
     }
 
@@ -68,6 +68,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     override fun onDeleteItem(healthEventEntity: HealthEventEntity) {
         healthEventEntityBox.remove(healthEventEntity)
         healthEventToRestore.postValue(SingleEvent(healthEventEntity))
+        refreshHealthEvents()
     }
 
     //
@@ -76,7 +77,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
 
     abstract fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>?
 
-    private fun initHealthEvents() {
+    private fun refreshHealthEvents() {
         val disposable = getHealthEventsObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
@@ -85,7 +86,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
         disposables.add(disposable)
     }
 
-    private fun initSensorEvents() {
+    private fun refreshSensorEvents() {
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
 
         val disposable = getSensorEventsObservable()!!
@@ -174,6 +175,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
 
     fun restoreDeletedEvent(healthEventEntity: HealthEventEntity) {
         healthEventEntityBox.put(healthEventEntity)
+        refreshHealthEvents()
     }
 
     fun showHealthEvent(healthEventEntity: HealthEventEntity) {
