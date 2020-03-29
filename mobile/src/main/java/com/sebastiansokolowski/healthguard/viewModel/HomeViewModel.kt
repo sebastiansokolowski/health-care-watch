@@ -61,7 +61,7 @@ class HomeViewModel
         return Transformations.map(sensorDataModelLiveData) { sensorEventData ->
             var result = ""
             if (sensorEventData.values.isNotEmpty() && sensorDataModel.measurementRunning) {
-                result = sensorEventData.values[0].toString()
+                result = sensorEventData.values[0].toInt().toString()
             }
             return@map result
         }

@@ -63,7 +63,9 @@ open class SensorDataFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
             val marker = CustomMarkerView(it, R.layout.custom_marker_view)
+            marker.unit = SensorAdapterItemHelper.getUnit(context, sensorType)
             marker.chartView = chart_lc
+
             chart_lc.marker = marker
         }
         chart_lc.setTouchEnabled(true)
@@ -139,6 +141,7 @@ open class SensorDataFragment : DaggerFragment() {
 
         val lineDataSetList = mutableListOf<LineDataSet>()
 
+        val unit = " (" + SensorAdapterItemHelper.getUnit(context, sensorAdapterItem) + ")"
         var colorLineDataX = 0
         var colorLineDataY = 0
         var colorLineDataZ = 0
@@ -156,36 +159,37 @@ open class SensorDataFragment : DaggerFragment() {
 
         when (sensorAdapterItem) {
             SensorAdapterItem.LINEAR_ACCELERATION -> {
-                val xLineDataSet = createLineDataSet(chartData.xData, "x", colorLineDataX)
-                val yLineDataSet = createLineDataSet(chartData.yData, "y", colorLineDataY)
-                val zLineDataSet = createLineDataSet(chartData.zData, "z", colorLineDataZ)
+                val xLineDataSet = createLineDataSet(chartData.xData, "X$unit", colorLineDataX)
+                val yLineDataSet = createLineDataSet(chartData.yData, "Y$unit", colorLineDataY)
+                val zLineDataSet = createLineDataSet(chartData.zData, "Z$unit", colorLineDataZ)
 
                 lineDataSetList.add(xLineDataSet)
                 lineDataSetList.add(yLineDataSet)
                 lineDataSetList.add(zLineDataSet)
 
-                addStatisticRow("x", chartData.xStatisticData)
-                addStatisticRow("y", chartData.yStatisticData)
-                addStatisticRow("z", chartData.zStatisticData)
+                addStatisticRow("X$unit", chartData.xStatisticData)
+                addStatisticRow("Y$unit", chartData.yStatisticData)
+                addStatisticRow("Z$unit", chartData.zStatisticData)
             }
             else -> {
-                val title = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
+                val label = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
 
-                val xLineDataSet = createLineDataSet(chartData.xData, title, colorLineDataX)
+                val xLineDataSet = createLineDataSet(chartData.xData, label + unit, colorLineDataX)
 
                 lineDataSetList.add(xLineDataSet)
 
-                addStatisticRow("x", chartData.xStatisticData)
+                addStatisticRow(null, chartData.xStatisticData)
             }
         }
 
+        chart_lc.description.isEnabled = false
         chart_lc.xAxis.valueFormatter = DateValueFormatter()
         chart_lc.data = LineData(lineDataSetList.toList())
         chart_lc.notifyDataSetChanged()
         chart_lc.invalidate()
     }
 
-    private fun addStatisticRow(title: String, statisticData: StatisticData) {
+    private fun addStatisticRow(title: String?, statisticData: StatisticData) {
         val tableRow = TableRow(context)
 
         val titleTv = createStatisticTextView()

@@ -41,10 +41,10 @@ class HealthEventHelper(val context: Context) {
     fun getEventInfo(healthEventEntity: HealthEventEntity): String {
         val value = Utils.format(healthEventEntity.value, 2)
         return when (healthEventEntity.event) {
-            HealthEventType.EPILEPSY -> value + " " + context.getString(R.string.unit_epilepsy)
+            HealthEventType.EPILEPSY -> value + " " + context.getString(R.string.unit_percentage)
             HealthEventType.HEARTH_RATE_ANOMALY -> value + " " + context.getString(R.string.unit_hearth_rate)
-            HealthEventType.FALL -> value + " " + context.getString(R.string.unit_fall)
-            HealthEventType.FALL_TORDU -> value
+            HealthEventType.FALL -> value + " " + context.getString(R.string.unit_linear_acceleration)
+            HealthEventType.FALL_TORDU -> value + " " + context.getString(R.string.unit_linear_acceleration)
             else -> "null"
         }
     }

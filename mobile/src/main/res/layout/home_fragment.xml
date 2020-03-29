@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/heart_rate_container"
+        android:id="@+id/measurement_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:gravity="center"
@@ -22,12 +22,40 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/heart_rate_tv"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="---"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/heart_rate_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/center_holder"
+                android:text="---"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@android:color/black" />
+
+            <View
+                android:id="@+id/center_holder"
+                android:layout_width="5dp"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/heart_rate_tv"
+                android:layout_alignBottom="@+id/heart_rate_tv"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/heart_rate_tv"
+                android:layout_alignBottom="@+id/heart_rate_tv"
+                android:layout_toEndOf="@+id/center_holder"
+                android:gravity="bottom"
+                android:paddingBottom="2dp"
+                android:text="@string/unit_hearth_rate"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black" />
+        </RelativeLayout>
 
         <Space
             android:layout_width="match_parent"
@@ -67,7 +95,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/heart_rate_container"
+        app:layout_constraintTop_toBottomOf="@id/measurement_container"
         app:layout_constraintVertical_weight="1"
         tools:listitem="@layout/health_event_item" />
 

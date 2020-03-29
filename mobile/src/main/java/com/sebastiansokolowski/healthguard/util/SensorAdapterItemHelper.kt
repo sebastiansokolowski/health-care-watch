@@ -20,5 +20,16 @@ class SensorAdapterItemHelper {
             }
             return "null"
         }
+
+        fun getUnit(context: Context?, sensorAdapterItem: SensorAdapterItem): String {
+            context?.let {
+                return when (sensorAdapterItem) {
+                    SensorAdapterItem.HEART_RATE -> context.getString(R.string.unit_hearth_rate)
+                    SensorAdapterItem.STEP_COUNTER -> ""
+                    SensorAdapterItem.LINEAR_ACCELERATION -> context.getString(R.string.unit_linear_acceleration)
+                }
+            }
+            return "null"
+        }
     }
 }
