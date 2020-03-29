@@ -104,16 +104,12 @@ class HomeViewModel
 
         val bodySensorPermissionGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.BODY_SENSORS) == PackageManager.PERMISSION_GRANTED
         val writePermissionGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-        val bootCompletedPermissionGranted = ContextCompat.checkSelfPermission(activity, Manifest.permission.RECEIVE_BOOT_COMPLETED) == PackageManager.PERMISSION_GRANTED
 
         if (!bodySensorPermissionGranted) {
             missingPermissions.add(Manifest.permission.BODY_SENSORS)
         }
         if (BuildConfig.DEBUG && !writePermissionGranted) {
             missingPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
-        if (!bootCompletedPermissionGranted) {
-            missingPermissions.add(Manifest.permission.RECEIVE_BOOT_COMPLETED)
         }
 
         return missingPermissions.toTypedArray()
