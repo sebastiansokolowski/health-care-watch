@@ -75,6 +75,8 @@ class HomeActivity : WearableFragmentActivity() {
 
     private fun initHeartRateLineChart() {
         lc_heart_rate.setNoDataText("")
+        lc_heart_rate.isHighlightPerDragEnabled = false
+        lc_heart_rate.isHighlightPerTapEnabled = false
         lc_heart_rate.isClickable = false
         lc_heart_rate.description.isEnabled = false
         lc_heart_rate.legend.isEnabled = false
