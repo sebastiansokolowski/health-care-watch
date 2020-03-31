@@ -76,7 +76,7 @@ class WearableDataClient(context: Context) {
 
             val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENTS_MAP_PATH)
             putDataMapReq.dataMap.apply {
-                putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, dataToSync)
+                putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, ArrayList(it))
             }
 
             send(putDataMapReq, urgent)
