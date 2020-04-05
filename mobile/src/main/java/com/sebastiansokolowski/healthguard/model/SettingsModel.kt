@@ -65,13 +65,29 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val epilepsyPercentOfPositiveEvents = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_PERCENT_OF_POSITIVE_EVENTS, defaultMeasurementSettings.epilepsySettings.percentOfPositiveSignals)
 
 
-        val healthEvents = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_EVENTS, emptySet())
-                ?: emptySet()
+        val healthEvents = getHealthEvents()
 
         val fallSettings = FallSettings(fallThreshold, fallStepDetector, fallTimeOfInactivityS, fallActivityThreshold)
         val epilepsySettings = EpilepsySettings(epilepsyThreshold, epilepsyTime, epilepsyPercentOfPositiveEvents)
 
         return MeasurementSettings(samplingMs, healthEvents, fallSettings, epilepsySettings)
+    }
+
+    private fun getHealthEvents(): Set<HealthEventType> {
+        val healthEvents = mutableSetOf<HealthEventType>()
+
+        val healthEventsStringSet = sharedPreferences.getStringSet(SettingsSharedPreferences.HEALTH_EVENTS, emptySet())
+                ?: emptySet()
+        healthEventsStringSet.forEach { healthEventTypeName ->
+            try {
+                HealthEventType.valueOf(healthEventTypeName).let { healthEventType ->
+                    healthEvents.add(healthEventType)
+                }
+            } catch (e: IllegalArgumentException) {
+            }
+        }
+
+        return healthEvents
     }
 
     fun getSupportedHealthEventTypes(): List<HealthEventType> {
