@@ -45,7 +45,7 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
     override fun startEngine() {
         stepDetector.startDetector()
 
-        sensorEventSubject
+        sensorEventObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == Sensor.TYPE_HEART_RATE }
                 .subscribe { sensorEventData ->

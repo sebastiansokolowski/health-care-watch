@@ -35,14 +35,14 @@ class FallEngine : HealthGuardEngineBase() {
 
     private fun createActivityDetector(): ActivityDetector {
         val activityDetector = ActivityDetector(measurementSettings.fallSettings.activityThreshold, measurementSettings.fallSettings.timeOfInactivity.toLong())
-        activityDetector.setupDetector(sensorEventSubject)
+        activityDetector.setupDetector(sensorEventObservable)
 
         return activityDetector
     }
 
     override fun startEngine() {
         stepDetector.startDetector()
-        sensorEventSubject
+        sensorEventObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .map {

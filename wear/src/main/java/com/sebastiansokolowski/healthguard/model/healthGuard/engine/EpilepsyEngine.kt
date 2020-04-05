@@ -23,7 +23,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
     private data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
 
     override fun startEngine() {
-        sensorEventSubject
+        sensorEventObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .buffer(TimeUnit.SECONDS.toMillis(measurementSettings.epilepsySettings.timeS.toLong()),

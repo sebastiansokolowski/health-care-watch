@@ -12,7 +12,7 @@ import io.reactivex.subjects.PublishSubject
 abstract class HealthGuardEngineBase {
 
     lateinit var healthEventObservable: PublishSubject<HealthEvent>
-    lateinit var sensorEventSubject: PublishSubject<SensorEvent>
+    lateinit var sensorEventObservable: PublishSubject<SensorEvent>
     lateinit var measurementSettings: MeasurementSettings
 
     abstract fun startEngine()
@@ -24,7 +24,7 @@ abstract class HealthGuardEngineBase {
     abstract fun requiredSensors(): Set<Int>
 
     open fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
-        this.sensorEventSubject = sensorsObservable
+        this.sensorEventObservable = sensorsObservable
         this.healthEventObservable = notifyObservable
         this.measurementSettings = measurementSettings
     }
