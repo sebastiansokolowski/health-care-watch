@@ -139,6 +139,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
             }
         }
 
+        chartData.sortBy { entry -> entry.x }
         statisticData.average = statisticData.sum / statisticData.count
     }
 
