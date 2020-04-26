@@ -20,12 +20,12 @@ class HistorySensorDataViewModel
         val endDayTimestamp = getEndDayTimestamp(startDayTimestamp)
 
         val query = healthEventEntityBox.query()
-                .orderDesc(HealthEventEntity_.__ID_PROPERTY)
                 .apply {
                     link(HealthEventEntity_.sensorEventEntity)
                             .between(SensorEventEntity_.timestamp, startDayTimestamp, endDayTimestamp)
                             .equal(SensorEventEntity_.type, sensorType.toLong())
-                }.build()
+                }.orderDesc(HealthEventEntity_.__ID_PROPERTY)
+                .build()
 
         return RxQuery.observable(query)
                 .take(1)
