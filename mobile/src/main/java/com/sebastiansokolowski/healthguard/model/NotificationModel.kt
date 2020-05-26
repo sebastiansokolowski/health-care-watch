@@ -10,8 +10,9 @@ import com.sebastiansokolowski.healthguard.util.HealthEventHelper
  * Created by Sebastian Sokołowski on 07.06.19.
  */
 class NotificationModel(val context: Context, private val settingsModel: SettingsModel) {
-    private val androidNotificationModel = AndroidNotification(context)
-    private val smsNotificationModel = SmsNotification(settingsModel)
+    val androidNotificationModel = AndroidNotification(context)
+    val smsNotificationModel = SmsNotification(settingsModel)
+
     private val healthEventHelper = HealthEventHelper(context)
 
     fun notifyHealthEvent(healthEventEntity: HealthEventEntity) {
