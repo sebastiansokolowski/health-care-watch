@@ -21,6 +21,8 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val defaultMeasurementSettings = MeasurementSettings()
 
         sharedPreferences.edit()?.apply {
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.ANDROID_NOTIFICATIONS, true)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_NOTIFICATIONS, false)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SAMPLING_US, defaultMeasurementSettings.samplingMs)
             //fall
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_THRESHOLD, defaultMeasurementSettings.fallSettings.threshold)
