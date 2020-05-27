@@ -19,14 +19,19 @@ class NotificationModel(val context: Context, private val settingsModel: Setting
         val message = createMessage(healthEventEntity) ?: return
 
         if (settingsModel.isAndroidNotificationEnabled()) {
-            androidNotificationModel.showAlertNotification(message)
-        }
-        if (settingsModel.isSmsNotificationEnabled()) {
+            androidNotificationModel.showAlertNotification(message, settingsModel.isSmsNotificationEnabled()) {
+                smsNotificationModel.sendSms(message)
+            }
+        } else if (settingsModel.isSmsNotificationEnabled()) {
             smsNotificationModel.sendSms(message)
         }
     }
 
     private fun createMessage(healthEventEntity: HealthEventEntity): String? {
         return healthEventHelper.getNotificationMessage(healthEventEntity)
+    }
+
+    fun dismissAlertNotification(notificationId: Int) {
+        androidNotificationModel.dismissAlertNotification(notificationId)
     }
 }

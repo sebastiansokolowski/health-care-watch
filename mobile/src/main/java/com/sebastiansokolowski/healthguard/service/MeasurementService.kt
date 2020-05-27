@@ -6,7 +6,6 @@ import android.os.IBinder
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.model.NotificationModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
-import com.sebastiansokolowski.healthguard.model.notification.AndroidNotification
 import dagger.android.DaggerService
 import javax.inject.Inject
 
@@ -39,9 +38,9 @@ class MeasurementService : DaggerService() {
 
     private fun startForegroundService() {
         val androidNotification = notificationModel.androidNotificationModel
-        val notification = androidNotification.buildNotification(getString(R.string.notification_measurement_title), getString(R.string.notification_measurement_message))
+        val builder = androidNotification.createMeasurementNotificationBuilder(getString(R.string.notification_measurement_title), getString(R.string.notification_measurement_message))
         val notificationId = androidNotification.FOREGROUND_NOTIFICATION_ID
-        startForeground(notificationId, notification)
+        startForeground(notificationId, builder.build())
     }
 
     override fun onDestroy() {

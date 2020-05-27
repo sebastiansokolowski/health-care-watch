@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthguard.di
 
 import com.sebastiansokolowski.healthguard.receiver.BootCompletedReceiver
+import com.sebastiansokolowski.healthguard.receiver.CancelSMSNotificationReceiver
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -12,4 +13,7 @@ import dagger.android.ContributesAndroidInjector
 abstract class ReceiverBindingModule {
     @ContributesAndroidInjector
     abstract fun bootCompletedReceiver(): BootCompletedReceiver
+
+    @ContributesAndroidInjector
+    abstract fun cancelSMSNotificationReceiver(): CancelSMSNotificationReceiver
 }

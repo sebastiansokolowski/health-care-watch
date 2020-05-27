@@ -50,4 +50,5 @@
     <string name="live_data_title">Live data</string>
     <string name="settings_title">Settings</string>
     <string name="settings_fall_step_detector">Step detector</string>
+    <string name="cancel_sending_sms_notification">Cancel sending SMS notification</string>
 </resources>

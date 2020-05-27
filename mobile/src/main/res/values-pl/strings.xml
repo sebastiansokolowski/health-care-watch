@@ -47,4 +47,5 @@
     <string name="live_data_title">Dane z zegarka</string>
     <string name="settings_title">Ustawienia</string>
     <string name="settings_fall_step_detector">Wykrywanie kroku</string>
+    <string name="cancel_sending_sms_notification">Anuluj wysłanie powiadomienia SMS</string>
 </resources>

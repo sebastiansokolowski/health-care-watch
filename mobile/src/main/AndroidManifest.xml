@@ -51,6 +51,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name="com.sebastiansokolowski.healthguard.receiver.CancelSMSNotificationReceiver"/>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
