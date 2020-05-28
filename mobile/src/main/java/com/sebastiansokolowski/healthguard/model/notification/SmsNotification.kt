@@ -8,12 +8,13 @@ import com.sebastiansokolowski.healthguard.model.SettingsModel
  */
 class SmsNotification(private val settingsModel: SettingsModel) {
     fun sendSms(message: String) {
+        val smsManager = SmsManager.getDefault()
+        val messageDivided = smsManager.divideMessage(message)
         val numbersToNotify = settingsModel.getPhoneNumbers()
 
         numbersToNotify?.let {
-            val smsManager = SmsManager.getDefault()
-            it.forEach {
-                smsManager.sendTextMessage(it, null, message, null, null)
+            it.forEach { number ->
+                smsManager.sendMultipartTextMessage(number, null, messageDivided, null, null)
             }
         }
     }
