@@ -9,4 +9,5 @@ enum class HealthEventType {
     FALL,
     FALL_TORDU,
     ALL_SENSORS,
+    NOTIFICATION_TEST
 }

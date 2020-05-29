@@ -36,6 +36,7 @@ class HealthGuardModel(private val wearableDataClient: WearableDataClient) {
         healthEnginesRegistered.add(FallEngineTordu())
         healthEnginesRegistered.add(HeartRateAnomalyEngine())
         healthEnginesRegistered.add(AllSensorsEngine())
+        healthEnginesRegistered.add(NotificationTestEngine())
     }
 
     fun getHealthEngines(healthEvents: Set<HealthEventType>): Set<HealthGuardEngineBase> {
