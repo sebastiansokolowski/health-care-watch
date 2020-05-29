@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthguard.ui
 
 import android.Manifest
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -69,6 +70,32 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         settingsViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(SettingsViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
+
+        settingsViewModel.refreshView.observe(this, Observer {
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    refreshView()
+                }
+            }
+        })
+        settingsViewModel.showSelectContactDialog.observe(this, Observer {
+            it?.getContentIfNotHandled().let {
+                it?.let {
+                    val contactDialogPreference = findPreference(SettingsSharedPreferences.CONTACTS)
+                    onDisplayPreferenceDialog(contactDialogPreference)
+                }
+            }
+        })
+
+        val smsPreference = findPreference(SettingsSharedPreferences.SMS_NOTIFICATIONS)
+        smsPreference.setOnPreferenceChangeListener { preference, any ->
+            if (!checkSendSMSPermissions()) {
+                requestSMSPermissions()
+                false
+            } else {
+                true
+            }
+        }
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
@@ -85,8 +112,8 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
             is CustomMultiSelectListPreference -> {
                 when (preference.key) {
                     SettingsSharedPreferences.CONTACTS -> {
-                        if (!checkPermissions()) {
-                            requestPermissions()
+                        if (!checkContactsPermissions()) {
+                            requestContactsPermissions()
                             return
                         } else {
                             settingsViewModel.setupPreference(preference)
@@ -106,12 +133,19 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         super.onDisplayPreferenceDialog(preference)
     }
 
-    private fun checkPermissions(): Boolean {
+    private fun checkContactsPermissions(): Boolean {
         activity?.let {
             if (ContextCompat.checkSelfPermission(it, Manifest.permission.READ_CONTACTS)
                     != PackageManager.PERMISSION_GRANTED) {
                 return false
             }
+            return true
+        }
+        return false
+    }
+
+    private fun checkSendSMSPermissions(): Boolean {
+        activity?.let {
             if (ContextCompat.checkSelfPermission(it, Manifest.permission.SEND_SMS)
                     != PackageManager.PERMISSION_GRANTED) {
                 return false
@@ -121,9 +155,15 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         return false
     }
 
-    private fun requestPermissions() {
+    private fun requestContactsPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity?.requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.SEND_SMS), 0)
+            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 0)
+        }
+    }
+
+    private fun requestSMSPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(arrayOf(Manifest.permission.SEND_SMS), 1)
         }
     }
 
@@ -133,5 +173,14 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         key?.let {
             settingsViewModel.onSharedPreferenceChanged(key)
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        settingsViewModel.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun refreshView() {
+        val mainActivity = activity as MainActivity?
+        mainActivity?.showFragment(SettingsFragment())
     }
 }

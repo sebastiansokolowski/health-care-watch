@@ -1,13 +1,17 @@
 package com.sebastiansokolowski.healthguard.viewModel
 
+import android.Manifest
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.PackageManager
 import android.provider.ContactsContract
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.healthguard.model.SettingsModel
 import com.sebastiansokolowski.healthguard.model.SetupModel
 import com.sebastiansokolowski.healthguard.util.HealthEventHelper
+import com.sebastiansokolowski.healthguard.util.SingleEvent
 import com.sebastiansokolowski.healthguard.view.preference.CustomMultiSelectListPreference
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
 import javax.inject.Inject
@@ -19,6 +23,9 @@ class SettingsViewModel
 @Inject constructor(context: Context, private val settingsModel: SettingsModel, private val sensorDataModel: SensorDataModel, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
 
     private val healthEventHelper = HealthEventHelper(context)
+
+    val refreshView: MutableLiveData<SingleEvent<Boolean>> = MutableLiveData()
+    val showSelectContactDialog: MutableLiveData<SingleEvent<Boolean>> = MutableLiveData()
 
     fun onSharedPreferenceChanged(key: String) {
         when (key) {
@@ -85,4 +92,18 @@ class SettingsViewModel
         preference.setValues(names.toTypedArray(), values.toTypedArray())
     }
 
+    fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (permissions.size != 1 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            return
+        }
+        when (permissions[0]) {
+            Manifest.permission.READ_CONTACTS -> {
+                showSelectContactDialog.postValue(SingleEvent(true))
+            }
+            Manifest.permission.SEND_SMS -> {
+                settingsModel.saveSetting(SettingsSharedPreferences.SMS_NOTIFICATIONS, true)
+                refreshView.postValue(SingleEvent(true))
+            }
+        }
+    }
 }

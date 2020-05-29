@@ -125,6 +125,14 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
     //set
 
     @SuppressLint("ApplySharedPref")
+    fun saveSetting(key: String, value: Boolean) {
+        sharedPreferences.edit()?.apply {
+            putBoolean(key, value)
+            commit()
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
     fun saveSupportedHealthEvents(healthEvents: Set<HealthEventType>) {
         sharedPreferences.edit()?.apply {
             val values = healthEvents.map { sensor -> sensor.name }.toSet()
