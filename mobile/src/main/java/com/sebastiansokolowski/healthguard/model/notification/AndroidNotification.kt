@@ -92,27 +92,29 @@ class AndroidNotification(val context: Context) {
         return builder
     }
 
-    fun showAlertNotification(message: String, smsNotificationEnabled: Boolean, sendSmsCompletable: () -> Unit) {
+    fun showAlertNotification(message: String, showSMSCancelActionButton: Boolean = false, smsNotificationTimeout: Int = 0, sendSMS: (Boolean) -> Unit = {}) {
         val notificationId = NOTIFICATION_ID++
         val title = context.getString(R.string.notification_alert_title)
 
-        if (smsNotificationEnabled) {
-            val duration = 30
+        if (showSMSCancelActionButton) {
             val disposable = Observable
-                    .intervalRange(1, duration.toLong(), 0, 1, TimeUnit.SECONDS)
+                    .intervalRange(1, smsNotificationTimeout.toLong(), 0, 1, TimeUnit.SECONDS)
                     .observeOn(Schedulers.io())
+                    .doOnDispose {
+                        sendSMS(false)
+                    }
                     .doOnComplete {
+                        sendSMS(true)
                         val builder = createAlertNotificationBuilder(title, message, notificationId)
                         notificationManagerCompat.notify(notificationId, builder.build())
-                        sendSmsCompletable()
                     }
                     .subscribe {
-                        val builder = createAlertNotificationBuilder(title, message, notificationId, smsNotificationEnabled, (duration - it).toInt())
+                        val builder = createAlertNotificationBuilder(title, message, notificationId, showSMSCancelActionButton, (smsNotificationTimeout - it).toInt())
                         notificationManagerCompat.notify(notificationId, builder.build())
                     }
             alertNotificationMap.put(notificationId, disposable)
         } else {
-            val builder = createAlertNotificationBuilder(title, message, notificationId, false)
+            val builder = createAlertNotificationBuilder(title, message, notificationId)
             notificationManagerCompat.notify(notificationId, builder.build())
         }
     }

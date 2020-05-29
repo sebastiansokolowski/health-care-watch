@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthguard.util
 
 import android.content.Context
+import android.location.Location
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
@@ -51,6 +52,24 @@ class HealthEventHelper(val context: Context) {
 
     fun getNotificationMessage(healthEventEntity: HealthEventEntity): String {
         return getTitle(healthEventEntity) + "\n" + getEventInfo(healthEventEntity) + "\n" + getMessage(healthEventEntity)
+    }
+
+    fun getLocationMessage(location: Location?): String {
+        var message = context.getString(R.string.sms_message_user_location)
+        if (location == null) {
+            message += " " + context.getString(R.string.sms_message_unknow_location)
+        } else {
+            message += " " + context.getString(R.string.sms_message_google_map_url, getFormattedLocation(location))
+            if (location.hasAccuracy()) {
+                message += ", " + context.getString(R.string.sms_message_location_accuracy, location.accuracy.toInt())
+            }
+        }
+
+        return message
+    }
+
+    private fun getFormattedLocation(location: Location): String {
+        return location.latitude.toString().replace(",", ".") + "," + location.longitude.toString().replace(",", ".")
     }
 
     fun getMessage(healthEventEntity: HealthEventEntity): String {

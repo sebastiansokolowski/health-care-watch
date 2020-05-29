@@ -104,6 +104,10 @@ class SettingsViewModel
                 settingsModel.saveSetting(SettingsSharedPreferences.SMS_NOTIFICATIONS, true)
                 refreshView.postValue(SingleEvent(true))
             }
+            Manifest.permission.ACCESS_FINE_LOCATION -> {
+                settingsModel.saveSetting(SettingsSharedPreferences.SMS_USER_LOCATION, true)
+                refreshView.postValue(SingleEvent(true))
+            }
         }
     }
 }

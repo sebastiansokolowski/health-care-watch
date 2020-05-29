@@ -32,6 +32,7 @@
     <string name="settings_alert_notification_category">Powiadomienia alertu</string>
     <string name="settings_android_notification_title">Powiadomienia Android</string>
     <string name="settings_sms_notification">Wiadomość SMS</string>
+    <string name="settings_sms_user_location">Lokalizacja użytkownika w wiadomości SMS</string>
     <string name="settings_sampling_time">Czas próbki (ms)</string>
     <string name="settings_health_events_category">Zdarzenia</string>
     <string name="sensor_data_chart_no_data">Brak danych</string>
@@ -48,4 +49,7 @@
     <string name="settings_title">Ustawienia</string>
     <string name="settings_fall_step_detector">Wykrywanie kroku</string>
     <string name="cancel_sending_sms_notification">Anuluj wysłanie powiadomienia SMS</string>
+    <string name="sms_message_location_accuracy">dokładność %1$dm</string>
+    <string name="sms_message_unknow_location">nieznana</string>
+    <string name="sms_message_user_location">Lokalizacja użytkownika</string>
 </resources>

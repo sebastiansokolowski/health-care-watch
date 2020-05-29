@@ -45,8 +45,13 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideNotificationModel(context: Context, settingsModel: SettingsModel): NotificationModel =
-            NotificationModel(context, settingsModel)
+    fun provideLocationModel(context: Context): LocationModel =
+            LocationModel(context)
+
+    @Provides
+    @Singleton
+    fun provideNotificationModel(context: Context, settingsModel: SettingsModel, locationModel: LocationModel): NotificationModel =
+            NotificationModel(context, settingsModel, locationModel)
 
     @Provides
     @Singleton

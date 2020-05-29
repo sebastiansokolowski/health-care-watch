@@ -36,6 +36,7 @@
     <string name="settings_select_contacts">Select contacts</string>
     <string name="settings_select_events">Select events</string>
     <string name="settings_sms_notification">SMS message</string>
+    <string name="settings_sms_user_location">User\'s location in an SMS</string>
     <string name="settings_sampling_time">Sampling time (ms)</string>
     <string name="settings_fall_threshold">Fall threshold value</string>
     <string name="sensor_data_chart_no_data">No chart data available</string>
@@ -51,4 +52,8 @@
     <string name="settings_title">Settings</string>
     <string name="settings_fall_step_detector">Step detector</string>
     <string name="cancel_sending_sms_notification">Cancel sending SMS notification</string>
+    <string name="sms_message_google_map_url" translatable="false">http://www.google.com/maps/place/%1$s</string>
+    <string name="sms_message_location_accuracy">accuracy %1$dm</string>
+    <string name="sms_message_unknow_location">unknown</string>
+    <string name="sms_message_user_location">User\'s location</string>
 </resources>

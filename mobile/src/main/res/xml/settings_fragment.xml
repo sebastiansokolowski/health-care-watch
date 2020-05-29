@@ -14,16 +14,21 @@
     <PreferenceCategory android:title="@string/settings_alert_notification_category">
 
         <SwitchPreference
-            android:key="sms_notification_enabled"
+            android:key="sms_notifications_enabled"
             android:title="@string/settings_sms_notification" />
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomMultiSelectListPreference
-            android:dependency="sms_notification_enabled"
+            android:dependency="sms_notifications_enabled"
             android:key="contacts"
             android:title="@string/settings_select_contacts" />
 
         <SwitchPreference
-            android:key="android_notification_enabled"
+            android:dependency="sms_notifications_enabled"
+            android:key="sms_user_location_enabled"
+            android:title="@string/settings_sms_user_location" />
+
+        <SwitchPreference
+            android:key="android_notifications_enabled"
             android:title="@string/settings_android_notification_title" />
 
     </PreferenceCategory>

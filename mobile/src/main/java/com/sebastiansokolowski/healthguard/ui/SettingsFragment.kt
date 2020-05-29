@@ -87,6 +87,15 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
             }
         })
 
+        val locationPreference = findPreference(SettingsSharedPreferences.SMS_USER_LOCATION)
+        locationPreference.setOnPreferenceChangeListener { preference, any ->
+            if (!checkLocationPermissions()) {
+                requestLocationPermissions()
+                false
+            } else {
+                true
+            }
+        }
         val smsPreference = findPreference(SettingsSharedPreferences.SMS_NOTIFICATIONS)
         smsPreference.setOnPreferenceChangeListener { preference, any ->
             if (!checkSendSMSPermissions()) {
@@ -155,6 +164,17 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         return false
     }
 
+    private fun checkLocationPermissions(): Boolean {
+        activity?.let {
+            if (ContextCompat.checkSelfPermission(it, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+            return true
+        }
+        return false
+    }
+
     private fun requestContactsPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS), 0)
@@ -164,6 +184,12 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     private fun requestSMSPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(arrayOf(Manifest.permission.SEND_SMS), 1)
+        }
+    }
+
+    private fun requestLocationPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 2)
         }
     }
 
