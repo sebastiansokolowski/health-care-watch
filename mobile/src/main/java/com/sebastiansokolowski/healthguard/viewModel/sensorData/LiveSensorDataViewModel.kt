@@ -51,6 +51,7 @@ class LiveSensorDataViewModel
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     healthEventEntities.add(it)
+                    healthEventEntities.sortByDescending { it.id }
                     healthEventsObservable.onNext(healthEventEntities)
                 }
 
