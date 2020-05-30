@@ -10,6 +10,7 @@ import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import java.util.concurrent.TimeUnit
 
 /**
@@ -23,8 +24,8 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         healthGuardModel.sensorDataModel = this
     }
 
+    var heartRateObservable: ReplaySubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = ReplaySubject.createWithSize(10)
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
-    val heartRateObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     var measurementRunning = false
@@ -34,6 +35,11 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
             return
         }
         measurementRunning = state
+        if (state) {
+            heartRateObservable = ReplaySubject.createWithSize(10)
+        } else {
+            heartRateObservable.onComplete()
+        }
         measurementStateObservable.onNext(measurementRunning)
         notifyMeasurementState()
     }

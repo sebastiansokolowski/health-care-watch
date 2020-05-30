@@ -54,7 +54,9 @@ class HomeActivity : WearableFragmentActivity() {
             }
         })
         homeViewModel.heartRate.observe(this, Observer {
-            it?.let {
+            if (it.isNullOrEmpty()) {
+                setHeartRateView("---")
+            } else {
                 setHeartRateView(it)
             }
         })
@@ -90,7 +92,6 @@ class HomeActivity : WearableFragmentActivity() {
             text = if (running) {
                 getString(R.string.measurement_button_stop_label)
             } else {
-                setHeartRateView("---")
                 getString(R.string.measurement_button_start_label)
             }
         }

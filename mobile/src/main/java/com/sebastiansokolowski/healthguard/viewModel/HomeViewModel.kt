@@ -2,7 +2,7 @@ package com.sebastiansokolowski.healthguard.viewModel
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.LiveDataReactiveStreams
-import android.arch.lifecycle.Transformations
+import android.arch.lifecycle.MutableLiveData
 import android.net.Uri
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity_
@@ -16,6 +16,8 @@ import io.objectbox.BoxStore
 import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
 /**
@@ -24,9 +26,8 @@ import javax.inject.Inject
 class HomeViewModel
 @Inject constructor(private val setupModel: SetupModel, private val sensorDataModel: SensorDataModel, private val shareDataModel: ShareDataModel, boxStore: BoxStore) : SensorEventViewModel(boxStore) {
 
-    init {
-        refreshView()
-    }
+    private val disposables = CompositeDisposable()
+    private var heartRateDisposable: Disposable? = null
 
     val setupState: LiveData<SetupModel.SetupStep> by lazy {
         initSetupState()
@@ -35,12 +36,16 @@ class HomeViewModel
     val measurementState: LiveData<Boolean> by lazy {
         initMeasurementStateLiveData()
     }
-    val heartRate: LiveData<String> by lazy {
-        initHeartRateLiveData()
-    }
+
+    val heartRate: MutableLiveData<String> = MutableLiveData()
 
     val fileToShare: LiveData<SingleEvent<Uri>> by lazy {
         initFileToShareLiveData()
+    }
+
+    init {
+        refreshView()
+        initHeartRate()
     }
 
     override fun getHealthEventsObservable(): Observable<MutableList<HealthEventEntity>> {
@@ -55,16 +60,27 @@ class HomeViewModel
         return null
     }
 
-    private fun initHeartRateLiveData(): LiveData<String> {
-        val sensorDataModelFlowable = sensorDataModel.heartRateObservable.toFlowable(BackpressureStrategy.LATEST)
-        val sensorDataModelLiveData = LiveDataReactiveStreams.fromPublisher(sensorDataModelFlowable)
-        return Transformations.map(sensorDataModelLiveData) { sensorEventData ->
-            var result = ""
-            if (sensorEventData.values.isNotEmpty() && sensorDataModel.measurementRunning) {
-                result = sensorEventData.values[0].toInt().toString()
-            }
-            return@map result
-        }
+    private fun initHeartRate() {
+        sensorDataModel.measurementStateObservable
+                .filter { it }
+                .subscribe {
+                    heartRateDisposable?.dispose()
+                    sensorDataModel.heartRateObservable
+                            .doOnComplete {
+                                heartRate.postValue("")
+                            }
+                            .subscribe { sensorEventData ->
+                                var result = ""
+                                if (sensorEventData.values.isNotEmpty()) {
+                                    result = sensorEventData.values[0].toInt().toString()
+                                }
+                                heartRate.postValue(result)
+                            }.let {
+                                heartRateDisposable = it
+                            }
+                }.let {
+                    disposables.add(it)
+                }
     }
 
     private fun initSetupState(): LiveData<SetupModel.SetupStep> {
@@ -93,5 +109,7 @@ class HomeViewModel
     override fun onCleared() {
         shareDataModel.clear()
         super.onCleared()
+        heartRateDisposable?.dispose()
+        disposables.clear()
     }
 }

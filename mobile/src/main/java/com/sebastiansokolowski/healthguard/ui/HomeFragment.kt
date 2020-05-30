@@ -56,7 +56,6 @@ class HomeFragment : DaggerFragment() {
         homeViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(HomeViewModel::class.java)
         homeViewModel.measurementState.observe(this, Observer {
-            heart_rate_tv.text = "---"
             it?.let {
                 if (it) {
                     measurement_btn.text = getString(R.string.measurement_stop_btn)

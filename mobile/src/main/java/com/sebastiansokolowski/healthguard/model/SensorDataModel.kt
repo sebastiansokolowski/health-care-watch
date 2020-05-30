@@ -32,10 +32,10 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     var measurementRunning: Boolean = false
     private var saveDataDisposable: Disposable? = null
 
+    var heartRateObservable: BehaviorSubject<SensorEventEntity> = BehaviorSubject.create()
+    val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
     val sensorsObservable: PublishSubject<SensorEventEntity> = PublishSubject.create()
     val healthEventObservable: PublishSubject<HealthEventEntity> = PublishSubject.create()
-    val heartRateObservable: BehaviorSubject<SensorEventEntity> = BehaviorSubject.create()
-    val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
     val supportedHealthEventsObservable: PublishSubject<Set<HealthEventType>> = PublishSubject.create()
 
     init {
@@ -69,13 +69,15 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
             return
         }
         measurementRunning = state
-        measurementStateObservable.onNext(measurementRunning)
         val serviceIntent = Intent(context, MeasurementService::class.java)
         if (state) {
             context.startService(serviceIntent)
+            heartRateObservable = BehaviorSubject.create()
         } else {
             context.stopService(serviceIntent)
+            heartRateObservable.onComplete()
         }
+        measurementStateObservable.onNext(measurementRunning)
     }
 
     fun toggleMeasurementState() {
