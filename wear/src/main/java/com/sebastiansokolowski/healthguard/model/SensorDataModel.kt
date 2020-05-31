@@ -110,6 +110,9 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
             if (sensor == null || values == null || values.isEmpty()) {
                 return@apply
             }
+            if (sensor.type == Sensor.TYPE_HEART_RATE && values[0] <= 0f) {
+                return@apply
+            }
 
             val sensorEventWrapper = com.sebastiansokolowski.shared.dataModel.SensorEvent(
                     sensor.type,
