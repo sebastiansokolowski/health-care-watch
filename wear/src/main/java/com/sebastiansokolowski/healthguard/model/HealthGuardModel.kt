@@ -77,10 +77,13 @@ class HealthGuardModel(private val wearableDataClient: WearableDataClient) {
     @SuppressLint("CheckResult")
     private fun subscribeToNotifyObservable() {
         notifyObservable
-                .debounce(10, TimeUnit.SECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .groupBy { it.healthEventType }
                 .subscribe {
-                    notifyAlert(it)
+                    it.throttleFirst(1, TimeUnit.MINUTES)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe {
+                                notifyAlert(it)
+                            }
                 }
     }
 
