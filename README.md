@@ -8,7 +8,7 @@ The app analyzes recaived data to predict:
 - epilepsy attack
 
 When a health event has been found the app can:
-- send an SMS to selected contacts
+- send an SMS to selected contacts with the user's location
 - notify user by showing android notification
 
 Each algorithm can be configured for individual needs.
