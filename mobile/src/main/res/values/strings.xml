@@ -55,6 +55,7 @@
     <string name="live_data_title">Live data</string>
     <string name="settings_title">Settings</string>
     <string name="settings_fall_step_detector">Step detector</string>
+    <string name="settings_fall_step_detector_timeout">Step detector timeout (s)</string>
     <string name="cancel_sending_sms_notification">Cancel sending SMS notification</string>
     <string name="sms_message_google_map_url" translatable="false">http://www.google.com/maps/place/%1$s</string>
     <string name="sms_message_location_accuracy">accuracy %1$dm</string>

@@ -19,7 +19,7 @@
 
     <PreferenceCategory android:title="@string/health_event_hearth_rate_anomaly_title">
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
-            android:key="heart_rate_anomaly_step_detector_timeout"
+            android:key="heart_rate_anomaly_step_detector_timeout_min"
             android:summary="Czas przez który brak wykrycia ruchu powoduje wykrycie stanu bezczynności."
             android:title="@string/settings_heart_beat_anomaly_step_detector_timeout"
             custom:myMaxValue="10"
@@ -58,6 +58,14 @@
             android:key="fall_step_detector"
             android:summary="Zdarzenie zostanie wykryte wyłącznie w ruchu"
             android:title="@string/settings_fall_step_detector" />
+
+        <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
+            android:key="fall_step_detector_timeout_s"
+            android:dependency="fall_step_detector"
+            android:summary="Czas przez który brak wykrycia ruchu powoduje wykrycie stanu bezczynności."
+            android:title="@string/settings_fall_step_detector_timeout"
+            custom:myMaxValue="30"
+            custom:myMinValue="1" />
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="fall_time_of_inactivity_s"

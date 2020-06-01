@@ -51,7 +51,8 @@
     <string name="history_data_title">Historia danych</string>
     <string name="live_data_title">Dane z zegarka</string>
     <string name="settings_title">Ustawienia</string>
-    <string name="settings_fall_step_detector">Wykrywanie kroku</string>
+    <string name="settings_fall_step_detector">Wykrywanie ruchu</string>
+    <string name="settings_fall_step_detector_timeout">Czas wykrycia ruchu (s)</string>
     <string name="cancel_sending_sms_notification">Anuluj wysłanie powiadomienia SMS</string>
     <string name="sms_message_location_accuracy">dokładność %1$dm</string>
     <string name="sms_message_unknow_location">nieznana</string>
