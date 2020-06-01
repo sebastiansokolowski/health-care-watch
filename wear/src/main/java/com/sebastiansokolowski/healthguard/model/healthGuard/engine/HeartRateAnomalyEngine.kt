@@ -7,10 +7,12 @@ import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetect
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
+import com.sebastiansokolowski.shared.dataModel.settings.HeartRateAnomalySettings
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
@@ -24,7 +26,7 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
      */
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var anomalyState = false
-    var stepDetector = StepDetector(5 * 1000)
+    private lateinit var stepDetector: StepDetector
 
     override fun requiredSensors(): Set<Int> {
         return setOf(
@@ -39,6 +41,7 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
 
     override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
+        stepDetector = StepDetector(TimeUnit.MINUTES.toMillis(measurementSettings.heartRateAnomalySettings.stepDetectorTimeoutInMin.toLong()))
         stepDetector.setupDetector(sensorsObservable)
     }
 
@@ -51,7 +54,8 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
                 .subscribe { sensorEventData ->
                     val heartRate = sensorEventData.values[0].toInt()
 
-                    if (heartRate > getMaxHeartRate() || heartRate < getMinHeartRate()) {
+                    if (heartRate > getMaxHeartRate(measurementSettings.heartRateAnomalySettings) ||
+                            heartRate < measurementSettings.heartRateAnomalySettings.minThreshold) {
                         if (!anomalyState) {
                             notifyHealthEvent(sensorEventData, heartRate.toFloat(), Gson().toJson(sensorEventData))
                             anomalyState = true
@@ -65,21 +69,18 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
     }
 
     override fun stopEngine() {
-        stepDetector.stopDetector()
+        stepDetector?.stopDetector()
 
         compositeDisposable.clear()
     }
 
 
-    private fun getMaxHeartRate(): Int {
+    private fun getMaxHeartRate(heartRateAnomalySettings: HeartRateAnomalySettings): Int {
         return if (stepDetector.isStepDetected()) {
-            150
+            heartRateAnomalySettings.maxThresholdDuringActivity
         } else {
-            120
+            heartRateAnomalySettings.maxThresholdDuringInactivity
         }
     }
 
-    private fun getMinHeartRate(): Int {
-        return 40
-    }
 }

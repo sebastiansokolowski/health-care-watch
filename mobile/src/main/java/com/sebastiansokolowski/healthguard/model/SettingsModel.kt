@@ -6,6 +6,7 @@ import com.sebastiansokolowski.shared.SettingsSharedPreferences
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.EpilepsySettings
 import com.sebastiansokolowski.shared.dataModel.settings.FallSettings
+import com.sebastiansokolowski.shared.dataModel.settings.HeartRateAnomalySettings
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 
 /**
@@ -25,6 +26,11 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_NOTIFICATIONS, false)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_USER_LOCATION, false)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SAMPLING_US, defaultMeasurementSettings.samplingMs)
+            //heart rate anomaly
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_STEP_DETECTOR_TIMEOUT, defaultMeasurementSettings.heartRateAnomalySettings.stepDetectorTimeoutInMin)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_MIN_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.minThreshold)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_INACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity)
             //fall
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_THRESHOLD, defaultMeasurementSettings.fallSettings.threshold)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_STEP_DETECTOR, defaultMeasurementSettings.fallSettings.stepDetector)
@@ -57,6 +63,11 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val defaultMeasurementSettings = MeasurementSettings()
 
         val samplingMs = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, defaultMeasurementSettings.samplingMs)
+        //heart rate anomaly
+        val heartRateStepDetectorTimeoutInMin = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_STEP_DETECTOR_TIMEOUT, defaultMeasurementSettings.heartRateAnomalySettings.stepDetectorTimeoutInMin)
+        val heartRateMinThreshold = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_MIN_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.minThreshold)
+        val heartRateMaxThresholdDuringInactivity = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_INACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity)
+        val heartRateMaxThresholdDuringActivity = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity)
         //fall
         val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, defaultMeasurementSettings.fallSettings.threshold)
         val fallStepDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_STEP_DETECTOR, defaultMeasurementSettings.fallSettings.stepDetector)
@@ -70,10 +81,11 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
 
         val healthEvents = getHealthEvents()
 
+        val heartRateAnomalySettings = HeartRateAnomalySettings(heartRateStepDetectorTimeoutInMin, heartRateMinThreshold, heartRateMaxThresholdDuringInactivity, heartRateMaxThresholdDuringActivity)
         val fallSettings = FallSettings(fallThreshold, fallStepDetector, fallTimeOfInactivityS, fallActivityThreshold)
         val epilepsySettings = EpilepsySettings(epilepsyThreshold, epilepsyTime, epilepsyPercentOfPositiveEvents)
 
-        return MeasurementSettings(samplingMs, healthEvents, fallSettings, epilepsySettings)
+        return MeasurementSettings(samplingMs, healthEvents, heartRateAnomalySettings, fallSettings, epilepsySettings)
     }
 
     private fun getHealthEvents(): Set<HealthEventType> {
