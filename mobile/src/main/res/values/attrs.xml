@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="CustomSeekBarPreference">
-        <attr name="myMinValue" format="integer" />
-        <attr name="myMaxValue" format="integer" />
-    </declare-styleable>
-</resources>
