@@ -8,15 +8,11 @@
         android:title="@string/settings_watch_category"
         app:iconSpaceReserved="false">
 
-        <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
+        <com.sebastiansokolowski.healthguard.view.preference.IntEditTextPreference
             android:key="sampling_us"
             android:summary="Częstotliwość odświerzania danych z czujników"
             android:title="@string/settings_sampling_time"
-            app:iconSpaceReserved="false"
-            app:seekBarIncrement="100"
-            app:showSeekBarValue="true"
-            custom:myMaxValue="9000"
-            custom:myMinValue="100" />
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 
