@@ -1,10 +1,9 @@
 package com.sebastiansokolowski.healthguard.ui.sensorData
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.sebastiansokolowski.healthguard.viewModel.HistoryDataViewModel
 import com.sebastiansokolowski.healthguard.viewModel.sensorData.HistorySensorDataViewModel
 import javax.inject.Inject
@@ -36,10 +35,10 @@ class HistorySensorDataFragment : SensorDataFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        historySensorDataViewModel = ViewModelProviders.of(this, viewModelFactory)
+        historySensorDataViewModel = ViewModelProvider(this, viewModelFactory)
                 .get(HistorySensorDataViewModel::class.java)
         sensorEventViewModel = historySensorDataViewModel
-        historyDataViewModel = ViewModelProviders.of(parentFragment!!, viewModelFactory)
+        historyDataViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)
                 .get(HistoryDataViewModel::class.java)
         historySensorDataViewModel.sensorType = sensorType.sensorId
         historySensorDataViewModel.refreshView()
@@ -47,12 +46,12 @@ class HistorySensorDataFragment : SensorDataFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        historyDataViewModel.currentDateLiveData.observe(this, Observer {
+        historyDataViewModel.currentDateLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 historySensorDataViewModel.changeCurrentDate(it)
             }
         })
-        historyDataViewModel.healthEventEntityToShow.observe(this, Observer {
+        historyDataViewModel.healthEventEntityToShow.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.sensorEventEntity.target.type == sensorType.sensorId) {
                     historySensorDataViewModel.showHealthEvent(it)
@@ -64,7 +63,7 @@ class HistorySensorDataFragment : SensorDataFragment() {
     }
 
     private fun initChart(sensorAdapterItem: SensorAdapterItem) {
-        historySensorDataViewModel.chartLiveData.observe(this, Observer {
+        historySensorDataViewModel.chartLiveData.observe(viewLifecycleOwner, Observer {
             fillChart(sensorAdapterItem, it)
 
             historySensorDataViewModel.entryHighlighted.value?.let {

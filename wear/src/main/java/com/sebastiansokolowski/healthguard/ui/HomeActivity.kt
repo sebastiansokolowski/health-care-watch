@@ -2,7 +2,6 @@ package com.sebastiansokolowski.healthguard.ui
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
@@ -39,7 +38,7 @@ class HomeActivity : WearableFragmentActivity() {
         startService(Intent(this, MessageReceiverService::class.java))
 
 
-        homeViewModel = ViewModelProviders.of(this, viewModelFactory)
+        homeViewModel = ViewModelProvider(this, viewModelFactory)
                 .get(HomeViewModel::class.java)
         homeViewModel.requestPermissions(this)
 

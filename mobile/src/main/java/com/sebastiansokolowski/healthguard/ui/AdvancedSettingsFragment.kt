@@ -1,13 +1,11 @@
 package com.sebastiansokolowski.healthguard.ui
 
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceFragmentCompat
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceFragmentCompat
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.viewModel.AdvancedSettingsViewModel
@@ -32,7 +30,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentI
 
     private lateinit var advancedSettingsViewModel: AdvancedSettingsViewModel
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
@@ -64,7 +62,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentI
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        advancedSettingsViewModel = ViewModelProviders.of(this, viewModelFactory)
+        advancedSettingsViewModel = ViewModelProvider(this, viewModelFactory)
                 .get(AdvancedSettingsViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
     }

@@ -1,12 +1,11 @@
 package com.sebastiansokolowski.healthguard.ui
 
 import android.app.DatePickerDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.ui.sensorData.HistorySensorDataPageAdapter
@@ -43,13 +42,13 @@ class HistoryDataFragment : DaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        historyDataViewModel = ViewModelProviders.of(this, viewModelFactory)
+        historyDataViewModel = ViewModelProvider(this, viewModelFactory)
                 .get(HistoryDataViewModel::class.java)
 
         sensor_vp.adapter = HistorySensorDataPageAdapter(context, childFragmentManager)
         sensor_data_tl.setupWithViewPager(sensor_vp)
 
-        historyDataViewModel.viewPagerToShow.observe(this, Observer {
+        historyDataViewModel.viewPagerToShow.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     if (sensor_vp.currentItem != it) {
@@ -89,13 +88,13 @@ class HistoryDataFragment : DaggerFragment() {
         current_date_next_btn.alpha = if (enable) 1f else 0.2f
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.sensor_data_menu, menu)
+        inflater.inflate(R.menu.sensor_data_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.date -> {
                 showSelectDateDialog()
                 return true

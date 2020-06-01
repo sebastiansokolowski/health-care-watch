@@ -1,18 +1,17 @@
 package com.sebastiansokolowski.healthguard.ui
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AlertDialog
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.text.method.LinkMovementMethod
 import android.view.*
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
@@ -53,9 +52,9 @@ class HomeFragment : DaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        homeViewModel = ViewModelProviders.of(this, viewModelFactory)
+        homeViewModel = ViewModelProvider(this, viewModelFactory)
                 .get(HomeViewModel::class.java)
-        homeViewModel.measurementState.observe(this, Observer {
+        homeViewModel.measurementState.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it) {
                     measurement_btn.text = getString(R.string.measurement_stop_btn)
@@ -64,7 +63,7 @@ class HomeFragment : DaggerFragment() {
                 }
             }
         })
-        homeViewModel.heartRate.observe(this, Observer {
+        homeViewModel.heartRate.observe(viewLifecycleOwner, Observer {
             if (it.isNullOrEmpty()) {
                 heart_rate_tv.text = "---"
             } else {
@@ -72,14 +71,14 @@ class HomeFragment : DaggerFragment() {
                 heart_rate_iv.startAnimation()
             }
         })
-        homeViewModel.healthEvents.observe(this, Observer {
+        homeViewModel.healthEvents.observe(viewLifecycleOwner, Observer {
             SafeCall.safeLet(context, it) { context, list ->
                 val adapter = HealthEventAdapter(context, list, homeViewModel)
                 adapter.setEmptyView(health_events_empty_view)
                 health_events_lv.adapter = adapter
             }
         })
-        homeViewModel.healthEventDetails.observe(this, Observer {
+        homeViewModel.healthEventDetails.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     val mainActivity: MainActivity = activity as MainActivity
@@ -87,7 +86,7 @@ class HomeFragment : DaggerFragment() {
                 }
             }
         })
-        homeViewModel.healthEventToRestore.observe(this, Observer {
+        homeViewModel.healthEventToRestore.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showRestoreDeletedItemSnackBar(it)
@@ -99,12 +98,12 @@ class HomeFragment : DaggerFragment() {
             homeViewModel.toggleMeasurementState()
         }
 
-        homeViewModel.healthEventSelected.observe(this, Observer {
+        homeViewModel.healthEventSelected.observe(viewLifecycleOwner, Observer {
             it?.let {
                 showHealthEventInHistoryFragment(it)
             }
         })
-        homeViewModel.setupState.observe(this, Observer {
+        homeViewModel.setupState.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
                     SetupModel.SetupStep.CONNECTING -> {
@@ -120,7 +119,7 @@ class HomeFragment : DaggerFragment() {
                 }
             }
         })
-        homeViewModel.fileToShare.observe(this, Observer {
+        homeViewModel.fileToShare.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showShareScreen(it)
@@ -129,13 +128,13 @@ class HomeFragment : DaggerFragment() {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater?.inflate(R.menu.home_menu, menu)
+        inflater.inflate(R.menu.home_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.about -> {
                 showLicencesDialog()
                 return true

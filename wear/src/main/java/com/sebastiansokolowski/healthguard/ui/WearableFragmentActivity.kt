@@ -1,7 +1,6 @@
 package com.sebastiansokolowski.healthguard.ui
 
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
 import android.support.wearable.activity.WearableActivityDelegate
 import java.io.FileDescriptor
 import java.io.PrintWriter
@@ -53,7 +52,7 @@ abstract class WearableFragmentActivity : androidx.fragment.app.FragmentActivity
         return wearableActivityDelegate.isAmbient
     }
 
-    override fun dump(prefix: String, fd: FileDescriptor, writer: PrintWriter, args: Array<String>) {
+    override fun dump(prefix: String, fd: FileDescriptor?, writer: PrintWriter, args: Array<out String>?) {
         wearableActivityDelegate.dump(prefix, fd, writer, args)
     }
 }

@@ -1,10 +1,9 @@
 package com.sebastiansokolowski.healthguard.ui.sensorData
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.sebastiansokolowski.healthguard.viewModel.sensorData.LiveSensorDataViewModel
 import javax.inject.Inject
 
@@ -34,7 +33,7 @@ class LiveSensorDataFragment : SensorDataFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        liveSensorDataViewModel = ViewModelProviders.of(this, viewModelFactory)
+        liveSensorDataViewModel = ViewModelProvider(this, viewModelFactory)
                 .get(LiveSensorDataViewModel::class.java)
         sensorEventViewModel = liveSensorDataViewModel
         liveSensorDataViewModel.sensorType = sensorType.sensorId
@@ -47,7 +46,7 @@ class LiveSensorDataFragment : SensorDataFragment() {
     }
 
     private fun initChart(sensorAdapterItem: SensorAdapterItem) {
-        liveSensorDataViewModel.chartLiveData.observe(this, Observer {
+        liveSensorDataViewModel.chartLiveData.observe(viewLifecycleOwner, Observer {
             fillChart(sensorAdapterItem, it)
         })
     }

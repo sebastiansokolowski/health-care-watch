@@ -1,20 +1,18 @@
 package com.sebastiansokolowski.healthguard.ui
 
 import android.Manifest
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
-import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.model.SetupModel
@@ -42,7 +40,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
 
     private lateinit var settingsViewModel: SettingsViewModel
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
     }
@@ -67,28 +65,28 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        settingsViewModel = ViewModelProviders.of(this, viewModelFactory)
+        settingsViewModel = ViewModelProvider(this, viewModelFactory)
                 .get(SettingsViewModel::class.java)
         super.onViewCreated(view, savedInstanceState)
 
-        settingsViewModel.refreshView.observe(this, Observer {
+        settingsViewModel.refreshView.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     refreshView()
                 }
             }
         })
-        settingsViewModel.showSelectContactDialog.observe(this, Observer {
+        settingsViewModel.showSelectContactDialog.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
-                    val contactDialogPreference = findPreference(SettingsSharedPreferences.CONTACTS)
+                    val contactDialogPreference: Preference? = findPreference(SettingsSharedPreferences.CONTACTS)
                     onDisplayPreferenceDialog(contactDialogPreference)
                 }
             }
         })
 
-        val locationPreference = findPreference(SettingsSharedPreferences.SMS_USER_LOCATION)
-        locationPreference.setOnPreferenceChangeListener { preference, any ->
+        val locationPreference: Preference? = findPreference(SettingsSharedPreferences.SMS_USER_LOCATION)
+        locationPreference?.setOnPreferenceChangeListener { preference, any ->
             if (!checkLocationPermissions()) {
                 requestLocationPermissions()
                 false
@@ -96,8 +94,8 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                 true
             }
         }
-        val smsPreference = findPreference(SettingsSharedPreferences.SMS_NOTIFICATIONS)
-        smsPreference.setOnPreferenceChangeListener { preference, any ->
+        val smsPreference: Preference? = findPreference(SettingsSharedPreferences.SMS_NOTIFICATIONS)
+        smsPreference?.setOnPreferenceChangeListener { preference, any ->
             if (!checkSendSMSPermissions()) {
                 requestSMSPermissions()
                 false
