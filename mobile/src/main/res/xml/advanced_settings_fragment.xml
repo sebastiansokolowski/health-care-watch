@@ -48,10 +48,17 @@
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="fall_threshold"
-            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek"
+            android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek."
             android:title="@string/settings_fall_threshold"
             custom:myMaxValue="40"
             custom:myMinValue="10" />
+
+        <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
+            android:key="fall_sample_count"
+            android:summary="Wielkość próbki do analizy."
+            android:title="@string/settings_fall_sample_count"
+            custom:myMaxValue="100"
+            custom:myMinValue="1" />
 
         <SwitchPreference
             android:defaultValue="true"
@@ -101,7 +108,7 @@
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="epilepsy_percent_of_positive_events"
-            android:summary="Procent pozytywnych zdarzeń po którym atak zostanie wykryty"
+            android:summary="Procent pozytywnych zdarzeń po którym atak zostanie wykryty."
             android:title="Procent pozytywnych zdarzeń"
             custom:myMaxValue="100"
             custom:myMinValue="0" />

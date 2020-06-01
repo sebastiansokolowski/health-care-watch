@@ -57,7 +57,7 @@ class FallEngine : HealthGuardEngineBase() {
                             )
                     )
                 }
-                .buffer(10, 1)
+                .buffer(measurementSettings.fallSettings.sampleCount, 1)
                 .subscribe {
                     val min = it.minBy { it.acceCurrent }
                     val max = it.maxBy { it.acceCurrent }

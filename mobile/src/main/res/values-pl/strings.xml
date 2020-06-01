@@ -42,6 +42,7 @@
     <string name="health_event_fall_message">Wykryto upadek</string>
     <string name="health_event_fall_title">Upadek</string>
     <string name="settings_fall_threshold">Wartość progowa upadku</string>
+    <string name="settings_fall_sample_count">Wielkość próbki</string>
     <string name="settings_heart_beat_anomaly_step_detector_timeout">Czas wykrycia ruchu (min)</string>
     <string name="settings_heart_beat_anomaly_min_threshold">Min wartość progowa</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold">Max wartość progowa podczas aktywności</string>

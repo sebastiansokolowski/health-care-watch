@@ -39,6 +39,7 @@
     <string name="settings_sms_user_location">User\'s location in an SMS</string>
     <string name="settings_sampling_time">Sampling time (ms)</string>
     <string name="settings_fall_threshold">Fall threshold value</string>
+    <string name="settings_fall_sample_count">Fall sample count</string>
     <string name="settings_heart_beat_anomaly_step_detector_timeout">Step detector timeout (min)</string>
     <string name="settings_heart_beat_anomaly_min_threshold">Min threshold value</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold">Max threshold value during activity</string>
