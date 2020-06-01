@@ -1,35 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
-    <PreferenceCategory android:title="@string/settings_health_events_category">
+    <PreferenceCategory
+        android:title="@string/settings_health_events_category"
+        app:iconSpaceReserved="false">
         <com.sebastiansokolowski.healthguard.view.preference.CustomMultiSelectListPreference
             android:key="health_events"
-            android:title="@string/settings_select_events" />
+            android:title="@string/settings_select_events"
+            app:iconSpaceReserved="false" />
         <Preference
             android:key="advanced_settings"
-            android:title="Ustawienia zaawansowane" />
+            android:title="Ustawienia zaawansowane"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/settings_alert_notification_category">
+    <PreferenceCategory
+        android:title="@string/settings_alert_notification_category"
+        app:iconSpaceReserved="false">
 
         <SwitchPreference
             android:key="sms_notifications_enabled"
-            android:title="@string/settings_sms_notification" />
+            android:title="@string/settings_sms_notification"
+            app:iconSpaceReserved="false" />
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomMultiSelectListPreference
             android:dependency="sms_notifications_enabled"
             android:key="contacts"
-            android:title="@string/settings_select_contacts" />
+            android:title="@string/settings_select_contacts"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:dependency="sms_notifications_enabled"
             android:key="sms_user_location_enabled"
-            android:title="@string/settings_sms_user_location" />
+            android:title="@string/settings_sms_user_location"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
             android:key="android_notifications_enabled"
-            android:title="@string/settings_android_notification_title" />
+            android:title="@string/settings_android_notification_title"
+            app:iconSpaceReserved="false" />
 
     </PreferenceCategory>
 

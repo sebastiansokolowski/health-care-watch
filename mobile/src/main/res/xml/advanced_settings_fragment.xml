@@ -4,12 +4,15 @@
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
-    <PreferenceCategory android:title="@string/settings_watch_category">
+    <PreferenceCategory
+        android:title="@string/settings_watch_category"
+        app:iconSpaceReserved="false">
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="sampling_us"
             android:summary="Częstotliwość odświerzania danych z czujników"
             android:title="@string/settings_sampling_time"
+            app:iconSpaceReserved="false"
             app:seekBarIncrement="100"
             app:showSeekBarValue="true"
             custom:myMaxValue="9000"
@@ -17,39 +20,48 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/health_event_hearth_rate_anomaly_title">
+    <PreferenceCategory
+        android:title="@string/health_event_hearth_rate_anomaly_title"
+        app:iconSpaceReserved="false">
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="heart_rate_anomaly_step_detector_timeout_min"
             android:summary="Czas przez który brak wykrycia ruchu powoduje wykrycie stanu bezczynności."
             android:title="@string/settings_heart_beat_anomaly_step_detector_timeout"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="10"
             custom:myMinValue="1" />
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="heart_rate_anomaly_min_threshold"
             android:summary="Wartość poniżej której zdarzenie zostanie rozpoznane jako anomalia bicia serca."
             android:title="@string/settings_heart_beat_anomaly_min_threshold"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="60"
             custom:myMinValue="10" />
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="heart_rate_anomaly_max_threshold_during_inactivity"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako anomalia bicia serca."
             android:title="@string/settings_heart_beat_anomaly_inactivity_max_threshold"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="160"
             custom:myMinValue="60" />
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="heart_rate_anomaly_max_threshold_during_activity"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako anomalia bicia serca."
             android:title="@string/settings_heart_beat_anomaly_activity_max_threshold"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="200"
             custom:myMinValue="100" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/health_event_fall_title">
+    <PreferenceCategory
+        android:title="@string/health_event_fall_title"
+        app:iconSpaceReserved="false">
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="fall_threshold"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako upadek."
             android:title="@string/settings_fall_threshold"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="40"
             custom:myMinValue="10" />
 
@@ -57,6 +69,7 @@
             android:key="fall_sample_count"
             android:summary="Wielkość próbki do analizy."
             android:title="@string/settings_fall_sample_count"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="100"
             custom:myMinValue="1" />
 
@@ -64,13 +77,15 @@
             android:defaultValue="true"
             android:key="fall_step_detector"
             android:summary="Zdarzenie zostanie wykryte wyłącznie w ruchu"
-            android:title="@string/settings_fall_step_detector" />
+            android:title="@string/settings_fall_step_detector"
+            app:iconSpaceReserved="false" />
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
-            android:key="fall_step_detector_timeout_s"
             android:dependency="fall_step_detector"
+            android:key="fall_step_detector_timeout_s"
             android:summary="Czas przez który brak wykrycia ruchu powoduje wykrycie stanu bezczynności."
             android:title="@string/settings_fall_step_detector_timeout"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="30"
             custom:myMinValue="1" />
 
@@ -78,6 +93,7 @@
             android:key="fall_time_of_inactivity_s"
             android:summary="Czas w bezruchu po upadku po którym zdarzenie zostanie rozpoznane jako upadek"
             android:title="Czas bezruchu (s)"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="10"
             custom:myMinValue="0" />
 
@@ -85,16 +101,20 @@
             android:key="fall_activity_threshold"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako ruch"
             android:title="Wartość progowa bezruchu"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="5"
             custom:myMinValue="1" />
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/health_event_epilepsy_title">
+    <PreferenceCategory
+        android:title="@string/health_event_epilepsy_title"
+        app:iconSpaceReserved="false">
 
         <com.sebastiansokolowski.healthguard.view.preference.CustomSeekBarPreference
             android:key="epilepsy_threshold"
             android:summary="Wartość po której zdarzenie zostanie rozpoznane jako atak."
             android:title="Wartość progowa ataku"
+            app:iconSpaceReserved="false"
             app:showSeekBarValue="true"
             custom:myMaxValue="10"
             custom:myMinValue="1" />
@@ -103,6 +123,7 @@
             android:key="epilepsy_time"
             android:summary="Czas po którym nastąpi rozpoznanie zdarzenia jako atak lub nie."
             android:title="Czas wykrycia (s)"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="60"
             custom:myMinValue="10" />
 
@@ -110,6 +131,7 @@
             android:key="epilepsy_percent_of_positive_events"
             android:summary="Procent pozytywnych zdarzeń po którym atak zostanie wykryty."
             android:title="Procent pozytywnych zdarzeń"
+            app:iconSpaceReserved="false"
             custom:myMaxValue="100"
             custom:myMinValue="0" />
 
