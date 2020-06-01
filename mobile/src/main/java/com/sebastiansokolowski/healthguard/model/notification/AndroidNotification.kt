@@ -6,9 +6,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
-import android.support.v4.content.ContextCompat.getSystemService
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.receiver.CancelSMSNotificationReceiver

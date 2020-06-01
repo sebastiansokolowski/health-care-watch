@@ -1,18 +1,18 @@
 package com.sebastiansokolowski.healthguard.ui
 
 import android.Manifest
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceFragmentCompat
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import android.view.View
 import android.widget.Toast
 import com.sebastiansokolowski.healthguard.MainActivity
@@ -38,7 +38,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
     private lateinit var settingsViewModel: SettingsViewModel
 
@@ -58,7 +58,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> {
         return childFragmentInjector
     }
 

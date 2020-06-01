@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard.ui
 
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import android.support.wearable.activity.WearableActivityDelegate
 import java.io.FileDescriptor
 import java.io.PrintWriter
@@ -9,7 +9,7 @@ import java.io.PrintWriter
 /**
  * Created by Sebastian Sokołowski on 21.06.19.
  */
-abstract class WearableFragmentActivity : FragmentActivity(), WearableActivityDelegate.AmbientCallback {
+abstract class WearableFragmentActivity : androidx.fragment.app.FragmentActivity(), WearableActivityDelegate.AmbientCallback {
     private val wearableActivityDelegate = WearableActivityDelegate(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {

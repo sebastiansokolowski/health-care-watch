@@ -1,12 +1,12 @@
 package com.sebastiansokolowski.healthguard
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
-import android.support.v4.app.DialogFragment
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import android.view.MenuItem
 import com.sebastiansokolowski.healthguard.client.WearableDataClient
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
@@ -55,7 +55,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
     private var bottomNavigationViewListener = object : BottomNavigationView.OnNavigationItemSelectedListener {
         override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-            val selectedFragment: Fragment? = when (p0.itemId) {
+            val selectedFragment: androidx.fragment.app.Fragment? = when (p0.itemId) {
                 R.id.nav_home -> HomeFragment()
                 R.id.nav_data -> LiveDataFragment()
                 R.id.nav_history -> HistoryDataFragment()
@@ -88,7 +88,7 @@ class MainActivity : DaggerAppCompatActivity() {
         } else super.onOptionsItemSelected(item)
     }
 
-    private fun setBottomNavigationSelectedItem(fragment: Fragment) {
+    private fun setBottomNavigationSelectedItem(fragment: androidx.fragment.app.Fragment) {
         bottomNavigationView.selectedItemId = when (fragment.javaClass) {
             HomeFragment::class.java -> R.id.nav_home
             LiveDataFragment::class.java -> R.id.nav_data
@@ -99,7 +99,7 @@ class MainActivity : DaggerAppCompatActivity() {
         }
     }
 
-    fun showFragment(fragment: Fragment, addToBackStack: Boolean = false) {
+    fun showFragment(fragment: androidx.fragment.app.Fragment, addToBackStack: Boolean = false) {
         val fragmentTransaction = supportFragmentManager.beginTransaction().replace(R.id.fragment_container,
                 fragment)
         if (addToBackStack) {
@@ -110,8 +110,8 @@ class MainActivity : DaggerAppCompatActivity() {
         setBottomNavigationSelectedItem(fragment)
     }
 
-    fun showDialog(dialogFragment: DialogFragment) {
-        val fragmentTransaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+    fun showDialog(dialogFragment: androidx.fragment.app.DialogFragment) {
+        val fragmentTransaction: androidx.fragment.app.FragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.addToBackStack(null)
         dialogFragment.show(fragmentTransaction, "dialog")
     }

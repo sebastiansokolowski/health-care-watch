@@ -2,14 +2,14 @@ package com.sebastiansokolowski.healthguard.view
 
 import android.content.Context
 import android.graphics.drawable.AnimatedVectorDrawable
-import android.support.graphics.drawable.AnimatedVectorDrawableCompat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import android.util.AttributeSet
 import android.view.View
 
 /**
  * Created by Sebastian Sokołowski on 22.06.19.
  */
-class CustomAnimation : android.support.v7.widget.AppCompatImageView {
+class CustomAnimation : androidx.appcompat.widget.AppCompatImageView {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

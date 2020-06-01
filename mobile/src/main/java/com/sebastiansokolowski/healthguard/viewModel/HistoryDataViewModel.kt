@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard.viewModel
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.ui.sensorData.SensorAdapterItem
 import com.sebastiansokolowski.healthguard.util.SingleEvent

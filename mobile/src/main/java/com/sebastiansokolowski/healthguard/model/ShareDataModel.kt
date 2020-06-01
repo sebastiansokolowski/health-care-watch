@@ -2,7 +2,7 @@ package com.sebastiansokolowski.healthguard.model
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import com.google.gson.GsonBuilder
 import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity

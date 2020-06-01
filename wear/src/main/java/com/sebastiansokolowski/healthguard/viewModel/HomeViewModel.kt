@@ -2,13 +2,13 @@ package com.sebastiansokolowski.healthguard.viewModel
 
 import android.Manifest
 import android.app.Activity
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.LiveDataReactiveStreams
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.client.WearableDataClient

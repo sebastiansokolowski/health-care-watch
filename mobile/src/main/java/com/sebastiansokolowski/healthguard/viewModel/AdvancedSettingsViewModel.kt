@@ -1,6 +1,6 @@
 package com.sebastiansokolowski.healthguard.viewModel
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import javax.inject.Inject
 

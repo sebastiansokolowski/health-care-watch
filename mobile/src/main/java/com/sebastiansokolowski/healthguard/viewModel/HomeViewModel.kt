@@ -1,8 +1,8 @@
 package com.sebastiansokolowski.healthguard.viewModel
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.LiveDataReactiveStreams
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.MutableLiveData
 import android.net.Uri
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity_

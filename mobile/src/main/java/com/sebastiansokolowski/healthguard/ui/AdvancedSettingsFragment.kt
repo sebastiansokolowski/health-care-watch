@@ -1,12 +1,12 @@
 package com.sebastiansokolowski.healthguard.ui
 
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.preference.PreferenceFragmentCompat
+import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceFragmentCompat
 import android.view.View
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
@@ -28,7 +28,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentI
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var childFragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var childFragmentInjector: DispatchingAndroidInjector<androidx.fragment.app.Fragment>
 
     private lateinit var advancedSettingsViewModel: AdvancedSettingsViewModel
 
@@ -55,7 +55,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentI
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(enabled)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> {
+    override fun supportFragmentInjector(): AndroidInjector<androidx.fragment.app.Fragment> {
         return childFragmentInjector
     }
 

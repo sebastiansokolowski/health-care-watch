@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard.view.preference
 
 import android.content.Context
-import android.support.v14.preference.MultiSelectListPreference
+import androidx.preference.MultiSelectListPreference
 import android.util.AttributeSet
 
 

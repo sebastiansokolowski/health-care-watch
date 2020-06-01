@@ -1,8 +1,8 @@
 package com.sebastiansokolowski.healthguard.viewModel
 
 import android.Manifest
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.PackageManager

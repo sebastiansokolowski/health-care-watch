@@ -1,9 +1,9 @@
 package com.sebastiansokolowski.healthguard.ui.sensorData
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
+import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View

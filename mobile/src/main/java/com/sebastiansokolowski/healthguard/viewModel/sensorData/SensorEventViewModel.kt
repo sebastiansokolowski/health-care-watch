@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard.viewModel.sensorData
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthguard.dataModel.ChartData

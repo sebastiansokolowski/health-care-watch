@@ -1,7 +1,7 @@
 package com.sebastiansokolowski.healthguard.view.preference
 
 import android.content.Context
-import android.support.v7.preference.SeekBarPreference
+import androidx.preference.SeekBarPreference
 import android.util.AttributeSet
 import com.sebastiansokolowski.healthguard.R
 

@@ -16,8 +16,8 @@
 
 package com.sebastiansokolowski.healthguard.di
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.sebastiansokolowski.healthguard.viewModel.HomeViewModel
 import dagger.Binds
 import dagger.Module

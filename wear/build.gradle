@@ -47,8 +47,8 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     // LiveData
-    implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-    implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
     testImplementation "io.mockk:mockk:1.9.3"
     testImplementation "io.mockk:mockk-common:1.9.3"
 
