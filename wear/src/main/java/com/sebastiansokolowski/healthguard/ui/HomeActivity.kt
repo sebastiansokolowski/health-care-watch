@@ -53,11 +53,7 @@ class HomeActivity : WearableFragmentActivity() {
             }
         })
         homeViewModel.heartRate.observe(this, Observer {
-            if (it.isNullOrEmpty()) {
-                setHeartRateView("---")
-            } else {
-                setHeartRateView(it)
-            }
+            setHeartRateView(it)
         })
         homeViewModel.chartData.observe(this, Observer {
             it?.let {
@@ -96,8 +92,12 @@ class HomeActivity : WearableFragmentActivity() {
         }
     }
 
-    private fun setHeartRateView(text: String) {
-        tv_heart_rate.text = text
+    private fun setHeartRateView(text: String?) {
+        if (text.isNullOrEmpty()) {
+            tv_heart_rate.text = "---"
+        } else {
+            tv_heart_rate.text = text
+        }
     }
 
     override fun onEnterAmbient(ambientDetails: Bundle?) {
