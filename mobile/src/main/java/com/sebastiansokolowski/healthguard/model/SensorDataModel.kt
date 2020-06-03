@@ -161,21 +161,6 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                 return
             }
             when (event.dataItem.uri.path) {
-                DataClientPaths.SENSOR_EVENT_MAP_PATH -> {
-                    DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
-                        val json = getString(DataClientPaths.SENSOR_EVENT_MAP_JSON)
-                        val sensorEvent = Gson().fromJson(json, SensorEvent::class.java)
-
-                        val sensorEventData = createSensorEventEntity(sensorEvent)
-
-                        if (sensorEventData.type == Sensor.TYPE_HEART_RATE) {
-                            notifyHeartRateObservable(sensorEventData)
-                        }
-                        notifySensorsObservable(sensorEventData)
-
-                        Log.d(TAG, "sensorEvent=$sensorEventData")
-                    }
-                }
                 DataClientPaths.SENSOR_EVENTS_MAP_PATH -> {
                     DataMapItem.fromDataItem(event.dataItem).dataMap.apply {
                         val sensorEventsJson = getStringArrayList(DataClientPaths.SENSOR_EVENTS_MAP_ARRAY_LIST)
@@ -184,6 +169,11 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         sensorEventsJson.forEach {
                             val sensorEvent = Gson().fromJson(it, SensorEvent::class.java)
                             val sensorEventData = createSensorEventEntity(sensorEvent)
+
+                            if (sensorEventData.type == Sensor.TYPE_HEART_RATE) {
+                                notifyHeartRateObservable(sensorEventData)
+                            }
+                            notifySensorsObservable(sensorEventData)
 
                             dataToSave.add(sensorEventData)
                         }

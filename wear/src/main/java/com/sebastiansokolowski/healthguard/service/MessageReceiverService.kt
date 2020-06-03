@@ -33,11 +33,10 @@ class MessageReceiverService : WearableListenerService() {
                 sensorDataModel.notifyMeasurementState()
             }
             DataClientPaths.START_LIVE_DATA -> {
-                wearableDataClient.liveData = true
-                wearableDataClient.syncSensorData(true)
+                wearableDataClient.changeLiveDataState(true)
             }
             DataClientPaths.STOP_LIVE_DATA -> {
-                wearableDataClient.liveData = false
+                wearableDataClient.changeLiveDataState(false)
             }
             DataClientPaths.GET_SUPPORTED_HEALTH_EVENTS -> {
                 sensorDataModel.notifySupportedHealthEvents()

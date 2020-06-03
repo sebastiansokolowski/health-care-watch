@@ -12,14 +12,13 @@ import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_PATH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENTS_MAP_ARRAY_LIST
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENTS_MAP_PATH
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENT_MAP_JSON
-import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENT_MAP_PATH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_EVENTS_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_EVENTS_MAP_PATH
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
@@ -37,12 +36,12 @@ class WearableDataClient(context: Context) {
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
 
     private val sensorDataToSend = ArrayList<String>()
+    private var sensorDataSynchronizerDisposable: Disposable = startSensorDataSynchronizer(false)
 
-    init {
-        startSensorDataSynchronizer()
+    fun changeLiveDataState(liveData: Boolean) {
+        sensorDataSynchronizerDisposable.dispose()
+        sensorDataSynchronizerDisposable = startSensorDataSynchronizer(liveData)
     }
-
-    var liveData = false
 
     fun sendMeasurementEvent(state: Boolean) {
         Log.d(TAG, "sendMeasurementEvent state: $state")
@@ -54,24 +53,24 @@ class WearableDataClient(context: Context) {
         }
     }
 
-    @SuppressLint("CheckResult")
-    fun startSensorDataSynchronizer() {
-        Observable.interval(5, TimeUnit.MINUTES)
+    private fun startSensorDataSynchronizer(liveData: Boolean): Disposable {
+        val period: Long = if (liveData) {
+            1
+        } else {
+            300
+        }
+
+        return Observable.interval(period, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .subscribe {
-                    syncSensorData(false)
+                    syncSensorData(liveData)
                 }
     }
 
     fun syncSensorData(urgent: Boolean) {
-        val dataToSync = ArrayList<String>()
-        synchronized(sensorDataToSend) {
-            Log.d(TAG, "syncSensorData size=${sensorDataToSend.size}")
-            dataToSync.addAll(sensorDataToSend)
-            sensorDataToSend.clear()
-        }
+        Log.d(TAG, "syncSensorData size=${sensorDataToSend.size}")
 
-        dataToSync.chunked(maxSizeOfDataToSend).iterator().forEach {
+        sensorDataToSend.chunked(maxSizeOfDataToSend).iterator().forEach {
             Log.v(TAG, "syncSensorData chunked size=${it.size}")
 
             val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENTS_MAP_PATH)
@@ -81,6 +80,7 @@ class WearableDataClient(context: Context) {
 
             send(putDataMapReq, urgent)
         }
+        sensorDataToSend.clear()
     }
 
     fun requestStartMeasurement() {
@@ -112,21 +112,9 @@ class WearableDataClient(context: Context) {
     }
 
     fun sendSensorEvent(event: SensorEvent) {
-        Log.v(TAG, "sendSensorEvent type=${event.type}")
-
-        if (!liveData) {
-            synchronized(sensorDataToSend) {
-                sensorDataToSend.add(Gson().toJson(event))
-            }
-            return
+        Schedulers.io().scheduleDirect {
+            sensorDataToSend.add(Gson().toJson(event))
         }
-
-        val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENT_MAP_PATH)
-        putDataMapReq.dataMap.apply {
-            putString(SENSOR_EVENT_MAP_JSON, Gson().toJson(event))
-        }
-
-        send(putDataMapReq, true)
     }
 
     private fun sendMessage(message: String) {
