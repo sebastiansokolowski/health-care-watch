@@ -1,10 +1,8 @@
 package com.sebastiansokolowski.healthguard.db.entity
 
 import com.sebastiansokolowski.healthguard.db.converter.FloatArrayConverter
-import io.objectbox.annotation.Convert
-import io.objectbox.annotation.Entity
-import io.objectbox.annotation.Id
-import io.objectbox.annotation.Uid
+import io.objectbox.annotation.*
+import io.objectbox.relation.ToOne
 import java.util.*
 
 /**
@@ -17,8 +15,11 @@ class SensorEventEntity {
     var type: Int = 0
     var accuracy: Int = 0
     var timestamp: Long = 0
+
     @Convert(converter = FloatArrayConverter::class, dbType = String::class)
     lateinit var values: FloatArray
+
+    lateinit var measurementEventEntity: ToOne<MeasurementEventEntity>
 
     override fun toString(): String {
         return "SensorEventData(id=$id, type=$type, accuracy=$accuracy, timestamp=$timestamp, values=${Arrays.toString(values)})"

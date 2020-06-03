@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthguard.dataModel.ChartData
 import com.sebastiansokolowski.healthguard.dataModel.StatisticData
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
@@ -17,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by Sebastian Sokołowski on 28.06.19.
@@ -92,17 +94,19 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
         val disposable = getSensorEventsObservable()!!
                 .subscribeOn(Schedulers.io())
                 .map {
+                    it.sortBy { it.timestamp }
+
                     val chartData = ChartData()
                     when (sensorType) {
                         Sensor.TYPE_GRAVITY,
                         Sensor.TYPE_ACCELEROMETER,
                         Sensor.TYPE_LINEAR_ACCELERATION -> {
-                            parseData(startDayTimestamp, chartData.xData, chartData.xStatisticData, it, 0)
-                            parseData(startDayTimestamp, chartData.yData, chartData.yStatisticData, it, 1)
-                            parseData(startDayTimestamp, chartData.zData, chartData.zStatisticData, it, 2)
+                            parseData(it, startDayTimestamp, chartData.xData, chartData.xStatisticData, 0)
+                            parseData(it, startDayTimestamp, chartData.yData, chartData.yStatisticData, 1)
+                            parseData(it, startDayTimestamp, chartData.zData, chartData.zStatisticData, 2)
                         }
                         else -> {
-                            parseData(startDayTimestamp, chartData.xData, chartData.xStatisticData, it, 0)
+                            parseData(it, startDayTimestamp, chartData.xData, chartData.xStatisticData, 0)
                         }
                     }
                     return@map chartData
@@ -121,8 +125,13 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
         disposables.add(disposable)
     }
 
-    private fun parseData(startDayTimestamp: Long, chartData: MutableList<Entry>, statisticData: StatisticData, list: MutableList<SensorEventEntity>, index: Int) {
-        list.forEach { sensorEventData ->
+    private fun parseData(dataToParse: MutableList<SensorEventEntity>, startDayTimestamp: Long, chartData: MutableList<LineDataSet>, statisticData: StatisticData, index: Int) {
+        val measurementDataSet = HashMap<Long, LineDataSet>()
+
+        dataToParse.forEach { sensorEventData ->
+            val lineDataSet = measurementDataSet.getOrPut(sensorEventData.measurementEventEntity.target.id) {
+                LineDataSet(mutableListOf(), "")
+            }
             createEntry(sensorEventData, startDayTimestamp, index)?.let { entry ->
                 val value = sensorEventData.values[index]
 
@@ -135,11 +144,12 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
                 statisticData.sum += value
                 statisticData.count++
 
-                chartData.add(entry)
+                lineDataSet.addEntry(entry)
             }
         }
 
-        chartData.sortBy { entry -> entry.x }
+        chartData.addAll(measurementDataSet.values)
+
         statisticData.average = statisticData.sum / statisticData.count
     }
 

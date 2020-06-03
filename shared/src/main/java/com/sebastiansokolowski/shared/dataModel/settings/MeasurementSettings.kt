@@ -9,4 +9,5 @@ import java.util.*
 data class MeasurementSettings(val samplingMs: Int = 1000, val healthEvents: Set<HealthEventType> = emptySet(),
                                val heartRateAnomalySettings: HeartRateAnomalySettings = HeartRateAnomalySettings(),
                                val fallSettings: FallSettings = FallSettings(),
-                               val epilepsySettings: EpilepsySettings = EpilepsySettings(), val timestamp: Long = Date().time)
+                               val epilepsySettings: EpilepsySettings = EpilepsySettings(),
+                               var measurementId: Long = -1, val timestamp: Long = Date().time)

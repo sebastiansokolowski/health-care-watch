@@ -8,6 +8,7 @@ import com.google.android.gms.wearable.*
 import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.client.WearableDataClient
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.MeasurementEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthguard.service.MeasurementService
 import com.sebastiansokolowski.shared.DataClientPaths
@@ -15,11 +16,13 @@ import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.objectbox.BoxStore
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -30,13 +33,19 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     private val TAG = javaClass.canonicalName
 
     var measurementRunning: Boolean = false
+    private var measurementEventEntity: MeasurementEventEntity? = null
     private var saveDataDisposable: Disposable? = null
 
+    //observables
     var heartRateObservable: BehaviorSubject<SensorEventEntity> = BehaviorSubject.create()
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
     val sensorsObservable: PublishSubject<SensorEventEntity> = PublishSubject.create()
     val healthEventObservable: PublishSubject<HealthEventEntity> = PublishSubject.create()
     val supportedHealthEventsObservable: PublishSubject<Set<HealthEventType>> = PublishSubject.create()
+
+    //boxes
+    val sensorEventEntityBox = boxStore.boxFor(SensorEventEntity::class.java)
+    val measurementEventEntityBox = boxStore.boxFor(MeasurementEventEntity::class.java)
 
     init {
         Wearable.getDataClient(context).addListener(this)
@@ -91,10 +100,21 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     fun requestStartMeasurement() {
         val measurementSettings = settingsModel.getMeasurementSettings()
+
+        measurementEventEntity = createMeasurementEventEntity(measurementSettings).apply {
+            measurementEventEntityBox.put(this)
+            measurementSettings.measurementId = id
+        }
+
         wearableDataClient.sendStartMeasurementEvent(measurementSettings)
     }
 
     fun startMeasurement() {
+        measurementEventEntity?.apply {
+            startTimestamp = Date().time
+            measurementEventEntityBox.put(this)
+        }
+
         notifyMeasurementStateObservable(true)
         if (measurementRunning) {
             return
@@ -104,6 +124,11 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
     }
 
     fun stopMeasurement() {
+        measurementEventEntity?.apply {
+            stopTimestamp = Date().time
+            measurementEventEntityBox.put(this)
+        }
+
         notifyMeasurementStateObservable(false)
         if (!measurementRunning) {
             return
@@ -120,13 +145,10 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         return@subscribe
                     }
                     Log.d(TAG, "save data to database")
-                    val eventBox = boxStore.boxFor(SensorEventEntity::class.java)
-                    eventBox.put(it)
+                    sensorEventEntityBox.put(it)
 
-                    synchronized(this) {
-                        if (!measurementRunning) {
-                            saveDataDisposable?.dispose()
-                        }
+                    if (!measurementRunning) {
+                        saveDataDisposable?.dispose()
                     }
                 }
     }
@@ -144,7 +166,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         val json = getString(DataClientPaths.SENSOR_EVENT_MAP_JSON)
                         val sensorEvent = Gson().fromJson(json, SensorEvent::class.java)
 
-                        val sensorEventData = createSensorEventDataEntity(sensorEvent)
+                        val sensorEventData = createSensorEventEntity(sensorEvent)
 
                         if (sensorEventData.type == Sensor.TYPE_HEART_RATE) {
                             notifyHeartRateObservable(sensorEventData)
@@ -161,7 +183,8 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         val dataToSave = mutableListOf<SensorEventEntity>()
                         sensorEventsJson.forEach {
                             val sensorEvent = Gson().fromJson(it, SensorEvent::class.java)
-                            val sensorEventData = createSensorEventDataEntity(sensorEvent)
+                            val sensorEventData = createSensorEventEntity(sensorEvent)
+
                             dataToSave.add(sensorEventData)
                         }
 
@@ -176,7 +199,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
                         val json = getString(DataClientPaths.HEALTH_EVENT_MAP_JSON)
                         val healthEvent = Gson().fromJson(json, HealthEvent::class.java)
 
-                        val healthEventEntity = createHealthEvent(healthEvent)
+                        val healthEventEntity = createHealthEventEntity(healthEvent)
 
                         val eventBox = boxStore.boxFor(HealthEventEntity::class.java)
                         eventBox.put(healthEventEntity)
@@ -200,22 +223,47 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
         }
     }
 
-    private fun createSensorEventDataEntity(sensorEvent: SensorEvent): SensorEventEntity {
+    private fun createMeasurementEventEntity(measurementSettings: MeasurementSettings): MeasurementEventEntity {
+        return MeasurementEventEntity().apply {
+            this.measurementSettings = Gson().toJson(measurementSettings)
+        }
+    }
+
+    private fun createSensorEventEntity(sensorEvent: SensorEvent): SensorEventEntity {
         return SensorEventEntity().apply {
             this.type = sensorEvent.type
             this.accuracy = sensorEvent.accuracy
             this.timestamp = sensorEvent.timestamp
             this.values = sensorEvent.values
+            linkMeasurementEventEntity(sensorEvent.measurementId, this)
         }
     }
 
-    private fun createHealthEvent(healthEvent: HealthEvent): HealthEventEntity {
+    private fun createHealthEventEntity(healthEvent: HealthEvent): HealthEventEntity {
         return HealthEventEntity().apply {
             this.event = healthEvent.healthEventType
             this.value = healthEvent.value
-            this.sensorEventEntity.target = createSensorEventDataEntity(healthEvent.sensorEvent)
+            this.sensorEventEntity.target = createSensorEventEntity(healthEvent.sensorEvent)
             this.details = healthEvent.details
-            this.measurementSettings = healthEvent.measurementSettings
+            linkMeasurementEventEntity(healthEvent.measurementId, this)
         }
+    }
+
+    private fun linkMeasurementEventEntity(measurementId: Long, sensorEventEntity: SensorEventEntity) {
+        var measurementEventEntity = measurementEventEntity
+        if (measurementEventEntity == null || measurementEventEntity.id != measurementId) {
+            measurementEventEntity = measurementEventEntityBox.get(measurementId)
+        }
+        measurementEventEntity?.sensorEventEntities?.add(sensorEventEntity)
+        sensorEventEntity.measurementEventEntity.target = measurementEventEntity
+    }
+
+    private fun linkMeasurementEventEntity(measurementId: Long, healthEventEntity: HealthEventEntity) {
+        var measurementEventEntity = measurementEventEntity
+        if (measurementEventEntity == null || measurementEventEntity.id != measurementId) {
+            measurementEventEntity = measurementEventEntityBox.get(measurementId)
+        }
+        measurementEventEntity?.healthEventEntities?.add(healthEventEntity)
+        healthEventEntity.measurementEventEntity.target = measurementEventEntity
     }
 }

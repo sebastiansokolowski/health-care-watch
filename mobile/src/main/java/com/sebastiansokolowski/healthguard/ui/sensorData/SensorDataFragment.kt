@@ -1,19 +1,21 @@
 package com.sebastiansokolowski.healthguard.ui.sensorData
 
-import androidx.lifecycle.Observer
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TableRow
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.android.material.snackbar.Snackbar
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.dataModel.ChartData
@@ -70,7 +72,7 @@ open class SensorDataFragment : DaggerFragment() {
         }
         chart_lc.setTouchEnabled(true)
 
-        sensorEventViewModel.showLoadingProgressBar.observe(this, Observer {
+        sensorEventViewModel.showLoadingProgressBar.observe(viewLifecycleOwner, Observer {
             val visibility = it ?: false
 
             if (visibility) {
@@ -81,7 +83,7 @@ open class SensorDataFragment : DaggerFragment() {
                 chart_lc.visibility = View.VISIBLE
             }
         })
-        sensorEventViewModel.showStatisticsContainer.observe(this, Observer {
+        sensorEventViewModel.showStatisticsContainer.observe(viewLifecycleOwner, Observer {
             val visibility = it ?: false
 
             if (visibility) {
@@ -90,14 +92,14 @@ open class SensorDataFragment : DaggerFragment() {
                 statistics_container.visibility = View.INVISIBLE
             }
         })
-        sensorEventViewModel.healthEvents.observe(this, Observer {
+        sensorEventViewModel.healthEvents.observe(viewLifecycleOwner, Observer {
             SafeCall.safeLet(context, it) { context, list ->
                 val adapter = HealthEventAdapter(context, list, sensorEventViewModel)
                 adapter.setEmptyView(health_events_empty_view)
                 health_events_lv.adapter = adapter
             }
         })
-        sensorEventViewModel.healthEventDetails.observe(this, Observer {
+        sensorEventViewModel.healthEventDetails.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     val mainActivity: MainActivity = activity as MainActivity
@@ -105,19 +107,19 @@ open class SensorDataFragment : DaggerFragment() {
                 }
             }
         })
-        sensorEventViewModel.healthEventToRestore.observe(this, Observer {
+        sensorEventViewModel.healthEventToRestore.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showRestoreDeletedItemSnackBar(it)
                 }
             }
         })
-        sensorEventViewModel.healthEventSelected.observe(this, Observer {
+        sensorEventViewModel.healthEventSelected.observe(viewLifecycleOwner, Observer {
             it?.let {
                 sensorEventViewModel.showHealthEvent(it)
             }
         })
-        sensorEventViewModel.entryHighlighted.observe(this, Observer {
+        sensorEventViewModel.entryHighlighted.observe(viewLifecycleOwner, Observer {
             it?.let {
                 highlightValue(it)
             }
@@ -157,31 +159,40 @@ open class SensorDataFragment : DaggerFragment() {
             statistics_table.removeViews(1, statistics_table.childCount - 1)
         }
 
+        val legendEntries = mutableListOf<LegendEntry>()
         when (sensorAdapterItem) {
             SensorAdapterItem.LINEAR_ACCELERATION -> {
-                val xLineDataSet = createLineDataSet(chartData.xData, "X$unit", colorLineDataX)
-                val yLineDataSet = createLineDataSet(chartData.yData, "Y$unit", colorLineDataY)
-                val zLineDataSet = createLineDataSet(chartData.zData, "Z$unit", colorLineDataZ)
+                val labelX = "X$unit"
+                val labelY = "Y$unit"
+                val labelZ = "Z$unit"
 
-                lineDataSetList.add(xLineDataSet)
-                lineDataSetList.add(yLineDataSet)
-                lineDataSetList.add(zLineDataSet)
+                setupLineDataSet(chartData.xData, colorLineDataX)
+                setupLineDataSet(chartData.yData, colorLineDataY)
+                setupLineDataSet(chartData.zData, colorLineDataZ)
 
-                addStatisticRow("X$unit", chartData.xStatisticData)
-                addStatisticRow("Y$unit", chartData.yStatisticData)
-                addStatisticRow("Z$unit", chartData.zStatisticData)
+                legendEntries.add(createLegendEntry(labelX, colorLineDataX))
+                legendEntries.add(createLegendEntry(labelY, colorLineDataY))
+                legendEntries.add(createLegendEntry(labelZ, colorLineDataZ))
+
+                lineDataSetList.addAll(chartData.xData)
+                lineDataSetList.addAll(chartData.yData)
+                lineDataSetList.addAll(chartData.zData)
+
+                addStatisticRow(labelX, chartData.xStatisticData)
+                addStatisticRow(labelY, chartData.yStatisticData)
+                addStatisticRow(labelZ, chartData.zStatisticData)
             }
             else -> {
-                val label = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem)
+                val labelX = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem) + unit
 
-                val xLineDataSet = createLineDataSet(chartData.xData, label + unit, colorLineDataX)
-
-                lineDataSetList.add(xLineDataSet)
-
+                setupLineDataSet(chartData.xData, colorLineDataX)
+                legendEntries.add(createLegendEntry(labelX, colorLineDataX))
+                lineDataSetList.addAll(chartData.xData)
                 addStatisticRow(null, chartData.xStatisticData)
             }
         }
 
+        chart_lc.legend.setCustom(legendEntries)
         chart_lc.description.isEnabled = false
         chart_lc.xAxis.valueFormatter = DateValueFormatter()
         chart_lc.data = LineData(lineDataSetList.toList())
@@ -218,14 +229,17 @@ open class SensorDataFragment : DaggerFragment() {
         return textView
     }
 
-    private fun createLineDataSet(data: MutableList<Entry>, label: String, color: Int): LineDataSet {
-        val lineDataSet = LineDataSet(data, label)
-        lineDataSet.setColor(color, 100)
-        lineDataSet.setDrawCircles(false)
-        lineDataSet.lineWidth = 2f
-        lineDataSet.valueFormatter = DataValueFormatter()
+    private fun createLegendEntry(label: String, color: Int): LegendEntry {
+        return LegendEntry(label, Legend.LegendForm.DEFAULT, Float.NaN, Float.NaN, null, color)
+    }
 
-        return lineDataSet
+    private fun setupLineDataSet(data: MutableList<LineDataSet>, color: Int) {
+        data.forEach {
+            it.setColor(color, 100)
+            it.setDrawCircles(false)
+            it.lineWidth = 2f
+            it.valueFormatter = DataValueFormatter()
+        }
     }
 
     private fun showRestoreDeletedItemSnackBar(healthEventEntity: HealthEventEntity) {

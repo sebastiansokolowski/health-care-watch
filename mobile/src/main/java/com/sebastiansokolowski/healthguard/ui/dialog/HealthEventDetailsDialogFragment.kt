@@ -18,7 +18,7 @@ class HealthEventDetailsDialogFragment : DialogFragment() {
             val dialog = HealthEventDetailsDialogFragment()
 
             val bundle = Bundle()
-            bundle.putString(MESSAGE_KEY, healthEventEntity.details + "\n\n\n\n" + healthEventEntity.measurementSettings)
+            bundle.putString(MESSAGE_KEY, healthEventEntity.details + "\n\n\n\n" + healthEventEntity.measurementEventEntity.target)
             dialog.arguments = bundle
 
             return dialog

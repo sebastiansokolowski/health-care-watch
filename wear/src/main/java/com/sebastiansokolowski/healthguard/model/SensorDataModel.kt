@@ -29,6 +29,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     var measurementRunning = false
+    var measurementId = -1L
 
     private fun changeMeasurementState(state: Boolean) {
         if (measurementRunning == state) {
@@ -70,11 +71,13 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         if (measurementRunning) {
             return
         }
+
         val healthEngines = healthGuardModel.getHealthEngines(measurementSettings.healthEvents)
         val sensors = healthEngines.flatMap { it.requiredSensors() }.toSet()
 
         changeMeasurementState(true)
 
+        this.measurementId = measurementSettings.measurementId
         healthGuardModel.startEngines(measurementSettings)
 
         for (sensorId: Int in sensors) {
@@ -117,7 +120,8 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
             val sensorEventWrapper = com.sebastiansokolowski.shared.dataModel.SensorEvent(
                     sensor.type,
                     values.copyOf(),
-                    accuracy
+                    accuracy,
+                    measurementId
             )
 
             when (sensor.type) {

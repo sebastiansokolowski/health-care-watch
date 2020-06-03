@@ -28,7 +28,5 @@ class HealthEventEntity {
     @Expose
     lateinit var details: String
 
-    @Expose
-    lateinit var measurementSettings: String
-
+    lateinit var measurementEventEntity: ToOne<MeasurementEventEntity>
 }

@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:5945329733278448333",
-      "lastPropertyId": "5:744993564005451496",
+      "lastPropertyId": "6:1286975813170352939",
       "name": "SensorEventEntity",
       "properties": [
         {
@@ -36,13 +36,21 @@
           "id": "5:744993564005451496",
           "name": "values",
           "type": 9
+        },
+        {
+          "id": "6:1286975813170352939",
+          "name": "measurementEventEntityId",
+          "indexId": "6:1130056037093122062",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "MeasurementEventEntity"
         }
       ],
       "relations": []
     },
     {
       "id": "6:1913776364706303030",
-      "lastPropertyId": "6:5612879789790781945",
+      "lastPropertyId": "7:2274882213460901750",
       "name": "HealthEventEntity",
       "properties": [
         {
@@ -68,24 +76,58 @@
           "type": 9
         },
         {
-          "id": "5:3028851016774480487",
-          "name": "measurementSettings",
-          "type": 9
-        },
-        {
           "id": "6:5612879789790781945",
           "name": "sensorEventEntityId",
           "indexId": "4:6725046501598964544",
           "type": 11,
           "flags": 1548,
           "relationTarget": "SensorEventEntity"
+        },
+        {
+          "id": "7:2274882213460901750",
+          "name": "measurementEventEntityId",
+          "indexId": "5:5813176305112684033",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "MeasurementEventEntity"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:4479983254473488346",
+      "lastPropertyId": "4:443482254713558803",
+      "name": "MeasurementEventEntity",
+      "properties": [
+        {
+          "id": "1:4217196621741327102",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1281273859314375433",
+          "name": "startTimestamp",
+          "type": 6,
+          "flags": 4
+        },
+        {
+          "id": "3:8427930183102959665",
+          "name": "stopTimestamp",
+          "type": 6,
+          "flags": 4
+        },
+        {
+          "id": "4:443482254713558803",
+          "name": "measurementSettings",
+          "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "6:1913776364706303030",
-  "lastIndexId": "4:6725046501598964544",
+  "lastEntityId": "7:4479983254473488346",
+  "lastIndexId": "6:1130056037093122062",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
@@ -120,7 +162,8 @@
     7424547064204552030,
     434577011767814188,
     7653534876444662562,
-    1305624111765357504
+    1305624111765357504,
+    3028851016774480487
   ],
   "retiredRelationUids": [],
   "version": 1

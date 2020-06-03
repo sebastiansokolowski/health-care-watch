@@ -5,72 +5,138 @@
   "entities": [
     {
       "id": "1:5945329733278448333",
-      "lastPropertyId": "5:744993564005451496",
+      "lastPropertyId": "6:1286975813170352939",
       "name": "SensorEventEntity",
       "properties": [
         {
           "id": "1:8038907277621769351",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:8296299707058392429",
-          "name": "type"
+          "name": "type",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "3:3719614490264785414",
-          "name": "accuracy"
+          "name": "accuracy",
+          "type": 5,
+          "flags": 4
         },
         {
           "id": "4:8096025002865451187",
-          "name": "timestamp"
+          "name": "timestamp",
+          "type": 6,
+          "flags": 4
         },
         {
           "id": "5:744993564005451496",
-          "name": "values"
+          "name": "values",
+          "type": 9
+        },
+        {
+          "id": "6:1286975813170352939",
+          "name": "measurementEventEntityId",
+          "indexId": "6:1130056037093122062",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "MeasurementEventEntity"
         }
       ],
       "relations": []
     },
     {
       "id": "6:1913776364706303030",
-      "lastPropertyId": "6:5612879789790781945",
+      "lastPropertyId": "7:2274882213460901750",
       "name": "HealthEventEntity",
       "properties": [
         {
           "id": "1:5026707789382652494",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:7618227675098525862",
-          "name": "value"
+          "name": "value",
+          "type": 7,
+          "flags": 4
         },
         {
           "id": "3:6771087890746849158",
-          "name": "event"
+          "name": "event",
+          "type": 9
         },
         {
           "id": "4:7183474661021866347",
-          "name": "details"
+          "name": "details",
+          "type": 9
         },
         {
           "id": "5:3028851016774480487",
-          "name": "measurementSettings"
+          "name": "measurementSettings",
+          "type": 9
         },
         {
           "id": "6:5612879789790781945",
+          "name": "sensorEventEntityId",
           "indexId": "4:6725046501598964544",
-          "name": "sensorEventEntityId"
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "SensorEventEntity"
+        },
+        {
+          "id": "7:2274882213460901750",
+          "name": "measurementEventEntityId",
+          "indexId": "5:5813176305112684033",
+          "type": 11,
+          "flags": 1548,
+          "relationTarget": "MeasurementEventEntity"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:4479983254473488346",
+      "lastPropertyId": "4:443482254713558803",
+      "name": "MeasurementEventEntity",
+      "properties": [
+        {
+          "id": "1:4217196621741327102",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1281273859314375433",
+          "name": "startTimestamp",
+          "type": 6,
+          "flags": 4
+        },
+        {
+          "id": "3:8427930183102959665",
+          "name": "stopTimestamp",
+          "type": 6,
+          "flags": 4
+        },
+        {
+          "id": "4:443482254713558803",
+          "name": "measurementSettings",
+          "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "6:1913776364706303030",
-  "lastIndexId": "4:6725046501598964544",
+  "lastEntityId": "7:4479983254473488346",
+  "lastIndexId": "6:1130056037093122062",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
-  "modelVersion": 4,
-  "modelVersionParserMinimum": 4,
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
   "retiredEntityUids": [
     5198759946502381923,
     6847505716280616152,
