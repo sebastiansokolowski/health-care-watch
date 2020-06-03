@@ -16,7 +16,8 @@ class NotificationTestEngine : HealthGuardEngineBase() {
 
     override fun startEngine() {
         sensorEventObservable
-                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.computation())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .take(1)
                 .subscribe {

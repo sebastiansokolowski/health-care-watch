@@ -34,7 +34,8 @@ class FallEngineTordu : HealthGuardEngineBase() {
     override fun startEngine() {
         stepDetector.startDetector()
         sensorEventObservable
-                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.computation())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .map {
                     AcceDataModel(

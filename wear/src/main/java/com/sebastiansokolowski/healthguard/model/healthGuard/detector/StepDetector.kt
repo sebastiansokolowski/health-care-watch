@@ -18,7 +18,8 @@ class StepDetector(private var timeout: Long) : DetectorBase() {
 
     override fun startDetector() {
         disposable = sensorsObservable
-                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.computation())
                 .filter { it.type == Sensor.TYPE_STEP_DETECTOR }
                 .subscribe {
                     Log.d(TAG, "isStepDetected=$it")

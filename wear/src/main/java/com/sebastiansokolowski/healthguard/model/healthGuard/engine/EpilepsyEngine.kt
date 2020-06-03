@@ -24,6 +24,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
 
     override fun startEngine() {
         sensorEventObservable
+                .observeOn(Schedulers.computation())
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .buffer(TimeUnit.SECONDS.toMillis(measurementSettings.epilepsySettings.timeS.toLong()),
