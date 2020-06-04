@@ -3,7 +3,7 @@ package com.sebastiansokolowski.healthguard.di
 import android.app.Application
 import android.content.Context
 import android.hardware.SensorManager
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.model.HealthGuardModel
 import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
@@ -22,8 +22,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideWearableDataClient(app: Application): WearableDataClient {
-        return WearableDataClient(app)
+    fun provideWearableClient(app: Application): WearableClient {
+        return WearableClient(app)
     }
 
     @Provides
@@ -38,12 +38,12 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(measurementModel: MeasurementModel, wearableDataClient: WearableDataClient, sensorManager: SensorManager, healthGuardModel: HealthGuardModel): SensorDataModel {
-        return SensorDataModel(measurementModel, wearableDataClient, sensorManager, healthGuardModel)
+    fun provideSensorDataModel(measurementModel: MeasurementModel, wearableClient: WearableClient, sensorManager: SensorManager, healthGuardModel: HealthGuardModel): SensorDataModel {
+        return SensorDataModel(measurementModel, wearableClient, sensorManager, healthGuardModel)
     }
 
     @Provides
     @Singleton
-    fun provideHealthGuardModel(wearableDataClient: WearableDataClient): HealthGuardModel =
-            HealthGuardModel(wearableDataClient)
+    fun provideHealthGuardModel(wearableClient: WearableClient): HealthGuardModel =
+            HealthGuardModel(wearableClient)
 }

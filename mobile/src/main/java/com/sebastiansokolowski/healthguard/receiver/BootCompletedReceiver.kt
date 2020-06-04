@@ -3,7 +3,7 @@ package com.sebastiansokolowski.healthguard.receiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.sebastiansokolowski.healthguard.service.MessageReceiverService
+import com.sebastiansokolowski.healthguard.service.WearableService
 import dagger.android.DaggerBroadcastReceiver
 
 
@@ -18,7 +18,7 @@ class BootCompletedReceiver : DaggerBroadcastReceiver() {
         super.onReceive(context, intent)
 
         context?.apply {
-            startService(Intent(this, MessageReceiverService::class.java))
+            startService(Intent(this, WearableService::class.java))
         }
     }
 }

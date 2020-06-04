@@ -4,13 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import android.content.Intent
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import android.view.MenuItem
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
-import com.sebastiansokolowski.healthguard.service.MessageReceiverService
+import com.sebastiansokolowski.healthguard.service.WearableService
 import com.sebastiansokolowski.healthguard.ui.*
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import dagger.android.support.DaggerAppCompatActivity
@@ -26,7 +23,7 @@ class MainActivity : DaggerAppCompatActivity() {
     val healthEventEntitySelected: MutableLiveData<SingleEvent<HealthEventEntity>> = MutableLiveData()
 
     @Inject
-    lateinit var wearableDataClient: WearableDataClient
+    lateinit var wearableClient: WearableClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,17 +37,17 @@ class MainActivity : DaggerAppCompatActivity() {
             showFragment(HomeFragment())
         }
 
-        startService(Intent(this, MessageReceiverService::class.java))
+        startService(Intent(this, WearableService::class.java))
     }
 
     override fun onResume() {
         super.onResume()
-        wearableDataClient.sendLiveData(true)
+        wearableClient.sendLiveData(true)
     }
 
     override fun onStop() {
         super.onStop()
-        wearableDataClient.sendLiveData(false)
+        wearableClient.sendLiveData(false)
     }
 
     private var bottomNavigationViewListener = object : BottomNavigationView.OnNavigationItemSelectedListener {

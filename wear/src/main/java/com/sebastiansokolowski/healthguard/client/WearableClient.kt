@@ -1,6 +1,5 @@
 package com.sebastiansokolowski.healthguard.client
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 16.07.18.
  */
-class WearableDataClient(context: Context) {
+class WearableClient(context: Context) {
     private val TAG = javaClass.canonicalName
 
     private val maxSizeOfDataToSend = 500

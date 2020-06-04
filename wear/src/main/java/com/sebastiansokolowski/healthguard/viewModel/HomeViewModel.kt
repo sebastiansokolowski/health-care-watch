@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthguard.BuildConfig
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.reactivex.BackpressureStrategy
@@ -26,7 +26,7 @@ import kotlin.math.roundToInt
  * Created by Sebastian Sokołowski on 09.07.18.
  */
 class HomeViewModel
-@Inject constructor(private val sensorDataModel: SensorDataModel, private val wearableDataClient: WearableDataClient) : ViewModel() {
+@Inject constructor(private val sensorDataModel: SensorDataModel, private val wearableClient: WearableClient) : ViewModel() {
 
     private val MY_PERMISSIONS_REQUEST_BODY_SENSORS = 12
 
@@ -135,7 +135,7 @@ class HomeViewModel
                         val grantResult = grantResults.getOrNull(index)
                         grantResult?.let {
                             if (it == PackageManager.PERMISSION_GRANTED) {
-                                wearableDataClient.requestStartMeasurement()
+                                wearableClient.requestStartMeasurement()
                             }
                         }
                     }

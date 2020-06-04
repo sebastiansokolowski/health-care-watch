@@ -40,9 +40,12 @@
         </activity>
 
         <service android:name="com.sebastiansokolowski.healthguard.service.MeasurementService" />
-        <service android:name="com.sebastiansokolowski.healthguard.service.MessageReceiverService">
+        <service android:name="com.sebastiansokolowski.healthguard.service.WearableService">
             <intent-filter>
+                <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
+                <action android:name="com.google.android.gms.wearable." />
+
                 <data
                     android:host="*"
                     android:scheme="wear" />

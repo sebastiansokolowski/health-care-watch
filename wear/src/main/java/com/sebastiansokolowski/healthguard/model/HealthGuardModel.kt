@@ -2,7 +2,7 @@ package com.sebastiansokolowski.healthguard.model
 
 import android.annotation.SuppressLint
 import android.hardware.Sensor
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.healthguard.model.healthGuard.engine.*
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class HealthGuardModel(private val wearableDataClient: WearableDataClient) {
+class HealthGuardModel(private val wearableClient: WearableClient) {
     private val TAG = javaClass.canonicalName
 
     private val healthEnginesRegistered = mutableSetOf<HealthGuardEngineBase>()
@@ -88,8 +88,8 @@ class HealthGuardModel(private val wearableDataClient: WearableDataClient) {
     }
 
     private fun notifyAlert(healthEvent: HealthEvent) {
-        wearableDataClient.syncSensorData(true)
-        wearableDataClient.sendHealthEvent(healthEvent)
+        wearableClient.syncSensorData(true)
+        wearableClient.sendHealthEvent(healthEvent)
     }
 
 }

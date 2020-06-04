@@ -1,6 +1,6 @@
 package com.sebastiansokolowski.healthguard.di
 
-import com.sebastiansokolowski.healthguard.service.MessageReceiverService
+import com.sebastiansokolowski.healthguard.service.WearableService
 import com.sebastiansokolowski.healthguard.service.SensorService
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -15,5 +15,5 @@ abstract class ServiceBindingModule {
     abstract fun sensorService(): SensorService
 
     @ContributesAndroidInjector
-    abstract fun messageReceiverService(): MessageReceiverService
+    abstract fun messageReceiverService(): WearableService
 }

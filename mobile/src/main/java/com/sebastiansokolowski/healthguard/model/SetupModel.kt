@@ -1,8 +1,7 @@
 package com.sebastiansokolowski.healthguard.model
 
 import android.annotation.SuppressLint
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
-import io.reactivex.disposables.Disposable
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import java.util.concurrent.TimeUnit
@@ -10,7 +9,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 08.07.19.
  */
-class SetupModel(private val wearableDataClient: WearableDataClient, private val sensorDataModel: SensorDataModel, private val settingsModel: SettingsModel) {
+class SetupModel(private val wearableClient: WearableClient, private val sensorDataModel: SensorDataModel, private val settingsModel: SettingsModel) {
 
     val setupComplete: BehaviorSubject<SetupStep> = BehaviorSubject.createDefault(SetupStep.CONNECTING)
 
@@ -39,7 +38,7 @@ class SetupModel(private val wearableDataClient: WearableDataClient, private val
                 }
 
         setupComplete.onNext(SetupStep.CONNECTING)
-        wearableDataClient.getSupportedHealthEvents()
+        wearableClient.getSupportedHealthEvents()
     }
 
     @SuppressLint("CheckResult")
@@ -55,7 +54,7 @@ class SetupModel(private val wearableDataClient: WearableDataClient, private val
                 }
 
         setupComplete.onNext(SetupStep.SYNC_DATA)
-        wearableDataClient.getMeasurementState()
+        wearableClient.getMeasurementState()
     }
 
     private fun setDefaultHealthCateEvents() {

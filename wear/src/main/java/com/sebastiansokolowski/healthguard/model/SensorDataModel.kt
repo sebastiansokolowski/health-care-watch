@@ -5,7 +5,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.schedulers.Schedulers
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
  */
-class SensorDataModel(measurementModel: MeasurementModel, private val wearableDataClient: WearableDataClient, private val sensorManager: SensorManager, private val healthGuardModel: HealthGuardModel) : SensorEventListener {
+class SensorDataModel(measurementModel: MeasurementModel, private val wearableClient: WearableClient, private val sensorManager: SensorManager, private val healthGuardModel: HealthGuardModel) : SensorEventListener {
     private val TAG = javaClass.canonicalName
 
     init {
@@ -47,7 +47,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
     }
 
     fun notifyMeasurementState() {
-        wearableDataClient.sendMeasurementEvent(measurementRunning)
+        wearableClient.sendMeasurementEvent(measurementRunning)
     }
 
     private fun notifySensorsObservable(sensorEvent: com.sebastiansokolowski.shared.dataModel.SensorEvent) {
@@ -58,14 +58,14 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
         if (measurementRunning) {
             stopMeasurement()
         } else {
-            wearableDataClient.requestStartMeasurement()
+            wearableClient.requestStartMeasurement()
         }
     }
 
     fun notifySupportedHealthEvents() {
         val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
         val supportedHealthEvents = healthGuardModel.getSupportedHealthEvents(sensors)
-        wearableDataClient.sendSupportedHealthEvents(SupportedHealthEventTypes(supportedHealthEvents))
+        wearableClient.sendSupportedHealthEvents(SupportedHealthEventTypes(supportedHealthEvents))
     }
 
     fun startMeasurement(measurementSettings: MeasurementSettings) {
@@ -133,7 +133,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
                 }
 
                 notifySensorsObservable(sensorEventWrapper)
-                wearableDataClient.sendSensorEvent(sensorEventWrapper)
+                wearableClient.sendSensorEvent(sensorEventWrapper)
             }
         }
     }

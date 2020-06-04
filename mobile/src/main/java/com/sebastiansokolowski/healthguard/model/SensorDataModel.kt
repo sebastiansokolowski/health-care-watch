@@ -6,7 +6,7 @@ import android.hardware.Sensor
 import android.util.Log
 import com.google.android.gms.wearable.*
 import com.google.gson.Gson
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.MeasurementEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 03.02.19.
  */
-class SensorDataModel(val context: Context, private val wearableDataClient: WearableDataClient, private val notificationModel: NotificationModel, private val boxStore: BoxStore, private val settingsModel: SettingsModel) : DataClient.OnDataChangedListener {
+class SensorDataModel(val context: Context, private val wearableClient: WearableClient, private val notificationModel: NotificationModel, private val boxStore: BoxStore, private val settingsModel: SettingsModel) : DataClient.OnDataChangedListener {
     private val TAG = javaClass.canonicalName
 
     var measurementRunning: Boolean = false
@@ -91,7 +91,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
 
     fun toggleMeasurementState() {
         if (measurementRunning) {
-            wearableDataClient.sendStopMeasurementEvent()
+            wearableClient.sendStopMeasurementEvent()
             stopMeasurement()
         } else {
             requestStartMeasurement()
@@ -106,7 +106,7 @@ class SensorDataModel(val context: Context, private val wearableDataClient: Wear
             measurementSettings.measurementId = id
         }
 
-        wearableDataClient.sendStartMeasurementEvent(measurementSettings)
+        wearableClient.sendStartMeasurementEvent(measurementSettings)
     }
 
     fun startMeasurement() {

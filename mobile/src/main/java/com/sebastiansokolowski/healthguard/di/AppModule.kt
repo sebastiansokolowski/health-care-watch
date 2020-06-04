@@ -5,7 +5,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.sebastiansokolowski.healthguard.client.WearableDataClient
+import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.db.entity.MyObjectBox
 import com.sebastiansokolowski.healthguard.model.*
 import dagger.Module
@@ -36,8 +36,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSetupModel(wearableDataClient: WearableDataClient, sensorDataModel: SensorDataModel, settingsModel: SettingsModel): SetupModel =
-            SetupModel(wearableDataClient, sensorDataModel, settingsModel)
+    fun provideSetupModel(wearableClient: WearableClient, sensorDataModel: SensorDataModel, settingsModel: SettingsModel): SetupModel =
+            SetupModel(wearableClient, sensorDataModel, settingsModel)
 
     @Provides
     @Singleton
@@ -55,8 +55,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(context: Context, wearableDataClient: WearableDataClient, notificationModel: NotificationModel, boxStore: BoxStore, settingsModel: SettingsModel): SensorDataModel =
-            SensorDataModel(context, wearableDataClient, notificationModel, boxStore, settingsModel)
+    fun provideSensorDataModel(context: Context, wearableClient: WearableClient, notificationModel: NotificationModel, boxStore: BoxStore, settingsModel: SettingsModel): SensorDataModel =
+            SensorDataModel(context, wearableClient, notificationModel, boxStore, settingsModel)
 
     @Provides
     @Singleton
@@ -71,7 +71,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideWearableDataClient(context: Context): WearableDataClient =
-            WearableDataClient(context)
+    fun provideWearableClient(context: Context): WearableClient =
+            WearableClient(context)
 
 }

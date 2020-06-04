@@ -12,7 +12,7 @@ import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 /**
  * Created by Sebastian Sokołowski on 17.03.19.
  */
-class WearableDataClient(context: Context) {
+class WearableClient(context: Context) {
     private val TAG = javaClass.canonicalName
 
     private val dataClient: DataClient = Wearable.getDataClient(context)
