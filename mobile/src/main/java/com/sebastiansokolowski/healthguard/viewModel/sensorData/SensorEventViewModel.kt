@@ -77,7 +77,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
 
     abstract fun getHealthEventsObservable(): Observable<MutableList<HealthEventEntity>>
 
-    abstract fun getSensorEventsObservable(): Single<MutableList<SensorEventEntity>>?
+    abstract fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>?
 
     private fun refreshHealthEvents() {
         val disposable = getHealthEventsObservable()
