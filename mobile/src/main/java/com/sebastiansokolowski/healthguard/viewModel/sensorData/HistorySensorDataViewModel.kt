@@ -27,8 +27,7 @@ class HistorySensorDataViewModel
                 }.orderDesc(HealthEventEntity_.__ID_PROPERTY)
                 .build()
 
-        return RxQuery.observable(query)
-                .take(1)
+        return RxQuery.single(query).toObservable()
     }
 
     override fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>> {
@@ -40,7 +39,6 @@ class HistorySensorDataViewModel
             between(SensorEventEntity_.timestamp, startDayTimestamp, endDayTimestamp)
         }.build()
 
-        return RxQuery.observable(query)
-                .take(1)
+        return RxQuery.single(query).toObservable()
     }
 }
