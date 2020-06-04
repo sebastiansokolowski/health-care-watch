@@ -26,17 +26,16 @@ class SetupModel(private val wearableDataClient: WearableDataClient, private val
 
     @SuppressLint("CheckResult")
     private fun getSupportedHealthEvents() {
-        var disposable: Disposable? = null
-        disposable = sensorDataModel.supportedHealthEventsObservable
+        sensorDataModel.supportedHealthEventsObservable
                 .subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS) {
                     getSupportedHealthEvents()
                 }
+                .take(1)
                 .subscribe {
                     settingsModel.saveSupportedHealthEvents(it)
                     setDefaultHealthCateEvents()
                     getMeasurementState()
-                    disposable?.dispose()
                 }
 
         setupComplete.onNext(SetupStep.CONNECTING)
@@ -45,14 +44,13 @@ class SetupModel(private val wearableDataClient: WearableDataClient, private val
 
     @SuppressLint("CheckResult")
     private fun getMeasurementState() {
-        var disposable: Disposable? = null
-        disposable = sensorDataModel.measurementStateObservable
+        sensorDataModel.measurementStateObservable
                 .subscribeOn(Schedulers.io())
                 .timeout(5, TimeUnit.SECONDS) {
                     getMeasurementState()
                 }
+                .take(1)
                 .subscribe {
-                    disposable?.dispose()
                     setupComplete.onNext(SetupStep.COMPLETED)
                 }
 

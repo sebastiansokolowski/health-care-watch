@@ -61,7 +61,7 @@ class WearableDataClient(context: Context) {
         }
 
         return Observable.interval(period, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.single())
                 .subscribe {
                     syncSensorData(liveData)
                 }
@@ -112,9 +112,7 @@ class WearableDataClient(context: Context) {
     }
 
     fun sendSensorEvent(event: SensorEvent) {
-        Schedulers.io().scheduleDirect {
-            sensorDataToSend.add(Gson().toJson(event))
-        }
+        sensorDataToSend.add(Gson().toJson(event))
     }
 
     private fun sendMessage(message: String) {

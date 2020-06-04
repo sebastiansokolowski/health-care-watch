@@ -24,26 +24,21 @@ class EpilepsyEngine : HealthGuardEngineBase() {
 
     override fun startEngine() {
         sensorEventObservable
-                .observeOn(Schedulers.computation())
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
-                .buffer(TimeUnit.SECONDS.toMillis(measurementSettings.epilepsySettings.timeS.toLong()),
-                        measurementSettings.samplingMs.toLong(),
-                        TimeUnit.MILLISECONDS)
                 .map {
-                    val acceDataList = mutableListOf<AcceDataModel>()
-                    it.forEach {
-                        val acce =
-                                sqrt(
-                                        it.values[0].toDouble().pow(2.0) +
-                                                it.values[1].toDouble().pow(2.0) +
-                                                it.values[2].toDouble().pow(2.0)
-                                )
-                        acceDataList.add(AcceDataModel(it, acce))
-                    }
-
-                    acceDataList
+                    AcceDataModel(
+                            it,
+                            sqrt(
+                                    it.values[0].toDouble().pow(2.0) +
+                                            it.values[1].toDouble().pow(2.0) +
+                                            it.values[2].toDouble().pow(2.0)
+                            )
+                    )
                 }
+                .buffer(measurementSettings.epilepsySettings.timeS.toLong(),
+                        1,
+                        TimeUnit.SECONDS)
                 .subscribe {
                     var positiveEvents = 0
                     it.forEach {

@@ -77,10 +77,11 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
 
     abstract fun getHealthEventsObservable(): Observable<MutableList<HealthEventEntity>>
 
-    abstract fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>?
+    abstract fun getSensorEventsObservable(): Single<MutableList<SensorEventEntity>>?
 
     private fun refreshHealthEvents() {
         val disposable = getHealthEventsObservable()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     healthEvents.postValue(it)

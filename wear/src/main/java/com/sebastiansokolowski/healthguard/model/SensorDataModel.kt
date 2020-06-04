@@ -8,6 +8,7 @@ import android.util.Log
 import com.sebastiansokolowski.healthguard.client.WearableDataClient
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
@@ -109,29 +110,31 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableDa
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        event?.apply {
-            if (sensor == null || values == null || values.isEmpty()) {
-                return@apply
-            }
-            if (sensor.type == Sensor.TYPE_HEART_RATE && values[0] <= 0f) {
-                return@apply
-            }
-
-            val sensorEventWrapper = com.sebastiansokolowski.shared.dataModel.SensorEvent(
-                    sensor.type,
-                    values.copyOf(),
-                    accuracy,
-                    measurementId
-            )
-
-            when (sensor.type) {
-                Sensor.TYPE_HEART_RATE -> {
-                    heartRateObservable.onNext(sensorEventWrapper)
+        Schedulers.single().scheduleDirect {
+            event?.apply {
+                if (sensor == null || values == null || values.isEmpty()) {
+                    return@apply
                 }
-            }
+                if (sensor.type == Sensor.TYPE_HEART_RATE && values[0] <= 0f) {
+                    return@apply
+                }
 
-            notifySensorsObservable(sensorEventWrapper)
-            wearableDataClient.sendSensorEvent(sensorEventWrapper)
+                val sensorEventWrapper = com.sebastiansokolowski.shared.dataModel.SensorEvent(
+                        sensor.type,
+                        values.copyOf(),
+                        accuracy,
+                        measurementId
+                )
+
+                when (sensor.type) {
+                    Sensor.TYPE_HEART_RATE -> {
+                        heartRateObservable.onNext(sensorEventWrapper)
+                    }
+                }
+
+                notifySensorsObservable(sensorEventWrapper)
+                wearableDataClient.sendSensorEvent(sensorEventWrapper)
+            }
         }
     }
 }

@@ -31,16 +31,15 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
 
     fun shareMeasurementData() {
         val query = healthEventEntityBox.query().build()
-        val disposable = RxQuery.observable(query)
-                .take(1)
+        val disposable = RxQuery.single(query)
                 .subscribeOn(Schedulers.io())
                 .map {
                     val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
                     return@map gson.toJson(it)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    val uri = saveDataToFile(it)
+                .subscribe {result ->
+                    val uri = saveDataToFile(result)
                     fileToShareObservable.onNext(SingleEvent(uri))
                 }
         disposables.add(disposable)

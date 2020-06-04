@@ -16,8 +16,10 @@ import io.objectbox.BoxStore
 import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -62,7 +64,9 @@ class HomeViewModel
 
     private fun initHeartRate() {
         sensorDataModel.measurementStateObservable
+                .subscribeOn(Schedulers.io())
                 .filter { it }
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     heartRateDisposable?.dispose()
                     sensorDataModel.heartRateObservable

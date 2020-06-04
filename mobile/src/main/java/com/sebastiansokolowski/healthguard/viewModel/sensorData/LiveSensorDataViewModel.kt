@@ -48,10 +48,13 @@ class LiveSensorDataViewModel
         val disposable = sensorDataModel.healthEventObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.sensorEventEntity.target?.type == sensorType }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
+                .map {
                     healthEventEntities.add(it)
                     healthEventEntities.sortByDescending { it.id }
+                    healthEventEntities
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
                     healthEventsObservable.onNext(healthEventEntities)
                 }
 

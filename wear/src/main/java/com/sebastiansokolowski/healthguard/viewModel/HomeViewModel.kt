@@ -15,8 +15,10 @@ import com.sebastiansokolowski.healthguard.client.WearableDataClient
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.reactivex.BackpressureStrategy
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
@@ -46,10 +48,13 @@ class HomeViewModel
 
     private fun initHeartRate() {
         sensorDataModel.measurementStateObservable
+                .subscribeOn(Schedulers.io())
                 .filter { it }
                 .subscribe {
                     heartRateDisposable?.dispose()
                     sensorDataModel.heartRateObservable
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
                             .doOnComplete {
                                 heartRate.postValue("")
                                 chartData.postValue(mutableListOf())
