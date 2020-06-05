@@ -7,6 +7,7 @@ import android.net.Uri
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity_
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
+import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.healthguard.model.SetupModel
 import com.sebastiansokolowski.healthguard.model.ShareDataModel
@@ -26,7 +27,7 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class HomeViewModel
-@Inject constructor(private val setupModel: SetupModel, private val sensorDataModel: SensorDataModel, private val shareDataModel: ShareDataModel, boxStore: BoxStore) : SensorEventViewModel(boxStore) {
+@Inject constructor(private val setupModel: SetupModel, private val measurementModel: MeasurementModel, private val sensorDataModel: SensorDataModel, private val shareDataModel: ShareDataModel, boxStore: BoxStore) : SensorEventViewModel(boxStore) {
 
     private val disposables = CompositeDisposable()
     private var heartRateDisposable: Disposable? = null
@@ -63,7 +64,7 @@ class HomeViewModel
     }
 
     private fun initHeartRate() {
-        sensorDataModel.measurementStateObservable
+        measurementModel.measurementStateObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -93,7 +94,7 @@ class HomeViewModel
     }
 
     private fun initMeasurementStateLiveData(): LiveData<Boolean> {
-        val measurementStateFlowable = sensorDataModel.measurementStateObservable.toFlowable(BackpressureStrategy.LATEST)
+        val measurementStateFlowable = measurementModel.measurementStateObservable.toFlowable(BackpressureStrategy.LATEST)
         return LiveDataReactiveStreams.fromPublisher(measurementStateFlowable)
     }
 
@@ -107,7 +108,7 @@ class HomeViewModel
     }
 
     fun toggleMeasurementState() {
-        sensorDataModel.toggleMeasurementState()
+        measurementModel.toggleMeasurementState()
     }
 
     override fun onCleared() {

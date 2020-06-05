@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import com.sebastiansokolowski.healthguard.R
+import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.NotificationModel
-import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import dagger.android.DaggerService
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class MeasurementService : DaggerService() {
 
     @Inject
-    lateinit var sensorDataModel: SensorDataModel
+    lateinit var measurementModel: MeasurementModel
 
     @Inject
     lateinit var notificationModel: NotificationModel
@@ -44,7 +44,7 @@ class MeasurementService : DaggerService() {
     }
 
     override fun onDestroy() {
-        sensorDataModel.stopMeasurement()
+        measurementModel.stopMeasurement()
         super.onDestroy()
     }
 }

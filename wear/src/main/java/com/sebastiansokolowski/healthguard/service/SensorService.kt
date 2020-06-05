@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import android.util.Log
-import com.sebastiansokolowski.healthguard.model.SensorDataModel
+import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import dagger.android.DaggerService
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ class SensorService : DaggerService() {
     private val TAG = javaClass.canonicalName
 
     @Inject
-    lateinit var sensorDataModel: SensorDataModel
+    lateinit var measurementModel: MeasurementModel
 
     private val mBinder = LocalBinder()
 
@@ -37,13 +37,13 @@ class SensorService : DaggerService() {
     override fun onLowMemory() {
         Log.d(TAG, "onLowMemory")
         super.onLowMemory()
-        sensorDataModel.stopMeasurement()
+        measurementModel.stopMeasurement()
 
     }
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
-        sensorDataModel.stopMeasurement()
+        measurementModel.stopMeasurement()
         super.onDestroy()
     }
 }

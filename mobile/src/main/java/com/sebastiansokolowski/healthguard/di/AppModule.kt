@@ -21,27 +21,33 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideContext(app: Application): Context = app
+
+    @Provides
+    @Singleton
     fun provideSharedPreference(app: Application): SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(app)
 
     @Provides
     @Singleton
-    fun provideContext(app: Application): Context = app
+    fun provideContentResolver(context: Context): ContentResolver = context.contentResolver
+
+    @Provides
+    @Singleton
+    fun provideWearableClient(context: Context): WearableClient =
+            WearableClient(context)
+
+    @Provides
+    @Singleton
+    fun provideBoxStore(context: Context): BoxStore = MyObjectBox.builder()
+            .androidContext(context)
+            .build()
 
     @Provides
     fun provideSettingsModel(app: Application): SettingsModel {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(app)
         return SettingsModel(sharedPreferences)
     }
-
-    @Provides
-    @Singleton
-    fun provideSetupModel(wearableClient: WearableClient, sensorDataModel: SensorDataModel, settingsModel: SettingsModel): SetupModel =
-            SetupModel(wearableClient, sensorDataModel, settingsModel)
-
-    @Provides
-    @Singleton
-    fun provideContentResolver(context: Context): ContentResolver = context.contentResolver
 
     @Provides
     @Singleton
@@ -55,23 +61,22 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(context: Context, wearableClient: WearableClient, notificationModel: NotificationModel, boxStore: BoxStore, settingsModel: SettingsModel): SensorDataModel =
-            SensorDataModel(context, wearableClient, notificationModel, boxStore, settingsModel)
+    fun provideSensorDataModel(context: Context, notificationModel: NotificationModel, boxStore: BoxStore): SensorDataModel =
+            SensorDataModel(context, notificationModel, boxStore)
+
+    @Provides
+    @Singleton
+    fun provideMeasurementModel(context: Context, wearableClient: WearableClient, boxStore: BoxStore, settingsModel: SettingsModel, sensorDataModel: SensorDataModel): MeasurementModel =
+            MeasurementModel(context, wearableClient, boxStore, settingsModel, sensorDataModel)
+
+    @Provides
+    @Singleton
+    fun provideSetupModel(wearableClient: WearableClient, measurementModel: MeasurementModel, settingsModel: SettingsModel): SetupModel =
+            SetupModel(wearableClient, measurementModel, settingsModel)
 
     @Provides
     @Singleton
     fun provideShareDataModel(context: Context, boxStore: BoxStore): ShareDataModel =
             ShareDataModel(context, boxStore)
-
-    @Provides
-    @Singleton
-    fun provideBoxStore(context: Context): BoxStore = MyObjectBox.builder()
-            .androidContext(context)
-            .build()
-
-    @Provides
-    @Singleton
-    fun provideWearableClient(context: Context): WearableClient =
-            WearableClient(context)
 
 }

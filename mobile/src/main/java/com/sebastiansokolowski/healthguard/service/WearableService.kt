@@ -1,9 +1,9 @@
 package com.sebastiansokolowski.healthguard.service
 
-import com.google.android.gms.wearable.CapabilityInfo
-import com.google.android.gms.wearable.MessageEvent
-import com.google.android.gms.wearable.WearableListenerService
+import android.util.Log
+import com.google.android.gms.wearable.*
 import com.sebastiansokolowski.healthguard.client.WearableClient
+import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.healthguard.model.SetupModel
 import com.sebastiansokolowski.shared.DataClientPaths
@@ -14,6 +14,10 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 16.07.18.
  */
 class WearableService : WearableListenerService() {
+    private val TAG = javaClass.canonicalName
+
+    @Inject
+    lateinit var measurementModel: MeasurementModel
 
     @Inject
     lateinit var sensorDataModel: SensorDataModel
@@ -30,10 +34,30 @@ class WearableService : WearableListenerService() {
     }
 
     override fun onCapabilityChanged(capabilityInfo: CapabilityInfo?) {
-        super.onCapabilityChanged(capabilityInfo)
         capabilityInfo?.let {
-            if(it.nodes.isNullOrEmpty()){
-                sensorDataModel.stopMeasurement()
+            if (it.nodes.isNullOrEmpty()) {
+                measurementModel.stopMeasurement()
+            }
+        }
+    }
+
+    override fun onDataChanged(dataEvent: DataEventBuffer?) {
+        dataEvent?.forEach { event ->
+            Log.d(TAG, "onDataChanged path:${event.dataItem.uri.path}")
+            if (event.type != DataEvent.TYPE_CHANGED) {
+                Log.d(TAG, "type not changed")
+                return
+            }
+            when (event.dataItem.uri.path) {
+                DataClientPaths.SUPPORTED_HEALTH_EVENTS_MAP_PATH -> {
+                    measurementModel.onDataChanged(event.dataItem)
+                }
+                DataClientPaths.SENSOR_EVENTS_MAP_PATH -> {
+                    sensorDataModel.onDataChanged(event.dataItem)
+                }
+                DataClientPaths.HEALTH_EVENT_MAP_PATH -> {
+                    sensorDataModel.onDataChanged(event.dataItem)
+                }
             }
         }
     }
@@ -41,15 +65,14 @@ class WearableService : WearableListenerService() {
     override fun onMessageReceived(event: MessageEvent?) {
         when (event?.path) {
             DataClientPaths.START_MEASUREMENT -> {
-                sensorDataModel.startMeasurement()
+                measurementModel.startMeasurement()
             }
             DataClientPaths.STOP_MEASUREMENT -> {
-                sensorDataModel.stopMeasurement()
+                measurementModel.stopMeasurement()
             }
             DataClientPaths.REQUEST_START_MEASUREMENT -> {
-                sensorDataModel.requestStartMeasurement()
+                measurementModel.requestStartMeasurement()
             }
-            else -> super.onMessageReceived(event)
         }
     }
 }

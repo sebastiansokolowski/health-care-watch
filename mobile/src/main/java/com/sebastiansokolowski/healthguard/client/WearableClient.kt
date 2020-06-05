@@ -98,5 +98,4 @@ class WearableClient(context: Context) {
         }
     }
 
-    data class Settings(val samplingUs: Int, val healthEvents: Set<String>)
 }

@@ -3,7 +3,7 @@ package com.sebastiansokolowski.healthguard.receiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.sebastiansokolowski.healthguard.model.SensorDataModel
+import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import dagger.android.DaggerBroadcastReceiver
 import javax.inject.Inject
 
@@ -15,14 +15,14 @@ class BatteryLowLevelReceiver : DaggerBroadcastReceiver() {
     private val TAG = javaClass.canonicalName
 
     @Inject
-    lateinit var sensorDataModel: SensorDataModel
+    lateinit var measurementModel: MeasurementModel
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d(TAG, "onReceive action=${intent?.action}")
         super.onReceive(context, intent)
 
         context?.let {
-            sensorDataModel.stopMeasurement()
+            measurementModel.stopMeasurement()
         }
     }
 }

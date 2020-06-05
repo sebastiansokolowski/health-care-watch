@@ -32,18 +32,20 @@ class AppModule {
     }
 
     @Provides
-    fun provideMeasurementModel(context: Context): MeasurementModel {
-        return MeasurementModel(context)
+    @Singleton
+    fun provideSensorDataModel(sensorManager: SensorManager, wearableClient: WearableClient): SensorDataModel {
+        return SensorDataModel(sensorManager, wearableClient)
     }
 
     @Provides
     @Singleton
-    fun provideSensorDataModel(measurementModel: MeasurementModel, wearableClient: WearableClient, sensorManager: SensorManager, healthGuardModel: HealthGuardModel): SensorDataModel {
-        return SensorDataModel(measurementModel, wearableClient, sensorManager, healthGuardModel)
-    }
+    fun provideHealthGuardModel(sensorDataModel: SensorDataModel, wearableClient: WearableClient): HealthGuardModel =
+            HealthGuardModel(sensorDataModel, wearableClient)
 
     @Provides
     @Singleton
-    fun provideHealthGuardModel(wearableClient: WearableClient): HealthGuardModel =
-            HealthGuardModel(wearableClient)
+    fun provideMeasurementModel(sensorDataModel: SensorDataModel, healthGuardModel: HealthGuardModel, sensorManager: SensorManager, wearableClient: WearableClient): MeasurementModel {
+        return MeasurementModel(sensorDataModel, healthGuardModel, sensorManager, wearableClient)
+    }
+
 }

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
 import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.client.WearableClient
+import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.reactivex.BackpressureStrategy
@@ -26,7 +27,7 @@ import kotlin.math.roundToInt
  * Created by Sebastian Sokołowski on 09.07.18.
  */
 class HomeViewModel
-@Inject constructor(private val sensorDataModel: SensorDataModel, private val wearableClient: WearableClient) : ViewModel() {
+@Inject constructor(private val measurementModel: MeasurementModel, private val sensorDataModel: SensorDataModel, private val wearableClient: WearableClient) : ViewModel() {
 
     private val MY_PERMISSIONS_REQUEST_BODY_SENSORS = 12
 
@@ -47,7 +48,7 @@ class HomeViewModel
     }
 
     private fun initHeartRate() {
-        sensorDataModel.measurementStateObservable
+        measurementModel.measurementStateObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it }
                 .subscribe {
@@ -93,12 +94,12 @@ class HomeViewModel
     }
 
     private fun initMeasurementStateLiveData(): LiveData<Boolean> {
-        val measurementStateFlowable = sensorDataModel.measurementStateObservable.toFlowable(BackpressureStrategy.LATEST)
+        val measurementStateFlowable = measurementModel.measurementStateObservable.toFlowable(BackpressureStrategy.LATEST)
         return LiveDataReactiveStreams.fromPublisher(measurementStateFlowable)
     }
 
     fun toggleMeasurementState() {
-        sensorDataModel.toggleMeasurementState()
+        measurementModel.toggleMeasurementState()
     }
 
     fun requestPermissions(activity: Activity) {
@@ -107,7 +108,7 @@ class HomeViewModel
             ActivityCompat.requestPermissions(activity,
                     missingPermissions,
                     MY_PERMISSIONS_REQUEST_BODY_SENSORS)
-            sensorDataModel.stopMeasurement()
+            measurementModel.stopMeasurement()
         }
     }
 

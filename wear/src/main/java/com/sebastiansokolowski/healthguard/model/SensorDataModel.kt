@@ -6,86 +6,32 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthguard.client.WearableClient
-import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
-import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
  */
-class SensorDataModel(measurementModel: MeasurementModel, private val wearableClient: WearableClient, private val sensorManager: SensorManager, private val healthGuardModel: HealthGuardModel) : SensorEventListener {
+class SensorDataModel(private val sensorManager: SensorManager, private val wearableClient: WearableClient) : SensorEventListener {
     private val TAG = javaClass.canonicalName
 
-    init {
-        measurementModel.sensorDataModel = this
-        healthGuardModel.sensorDataModel = this
-    }
+    var measurementId = -1L
 
     var heartRateObservable: ReplaySubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = ReplaySubject.createWithSize(10)
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
-    val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
-
-    var measurementRunning = false
-    var measurementId = -1L
-
-    private fun changeMeasurementState(state: Boolean) {
-        if (measurementRunning == state) {
-            return
-        }
-        measurementRunning = state
-        if (state) {
-            heartRateObservable = ReplaySubject.createWithSize(10)
-        } else {
-            heartRateObservable.onComplete()
-        }
-        measurementStateObservable.onNext(measurementRunning)
-        notifyMeasurementState()
-    }
-
-    fun notifyMeasurementState() {
-        wearableClient.sendMeasurementEvent(measurementRunning)
-    }
 
     private fun notifySensorsObservable(sensorEvent: com.sebastiansokolowski.shared.dataModel.SensorEvent) {
         sensorsObservable.onNext(sensorEvent)
     }
 
-    fun toggleMeasurementState() {
-        if (measurementRunning) {
-            stopMeasurement()
-        } else {
-            wearableClient.requestStartMeasurement()
-        }
-    }
-
-    fun notifySupportedHealthEvents() {
-        val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
-        val supportedHealthEvents = healthGuardModel.getSupportedHealthEvents(sensors)
-        wearableClient.sendSupportedHealthEvents(SupportedHealthEventTypes(supportedHealthEvents))
-    }
-
-    fun startMeasurement(measurementSettings: MeasurementSettings) {
-        if (measurementRunning) {
-            return
-        }
-
-        val healthEngines = healthGuardModel.getHealthEngines(measurementSettings.healthEvents)
-        val sensors = healthEngines.flatMap { it.requiredSensors() }.toSet()
-
-        changeMeasurementState(true)
-
-        this.measurementId = measurementSettings.measurementId
-        healthGuardModel.startEngines(measurementSettings)
+    fun registerSensors(measurementId: Long, sensors: Set<Int>, samplingPeriodUs: Int) {
+        this.measurementId = measurementId
 
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
 
-            val registered = sensorManager.registerListener(this, sensor,
-                    TimeUnit.MILLISECONDS.toMicros(measurementSettings.samplingMs.toLong()).toInt())
+            val registered = sensorManager.registerListener(this, sensor, samplingPeriodUs)
             if (!registered) {
                 Log.e(TAG, "error register sensorEvent: $sensorId")
             } else {
@@ -94,14 +40,7 @@ class SensorDataModel(measurementModel: MeasurementModel, private val wearableCl
         }
     }
 
-    fun stopMeasurement() {
-        if (!measurementRunning) {
-            return
-        }
-        changeMeasurementState(false)
-
-        healthGuardModel.stopEngines()
-
+    fun unregisterSensors() {
         sensorManager.unregisterListener(this)
     }
 

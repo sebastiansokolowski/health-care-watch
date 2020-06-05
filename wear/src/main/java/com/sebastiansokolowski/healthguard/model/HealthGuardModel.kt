@@ -15,15 +15,13 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class HealthGuardModel(private val wearableClient: WearableClient) {
+class HealthGuardModel(private val sensorDataModel: SensorDataModel, private val wearableClient: WearableClient) {
     private val TAG = javaClass.canonicalName
 
     private val healthEnginesRegistered = mutableSetOf<HealthGuardEngineBase>()
 
     private val healthEngines = mutableListOf<HealthGuardEngineBase>()
     private val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
-
-    lateinit var sensorDataModel: SensorDataModel
 
     init {
         subscribeToNotifyObservable()
