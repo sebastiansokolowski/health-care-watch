@@ -71,10 +71,10 @@ class WearableService : WearableListenerService() {
                 measurementModel.notifyMeasurementState()
             }
             DataClientPaths.START_LIVE_DATA -> {
-                wearableClient.changeLiveDataState(true)
+                sensorDataModel.changeLiveDataState(true)
             }
             DataClientPaths.STOP_LIVE_DATA -> {
-                wearableClient.changeLiveDataState(false)
+                sensorDataModel.changeLiveDataState(false)
             }
             DataClientPaths.GET_SUPPORTED_HEALTH_EVENTS -> {
                 measurementModel.notifySupportedHealthEvents()

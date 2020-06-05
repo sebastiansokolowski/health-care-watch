@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthguard.client.WearableClient
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -19,16 +20,21 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     private val TAG = javaClass.canonicalName
 
     var measurementId = -1L
+    var liveData = false
+    var sensorsRegistered = false
 
     var heartRateObservable: ReplaySubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = ReplaySubject.createWithSize(10)
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
+    private val sensorDataToSend = mutableListOf<com.sebastiansokolowski.shared.dataModel.SensorEvent>()
 
-    var sensorDataDisposable: Disposable? = null
+    private var sensorDataParserDisposable: Disposable? = null
+    private var sensorDataSyncDisposable: Disposable? = null
 
     fun registerSensors(measurementId: Long, sensors: Set<Int>, samplingPeriodUs: Int) {
         this.measurementId = measurementId
 
-        sensorDataDisposable = startSensorDataSender()
+        sensorDataParserDisposable = startSensorDataParser()
+        sensorDataSyncDisposable = startSensorDataSync(liveData)
 
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
@@ -40,11 +46,15 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                 Log.d(TAG, "registered sensorEvent: $sensorId")
             }
         }
+        sensorsRegistered = true
     }
 
     fun unregisterSensors() {
         sensorManager.unregisterListener(this)
-        sensorDataDisposable?.dispose()
+        sensorsRegistered = false
+        sensorDataParserDisposable?.dispose()
+        sensorDataSyncDisposable?.dispose()
+        syncSensorData(liveData)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -79,7 +89,39 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
         }
     }
 
-    private fun startSensorDataSender(): Disposable {
+    fun changeLiveDataState(liveData: Boolean) {
+        this.liveData = liveData
+
+        if (sensorsRegistered) {
+            sensorDataSyncDisposable?.dispose()
+            sensorDataSyncDisposable = startSensorDataSync(liveData)
+        }
+    }
+
+    private fun startSensorDataSync(liveData: Boolean): Disposable {
+        val period: Long = if (liveData) {
+            1
+        } else {
+            300
+        }
+
+        return Observable.interval(period, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.single())
+                .subscribe {
+                    syncSensorData(liveData)
+                }
+    }
+
+    fun syncSensorData(liveData: Boolean) {
+        Schedulers.single().scheduleDirect {
+            if (!sensorDataToSend.isNullOrEmpty()) {
+                wearableClient.sendSensorEvents(sensorDataToSend, liveData)
+                sensorDataToSend.clear()
+            }
+        }
+    }
+
+    private fun startSensorDataParser(): Disposable {
         return sensorsObservable
                 .subscribeOn(Schedulers.single())
                 .groupBy { it.type }
@@ -91,7 +133,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                                 }
                                 if (events.size <= 2) {
                                     events.forEach {
-                                        wearableClient.sendSensorEvent(it)
+                                        sensorDataToSend.add(it)
                                     }
                                     return@subscribe
                                 }
@@ -118,7 +160,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                                         measurementId,
                                         firstEvent.timestamp
                                 )
-                                wearableClient.sendSensorEvent(sensorEventWrapper)
+                                sensorDataToSend.add(sensorEventWrapper)
                             }
                 }
     }

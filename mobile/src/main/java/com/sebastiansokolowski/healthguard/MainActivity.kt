@@ -1,12 +1,12 @@
 package com.sebastiansokolowski.healthguard
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.view.MenuItem
-import com.sebastiansokolowski.healthguard.client.WearableClient
+import androidx.lifecycle.MutableLiveData
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
+import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.service.WearableService
 import com.sebastiansokolowski.healthguard.ui.*
 import com.sebastiansokolowski.healthguard.util.SingleEvent
@@ -23,7 +23,7 @@ class MainActivity : DaggerAppCompatActivity() {
     val healthEventEntitySelected: MutableLiveData<SingleEvent<HealthEventEntity>> = MutableLiveData()
 
     @Inject
-    lateinit var wearableClient: WearableClient
+    lateinit var measurementModel: MeasurementModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +42,12 @@ class MainActivity : DaggerAppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        wearableClient.sendLiveData(true)
+        measurementModel.changeLiveDataState(true)
     }
 
     override fun onStop() {
         super.onStop()
-        wearableClient.sendLiveData(false)
+        measurementModel.changeLiveDataState(false)
     }
 
     private var bottomNavigationViewListener = object : BottomNavigationView.OnNavigationItemSelectedListener {

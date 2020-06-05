@@ -26,6 +26,7 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
     private val TAG = javaClass.canonicalName
 
     var measurementRunning: Boolean = false
+    var liveData: Boolean = false
     private var measurementEventEntity: MeasurementEventEntity? = null
 
     //observables
@@ -78,6 +79,7 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
         }
 
         wearableClient.sendStartMeasurementEvent(measurementSettings)
+        wearableClient.sendLiveData(liveData)
     }
 
     fun startMeasurement() {
@@ -105,6 +107,11 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
             return
         }
         changeMeasurementState(false)
+    }
+
+    fun changeLiveDataState(enabled: Boolean) {
+        this.liveData = enabled
+        wearableClient.sendLiveData(liveData)
     }
 
     fun onDataChanged(dataItem: DataItem) {

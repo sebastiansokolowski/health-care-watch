@@ -16,10 +16,6 @@ import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -34,14 +30,6 @@ class WearableClient(context: Context) {
     private val messageClient: MessageClient = Wearable.getMessageClient(context)
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
 
-    private val sensorDataToSend = ArrayList<String>()
-    private var sensorDataSynchronizerDisposable: Disposable = startSensorDataSynchronizer(false)
-
-    fun changeLiveDataState(liveData: Boolean) {
-        sensorDataSynchronizerDisposable.dispose()
-        sensorDataSynchronizerDisposable = startSensorDataSynchronizer(liveData)
-    }
-
     fun sendMeasurementEvent(state: Boolean) {
         Log.d(TAG, "sendMeasurementEvent state: $state")
 
@@ -52,34 +40,24 @@ class WearableClient(context: Context) {
         }
     }
 
-    private fun startSensorDataSynchronizer(liveData: Boolean): Disposable {
-        val period: Long = if (liveData) {
-            1
-        } else {
-            300
-        }
+    fun sendSensorEvents(events: List<SensorEvent>, urgent: Boolean) {
+        Log.d(TAG, "sendSensorEvents size=${events.size}")
 
-        return Observable.interval(period, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.single())
-                .subscribe {
-                    syncSensorData(liveData)
-                }
-    }
+        events.chunked(maxSizeOfDataToSend).iterator().forEach {
+            Log.v(TAG, "sendSensorEvents chunked size=${it.size}")
 
-    fun syncSensorData(urgent: Boolean) {
-        Log.d(TAG, "syncSensorData size=${sensorDataToSend.size}")
-
-        sensorDataToSend.chunked(maxSizeOfDataToSend).iterator().forEach {
-            Log.v(TAG, "syncSensorData chunked size=${it.size}")
+            val data = ArrayList<String>()
+            it.forEach {
+                data.add(Gson().toJson(it))
+            }
 
             val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENTS_MAP_PATH)
             putDataMapReq.dataMap.apply {
-                putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, ArrayList(it))
+                putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, data)
             }
 
             send(putDataMapReq, urgent)
         }
-        sensorDataToSend.clear()
     }
 
     fun requestStartMeasurement() {
@@ -108,10 +86,6 @@ class WearableClient(context: Context) {
         }
 
         send(putDataMapReq, true)
-    }
-
-    fun sendSensorEvent(event: SensorEvent) {
-        sensorDataToSend.add(Gson().toJson(event))
     }
 
     private fun sendMessage(message: String) {
