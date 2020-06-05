@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.sebastiansokolowski.healthguard.service.WearableService
-import com.sebastiansokolowski.healthguard.service.SensorService
 import dagger.android.DaggerBroadcastReceiver
 
 
@@ -19,7 +18,6 @@ class BootCompletedReceiver : DaggerBroadcastReceiver() {
         super.onReceive(context, intent)
 
         context?.apply {
-            startService(Intent(this, SensorService::class.java))
             startService(Intent(this, WearableService::class.java))
         }
     }

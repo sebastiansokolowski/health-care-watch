@@ -10,7 +10,6 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.service.WearableService
-import com.sebastiansokolowski.healthguard.service.SensorService
 import com.sebastiansokolowski.healthguard.view.DataValueFormatter
 import com.sebastiansokolowski.healthguard.viewModel.HomeViewModel
 import dagger.android.AndroidInjection
@@ -34,7 +33,6 @@ class HomeActivity : WearableFragmentActivity() {
         setContentView(R.layout.activity_main)
         setAmbientEnabled()
 
-        startService(Intent(this, SensorService::class.java))
         startService(Intent(this, WearableService::class.java))
 
 

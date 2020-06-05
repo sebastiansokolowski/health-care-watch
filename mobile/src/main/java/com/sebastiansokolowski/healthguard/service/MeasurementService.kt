@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Binder
 import android.os.IBinder
 import com.sebastiansokolowski.healthguard.R
-import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.NotificationModel
 import dagger.android.DaggerService
 import javax.inject.Inject
@@ -13,9 +12,6 @@ import javax.inject.Inject
  * Created by Sebastian Sokołowski on 23.06.19.
  */
 class MeasurementService : DaggerService() {
-
-    @Inject
-    lateinit var measurementModel: MeasurementModel
 
     @Inject
     lateinit var notificationModel: NotificationModel
@@ -41,10 +37,5 @@ class MeasurementService : DaggerService() {
         val builder = androidNotification.createMeasurementNotificationBuilder(getString(R.string.notification_measurement_title), getString(R.string.notification_measurement_message))
         val notificationId = androidNotification.FOREGROUND_NOTIFICATION_ID
         startForeground(notificationId, builder.build())
-    }
-
-    override fun onDestroy() {
-        measurementModel.stopMeasurement()
-        super.onDestroy()
     }
 }

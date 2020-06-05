@@ -39,8 +39,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name="com.sebastiansokolowski.healthguard.service.SensorService" />
-
         <service android:name="com.sebastiansokolowski.healthguard.service.WearableService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.CAPABILITY_CHANGED" />

@@ -33,6 +33,16 @@ class WearableService : WearableListenerService() {
         super.onCreate()
     }
 
+    override fun onLowMemory() {
+        super.onLowMemory()
+        measurementModel.stopMeasurement()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        measurementModel.stopMeasurement()
+    }
+
     override fun onCapabilityChanged(capabilityInfo: CapabilityInfo?) {
         capabilityInfo?.let {
             if (it.nodes.isNullOrEmpty()) {
