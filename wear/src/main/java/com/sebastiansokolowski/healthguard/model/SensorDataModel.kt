@@ -6,9 +6,11 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthguard.client.WearableClient
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
@@ -21,12 +23,12 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     var heartRateObservable: ReplaySubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = ReplaySubject.createWithSize(10)
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
 
-    private fun notifySensorsObservable(sensorEvent: com.sebastiansokolowski.shared.dataModel.SensorEvent) {
-        sensorsObservable.onNext(sensorEvent)
-    }
+    var sensorDataDisposable: Disposable? = null
 
     fun registerSensors(measurementId: Long, sensors: Set<Int>, samplingPeriodUs: Int) {
         this.measurementId = measurementId
+
+        sensorDataDisposable = startSensorDataSender()
 
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
@@ -42,6 +44,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
 
     fun unregisterSensors() {
         sensorManager.unregisterListener(this)
+        sensorDataDisposable?.dispose()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
@@ -71,9 +74,52 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                     }
                 }
 
-                notifySensorsObservable(sensorEventWrapper)
-                wearableClient.sendSensorEvent(sensorEventWrapper)
+                sensorsObservable.onNext(sensorEventWrapper)
             }
         }
+    }
+
+    private fun startSensorDataSender(): Disposable {
+        return sensorsObservable
+                .subscribeOn(Schedulers.single())
+                .groupBy { it.type }
+                .subscribe {
+                    it.buffer(1, TimeUnit.SECONDS)
+                            .subscribe { events ->
+                                if (events.isNullOrEmpty()) {
+                                    return@subscribe
+                                }
+                                if (events.size <= 2) {
+                                    events.forEach {
+                                        wearableClient.sendSensorEvent(it)
+                                    }
+                                    return@subscribe
+                                }
+                                val firstEvent = events.first()
+
+                                val avgValues = FloatArray(firstEvent.values.size)
+                                var avgAccuracy = 0
+                                events.forEach { event ->
+                                    event.values.forEachIndexed { index, value ->
+                                        avgValues[index] += value
+                                    }
+                                    avgAccuracy += event.accuracy
+                                }
+                                avgValues.forEachIndexed { index, value ->
+                                    avgValues[index] = value / events.size
+                                }
+                                avgAccuracy /= events.size
+
+                                //send
+                                val sensorEventWrapper = com.sebastiansokolowski.shared.dataModel.SensorEvent(
+                                        firstEvent.type,
+                                        avgValues,
+                                        avgAccuracy,
+                                        measurementId,
+                                        firstEvent.timestamp
+                                )
+                                wearableClient.sendSensorEvent(sensorEventWrapper)
+                            }
+                }
     }
 }
