@@ -39,14 +39,17 @@ class FallEngineTest {
 
     @BeforeEach
     fun setUp() {
-        testObj.stepDetector = stepDetector
-        testObj.setupEngine(healthSensorObservable, notifyObservable, measurementSettings)
-        testObj.startEngine()
-
         every { stepDetector.isStepDetected() } returns true
         every { measurementSettings.fallSettings.stepDetector } returns true
         every { measurementSettings.fallSettings.threshold } returns 2
         every { measurementSettings.fallSettings.timeOfInactivity } returns 0
+        every { measurementSettings.fallSettings.stepDetectorTimeoutInS } returns 0
+        every { measurementSettings.fallSettings.sampleCount } returns 10
+        every { measurementSettings.measurementId } returns 1
+
+        testObj.setupEngine(healthSensorObservable, notifyObservable, measurementSettings)
+        testObj.stepDetector = stepDetector
+        testObj.startEngine()
 
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
     }

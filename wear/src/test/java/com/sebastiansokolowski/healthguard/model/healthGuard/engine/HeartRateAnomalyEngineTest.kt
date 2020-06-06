@@ -11,6 +11,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -37,13 +39,17 @@ class HeartRateAnomalyEngineTest {
 
     @BeforeEach
     fun setUp() {
-        testObj.stepDetector = stepDetector
+        every { stepDetector.isStepDetected() } returns true
+        every { measurementSettings.heartRateAnomalySettings.stepDetectorTimeoutInMin } returns 5
+        every { measurementSettings.heartRateAnomalySettings.minThreshold } returns 40
+        every { measurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity } returns 120
+        every { measurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity } returns 150
+
         testObj.setupEngine(healthSensorObservable, notifyObservable, measurementSettings)
+        testObj.stepDetector = stepDetector
         testObj.startEngine()
 
-        every { stepDetector.isStepDetected() } returns true
-
-        testObj.setupEngine(healthSensorObservable, notifyObservable, measurementSettings)
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
     }
 
     @Test

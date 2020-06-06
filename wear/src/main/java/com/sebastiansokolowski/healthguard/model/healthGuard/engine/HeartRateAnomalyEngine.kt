@@ -26,7 +26,7 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
      */
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var anomalyState = false
-    private lateinit var stepDetector: StepDetector
+    lateinit var stepDetector: StepDetector
 
     override fun requiredSensors(): Set<Int> {
         return setOf(
@@ -68,7 +68,7 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
     }
 
     override fun stopEngine() {
-        stepDetector?.stopDetector()
+        stepDetector.stopDetector()
 
         compositeDisposable.clear()
     }
