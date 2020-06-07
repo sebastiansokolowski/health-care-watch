@@ -3,6 +3,7 @@ package com.sebastiansokolowski.healthguard.viewModel.sensorData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.hardware.Sensor
+import android.util.Log
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthguard.dataModel.ChartData
@@ -16,6 +17,7 @@ import io.objectbox.BoxStore
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.HashMap
@@ -40,6 +42,9 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     val showLoadingProgressBar: MutableLiveData<Boolean> = MutableLiveData()
     val showStatisticsContainer: MutableLiveData<Boolean> = MutableLiveData()
     val entryHighlighted: MutableLiveData<Entry> = MutableLiveData()
+
+    var sensorEventsDisposable: Disposable? = null
+    var healthEventsDisposable: Disposable? = null
 
     var currentDate = Date()
     var sensorType: Int = 0
@@ -80,19 +85,20 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     abstract fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>?
 
     private fun refreshHealthEvents() {
-        val disposable = getHealthEventsObservable()
+        healthEventsDisposable?.dispose()
+        healthEventsDisposable = getHealthEventsObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
                     healthEvents.postValue(it)
                 }
-        disposables.add(disposable)
     }
 
     private fun refreshSensorEvents() {
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
 
-        val disposable = getSensorEventsObservable()!!
+        sensorEventsDisposable?.dispose()
+        sensorEventsDisposable = getSensorEventsObservable()!!
                 .subscribeOn(Schedulers.io())
                 .map {
                     it.sortBy { it.timestamp }
@@ -117,13 +123,15 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
                     showLoadingProgressBar.postValue(true)
                     showStatisticsContainer.postValue(false)
                 }
+                .doOnComplete {
+                    showLoadingProgressBar.postValue(false)
+                }
                 .subscribe {
                     showLoadingProgressBar.postValue(false)
                     showStatisticsContainer.postValue(it.xData.size > 0)
 
                     chartLiveData.postValue(it)
                 }
-        disposables.add(disposable)
     }
 
     private fun parseData(dataToParse: MutableList<SensorEventEntity>, startDayTimestamp: Long, chartData: MutableList<LineDataSet>, statisticData: StatisticData, index: Int) {
@@ -200,6 +208,8 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     }
 
     override fun onCleared() {
+        healthEventsDisposable?.dispose()
+        sensorEventsDisposable?.dispose()
         disposables.clear()
         super.onCleared()
     }
