@@ -62,6 +62,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
+        val timestamp = Date().time
         Schedulers.single().scheduleDirect {
             event?.apply {
                 if (sensor == null || values == null || values.isEmpty()) {
@@ -75,7 +76,8 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                         sensor.type,
                         values.copyOf(),
                         accuracy,
-                        measurementId
+                        measurementId,
+                        timestamp
                 )
 
                 when (sensor.type) {
