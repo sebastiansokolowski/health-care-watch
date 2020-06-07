@@ -7,10 +7,12 @@ import android.hardware.SensorManager
 import android.util.Log
 import com.sebastiansokolowski.healthguard.client.WearableClient
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -27,14 +29,14 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
     private val sensorDataToSend = mutableListOf<com.sebastiansokolowski.shared.dataModel.SensorEvent>()
 
-    private var sensorDataParserDisposable: Disposable? = null
+    private var sensorDataParserDisposables = CompositeDisposable()
     private var sensorDataSyncDisposable: Disposable? = null
 
     fun registerSensors(measurementId: Long, sensors: Set<Int>, samplingPeriodUs: Int) {
         this.measurementId = measurementId
 
-        sensorDataParserDisposable = startSensorDataParser()
-        sensorDataSyncDisposable = startSensorDataSync(liveData)
+        startSensorDataParser()
+        startSensorDataSync(liveData)
 
         for (sensorId: Int in sensors) {
             val sensor = sensorManager.getDefaultSensor(sensorId)
@@ -52,7 +54,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     fun unregisterSensors() {
         sensorManager.unregisterListener(this)
         sensorsRegistered = false
-        sensorDataParserDisposable?.dispose()
+        sensorDataParserDisposables.clear()
         sensorDataSyncDisposable?.dispose()
         syncSensorData(liveData)
     }
@@ -96,21 +98,23 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
 
         if (sensorsRegistered) {
             sensorDataSyncDisposable?.dispose()
-            sensorDataSyncDisposable = startSensorDataSync(liveData)
+            startSensorDataSync(liveData)
         }
     }
 
-    private fun startSensorDataSync(liveData: Boolean): Disposable {
+    private fun startSensorDataSync(liveData: Boolean) {
         val period: Long = if (liveData) {
             1
         } else {
             300
         }
 
-        return Observable.interval(period, TimeUnit.SECONDS)
+        Observable.interval(period, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.single())
                 .subscribe {
                     syncSensorData(liveData)
+                }.let {
+                    sensorDataSyncDisposable = it
                 }
     }
 
@@ -123,8 +127,8 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
         }
     }
 
-    private fun startSensorDataParser(): Disposable {
-        return sensorsObservable
+    private fun startSensorDataParser() {
+        sensorsObservable
                 .subscribeOn(Schedulers.single())
                 .groupBy { it.type }
                 .subscribe {
@@ -163,7 +167,11 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                                         firstEvent.timestamp
                                 )
                                 sensorDataToSend.add(sensorEventWrapper)
+                            }.let {
+                                sensorDataParserDisposables.add(it)
                             }
+                }.let {
+                    sensorDataParserDisposables.add(it)
                 }
     }
 }
