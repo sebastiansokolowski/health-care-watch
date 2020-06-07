@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.viewModel.sensorData.LiveSensorDataViewModel
+import kotlinx.android.synthetic.main.sensor_data_fragment.*
 import javax.inject.Inject
 
 /**
@@ -46,6 +48,7 @@ class LiveSensorDataFragment : SensorDataFragment() {
     }
 
     private fun initChart(sensorAdapterItem: SensorAdapterItem) {
+        chart_lc.setNoDataText(getString(R.string.sensor_data_chart_live_no_data))
         liveSensorDataViewModel.chartLiveData.observe(viewLifecycleOwner, Observer {
             fillChart(sensorAdapterItem, it)
         })
