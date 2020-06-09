@@ -57,36 +57,59 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
                     val dataToSave = mutableListOf<SensorEventEntity>()
                     sensorEventsJson.forEach {
                         val sensorEvent = Gson().fromJson(it, SensorEvent::class.java)
-                        val sensorEventData = createSensorEventEntity(sensorEvent)
+                        val sensorEventEntity = createSensorEventEntity(sensorEvent)
 
-                        if (sensorEventData.type == Sensor.TYPE_HEART_RATE) {
-                            notifyHeartRateObservable(sensorEventData)
+                        if (isValid(sensorEventEntity)) {
+                            if (sensorEventEntity.type == Sensor.TYPE_HEART_RATE) {
+                                notifyHeartRateObservable(sensorEventEntity)
+                            }
+                            notifySensorsObservable(sensorEventEntity)
+
+                            dataToSave.add(sensorEventEntity)
                         }
-                        notifySensorsObservable(sensorEventData)
-
-                        dataToSave.add(sensorEventData)
                     }
-
                     sensorEventEntityBox.put(dataToSave)
-
-                    Log.d(TAG, "sensorEvents size=${sensorEventsJson.size}")
+                    Log.d(TAG, "sensorEvents size=${dataToSave.size}")
                 }
             }
             DataClientPaths.HEALTH_EVENT_MAP_PATH -> {
                 DataMapItem.fromDataItem(dataItem).dataMap.apply {
                     val json = getString(DataClientPaths.HEALTH_EVENT_MAP_JSON)
                     val healthEvent = Gson().fromJson(json, HealthEvent::class.java)
-
                     val healthEventEntity = createHealthEventEntity(healthEvent)
 
-                    healthEventEntityBox.put(healthEventEntity)
+                    if (isValid(healthEventEntity)) {
+                        notifyHealthEventObservable(healthEventEntity)
 
-                    notifyHealthEventObservable(healthEventEntity)
-
+                        healthEventEntityBox.put(healthEventEntity)
+                    }
                     Log.d(TAG, "healthEvent=$healthEventEntity")
                 }
             }
         }
+    }
+
+    private fun isValid(sensorEventEntity: SensorEventEntity): Boolean {
+        sensorEventEntity.run {
+            if (measurementEventEntity.isNull) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    private fun isValid(healthEventEntity: HealthEventEntity): Boolean {
+        healthEventEntity.run {
+            if (measurementEventEntity.isNull) {
+                return false
+            }
+            if (sensorEventEntity.isNull) {
+                return false
+            }
+        }
+
+        return true
     }
 
     private fun createSensorEventEntity(sensorEvent: SensorEvent): SensorEventEntity {
