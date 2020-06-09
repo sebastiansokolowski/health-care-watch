@@ -115,7 +115,7 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
     }
 
     fun onDataChanged(dataItem: DataItem) {
-        when (dataItem.uri.path) {
+        when ("/" + dataItem.uri.pathSegments.getOrNull(0)) {
             DataClientPaths.SUPPORTED_HEALTH_EVENTS_MAP_PATH -> {
                 DataMapItem.fromDataItem(dataItem).dataMap.apply {
                     val json = getString(DataClientPaths.HEALTH_EVENT_MAP_JSON)

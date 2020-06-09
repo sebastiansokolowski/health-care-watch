@@ -22,13 +22,13 @@ class WearableClient(context: Context) {
     fun sendStopMeasurementEvent() {
         Log.d(TAG, "sendStopMeasurementEvent")
 
-        sendMessage(DataClientPaths.STOP_MEASUREMENT)
+        sendMessage(DataClientPaths.STOP_MEASUREMENT_PATH)
     }
 
     fun sendStartMeasurementEvent(measurementSettings: MeasurementSettings) {
         Log.d(TAG, "sendStartMeasurementEvent measurementSettings: $measurementSettings")
 
-        val putDataMapReq = PutDataMapRequest.create(DataClientPaths.MEASUREMENT_START_DATA_PATH)
+        val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(DataClientPaths.MEASUREMENT_START_DATA_PATH)
         putDataMapReq.dataMap.apply {
             putString(DataClientPaths.MEASUREMENT_START_DATA_JSON, Gson().toJson(measurementSettings))
         }
@@ -38,22 +38,22 @@ class WearableClient(context: Context) {
 
     fun sendLiveData(enabled: Boolean) {
         if (enabled) {
-            sendMessage(DataClientPaths.START_LIVE_DATA)
+            sendMessage(DataClientPaths.START_LIVE_DATA_PATH)
         } else {
-            sendMessage(DataClientPaths.STOP_LIVE_DATA)
+            sendMessage(DataClientPaths.STOP_LIVE_DATA_PATH)
         }
     }
 
     fun getMeasurementState() {
         Log.d(TAG, "getMeasurementState")
 
-        sendMessage(DataClientPaths.GET_MEASUREMENT)
+        sendMessage(DataClientPaths.GET_MEASUREMENT_PATH)
     }
 
     fun getSupportedHealthEvents() {
         Log.d(TAG, "getSupportedHealthEvents")
 
-        sendMessage(DataClientPaths.GET_SUPPORTED_HEALTH_EVENTS)
+        sendMessage(DataClientPaths.GET_SUPPORTED_HEALTH_EVENTS_PATH)
     }
 
     private fun sendMessage(message: String) {

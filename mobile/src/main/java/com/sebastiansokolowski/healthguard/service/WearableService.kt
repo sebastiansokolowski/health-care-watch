@@ -58,7 +58,7 @@ class WearableService : WearableListenerService() {
                 Log.d(TAG, "type not changed")
                 return
             }
-            when (event.dataItem.uri.path) {
+            when ("/" + event.dataItem.uri.pathSegments.getOrNull(0)) {
                 DataClientPaths.SUPPORTED_HEALTH_EVENTS_MAP_PATH -> {
                     measurementModel.onDataChanged(event.dataItem)
                 }
@@ -74,13 +74,13 @@ class WearableService : WearableListenerService() {
 
     override fun onMessageReceived(event: MessageEvent?) {
         when (event?.path) {
-            DataClientPaths.START_MEASUREMENT -> {
+            DataClientPaths.START_MEASUREMENT_PATH -> {
                 measurementModel.startMeasurement()
             }
-            DataClientPaths.STOP_MEASUREMENT -> {
+            DataClientPaths.STOP_MEASUREMENT_PATH -> {
                 measurementModel.stopMeasurement()
             }
-            DataClientPaths.REQUEST_START_MEASUREMENT -> {
+            DataClientPaths.REQUEST_START_MEASUREMENT_PATH -> {
                 measurementModel.requestStartMeasurement()
             }
         }

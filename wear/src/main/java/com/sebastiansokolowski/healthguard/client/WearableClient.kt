@@ -34,9 +34,9 @@ class WearableClient(context: Context) {
         Log.d(TAG, "sendMeasurementEvent state: $state")
 
         if (state) {
-            sendMessage(DataClientPaths.START_MEASUREMENT)
+            sendMessage(DataClientPaths.START_MEASUREMENT_PATH)
         } else {
-            sendMessage(DataClientPaths.STOP_MEASUREMENT)
+            sendMessage(DataClientPaths.STOP_MEASUREMENT_PATH)
         }
     }
 
@@ -51,7 +51,7 @@ class WearableClient(context: Context) {
                 data.add(Gson().toJson(it))
             }
 
-            val putDataMapReq = PutDataMapRequest.create(SENSOR_EVENTS_MAP_PATH)
+            val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(SENSOR_EVENTS_MAP_PATH)
             putDataMapReq.dataMap.apply {
                 putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, data)
             }
@@ -63,13 +63,13 @@ class WearableClient(context: Context) {
     fun requestStartMeasurement() {
         Log.d(TAG, "requestStartMeasurement")
 
-        sendMessage(DataClientPaths.REQUEST_START_MEASUREMENT)
+        sendMessage(DataClientPaths.REQUEST_START_MEASUREMENT_PATH)
     }
 
     fun sendSupportedHealthEvents(supportedHealthEventTypes: SupportedHealthEventTypes) {
         Log.d(TAG, "sendSupportedHealthEvents healthEventTypesSupported: $supportedHealthEventTypes")
 
-        val putDataMapReq = PutDataMapRequest.create(SUPPORTED_HEALTH_EVENTS_MAP_PATH)
+        val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(SUPPORTED_HEALTH_EVENTS_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putString(SUPPORTED_HEALTH_EVENTS_MAP_JSON, Gson().toJson(supportedHealthEventTypes))
         }
@@ -80,7 +80,7 @@ class WearableClient(context: Context) {
     fun sendHealthEvent(healthEvent: HealthEvent) {
         Log.d(TAG, "sendHealthEvent sensorEvent=${healthEvent.sensorEvent}")
 
-        val putDataMapReq = PutDataMapRequest.create(HEALTH_EVENT_MAP_PATH)
+        val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(HEALTH_EVENT_MAP_PATH)
         putDataMapReq.dataMap.apply {
             putString(HEALTH_EVENT_MAP_JSON, Gson().toJson(healthEvent))
         }

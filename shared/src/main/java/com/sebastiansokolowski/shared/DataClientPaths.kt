@@ -8,13 +8,13 @@ class DataClientPaths {
         const val NODE_CAPABILITY = "health_guard"
 
         //messages
-        const val START_MEASUREMENT = "/start_measurement"
-        const val STOP_MEASUREMENT = "/stop_measurement"
-        const val GET_MEASUREMENT = "/get_measurement"
-        const val REQUEST_START_MEASUREMENT = "/request_start_measurement"
-        const val START_LIVE_DATA = "/start_live_data"
-        const val STOP_LIVE_DATA = "/stop_live_data"
-        const val GET_SUPPORTED_HEALTH_EVENTS = "/get_supported_health_engines"
+        const val START_MEASUREMENT_PATH = "/start_measurement"
+        const val STOP_MEASUREMENT_PATH = "/stop_measurement"
+        const val GET_MEASUREMENT_PATH = "/get_measurement"
+        const val REQUEST_START_MEASUREMENT_PATH = "/request_start_measurement"
+        const val START_LIVE_DATA_PATH = "/start_live_data"
+        const val STOP_LIVE_DATA_PATH = "/stop_live_data"
+        const val GET_SUPPORTED_HEALTH_EVENTS_PATH = "/get_supported_health_engines"
 
         //data
         const val SUPPORTED_HEALTH_EVENTS_MAP_PATH = "/supported_health_events"

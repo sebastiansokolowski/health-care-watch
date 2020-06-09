@@ -49,7 +49,7 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
     }
 
     fun onDataChanged(dataItem: DataItem) {
-        when (dataItem.uri.path) {
+        when ("/" + dataItem.uri.pathSegments.getOrNull(0)) {
             DataClientPaths.SENSOR_EVENTS_MAP_PATH -> {
                 DataMapItem.fromDataItem(dataItem).dataMap.apply {
                     val sensorEventsJson = getStringArrayList(DataClientPaths.SENSOR_EVENTS_MAP_ARRAY_LIST)

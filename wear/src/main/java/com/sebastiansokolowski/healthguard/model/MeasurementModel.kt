@@ -80,7 +80,7 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
     }
 
     fun onDataChanged(dataItem: DataItem) {
-        when (dataItem.uri.path) {
+        when ("/" + dataItem.uri.pathSegments.getOrNull(0)?.removePrefix("/")) {
             DataClientPaths.MEASUREMENT_START_DATA_PATH -> {
                 DataMapItem.fromDataItem(dataItem).dataMap.apply {
                     val json = getString(DataClientPaths.MEASUREMENT_START_DATA_JSON)
