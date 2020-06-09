@@ -6,7 +6,7 @@ import java.util.*
 /**
  * Created by Sebastian Sokołowski on 20.01.20.
  */
-data class MeasurementSettings(val samplingMs: Int = 1000, val healthEvents: Set<HealthEventType> = emptySet(),
+data class MeasurementSettings(val samplingMs: Int = 100, val healthEvents: Set<HealthEventType> = emptySet(),
                                val heartRateAnomalySettings: HeartRateAnomalySettings = HeartRateAnomalySettings(),
                                val fallSettings: FallSettings = FallSettings(),
                                val epilepsySettings: EpilepsySettings = EpilepsySettings(),

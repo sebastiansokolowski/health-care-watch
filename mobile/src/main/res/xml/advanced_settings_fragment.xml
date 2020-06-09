@@ -70,11 +70,11 @@
 
         <SeekBarPreference
             android:key="fall_sample_count"
-            android:max="100"
+            android:max="200"
             android:summary="Wielkość próbki do analizy."
             android:title="@string/settings_fall_sample_count"
             app:iconSpaceReserved="false"
-            app:min="1"
+            app:min="5"
             app:showSeekBarValue="true" />
 
         <SwitchPreference
