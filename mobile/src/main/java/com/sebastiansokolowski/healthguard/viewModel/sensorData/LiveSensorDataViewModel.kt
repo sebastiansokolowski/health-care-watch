@@ -1,16 +1,14 @@
 package com.sebastiansokolowski.healthguard.viewModel.sensorData
 
-import android.util.Log
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
 import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import io.objectbox.BoxStore
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -23,6 +21,8 @@ class LiveSensorDataViewModel
 
     private var sensorEventsObservable: Observable<MutableList<SensorEventEntity>> = initSensorEvents()
     private var healthEventsObservable: Observable<MutableList<HealthEventEntity>> = initHealthEvents()
+
+    private val currentTimestamp = Date().time
 
     init {
         initMeasurementState()
@@ -47,10 +47,10 @@ class LiveSensorDataViewModel
 
     private fun initSensorEvents(): Observable<MutableList<SensorEventEntity>> {
         val sensorEventEntities = mutableListOf<SensorEventEntity>()
-
         return sensorDataModel.sensorsObservable
                 .subscribeOn(Schedulers.io())
                 .filter { it.type == sensorType }
+                .filter { it.timestamp >= currentTimestamp }
                 .map {
                     sensorEventEntities.add(it)
                     sensorEventEntities
@@ -62,7 +62,8 @@ class LiveSensorDataViewModel
 
         return sensorDataModel.healthEventObservable
                 .subscribeOn(Schedulers.io())
-                .filter { it.sensorEventEntity.target?.type == sensorType }
+                .filter { it.sensorEventEntity.target.type == sensorType }
+                .filter { it.sensorEventEntity.target.timestamp >= currentTimestamp }
                 .map {
                     healthEventEntities.add(it)
                     healthEventEntities.sortByDescending { it.id }
