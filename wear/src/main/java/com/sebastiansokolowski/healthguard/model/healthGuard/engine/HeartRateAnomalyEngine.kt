@@ -49,6 +49,7 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
         stepDetector.startDetector()
         sensorEventObservable
                 .subscribeOn(Schedulers.computation())
+                .skip(1, TimeUnit.MINUTES)
                 .filter { it.type == Sensor.TYPE_HEART_RATE }
                 .subscribe { sensorEventData ->
                     val heartRate = sensorEventData.values[0].toInt()
