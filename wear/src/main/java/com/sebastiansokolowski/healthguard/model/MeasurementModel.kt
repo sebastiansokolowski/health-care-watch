@@ -1,7 +1,9 @@
 package com.sebastiansokolowski.healthguard.model
 
+import android.annotation.SuppressLint
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.os.PowerManager
 import android.util.Log
 import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.DataMapItem
@@ -17,10 +19,11 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 06.07.19.
  */
-class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardModel: HealthGuardModel, private val sensorManager: SensorManager, private val wearableClient: WearableClient) {
+class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardModel: HealthGuardModel, private val sensorManager: SensorManager, powerManager: PowerManager, private val wearableClient: WearableClient) {
     private val TAG = javaClass.canonicalName
 
     var measurementRunning = false
+    var wakeLock: PowerManager.WakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "HealthGuard::MeasurementWakeLock")
 
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
@@ -56,6 +59,7 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
         }
     }
 
+    @SuppressLint("WakelockTimeout")
     fun startMeasurement(measurementSettings: MeasurementSettings) {
         if (measurementRunning) {
             return
@@ -68,6 +72,7 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
         changeMeasurementState(true)
         healthGuardModel.startEngines(measurementSettings)
         sensorDataModel.registerSensors(measurementSettings.measurementId, sensors, samplingPeriodUs)
+        wakeLock.acquire()
     }
 
     fun stopMeasurement() {
@@ -77,6 +82,7 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
         changeMeasurementState(false)
         healthGuardModel.stopEngines()
         sensorDataModel.unregisterSensors()
+        wakeLock.release()
     }
 
     fun onDataChanged(dataItem: DataItem) {

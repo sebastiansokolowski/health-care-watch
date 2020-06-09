@@ -3,6 +3,7 @@ package com.sebastiansokolowski.healthguard.di
 import android.app.Application
 import android.content.Context
 import android.hardware.SensorManager
+import android.os.PowerManager
 import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.model.HealthGuardModel
 import com.sebastiansokolowski.healthguard.model.MeasurementModel
@@ -32,6 +33,11 @@ class AppModule {
     }
 
     @Provides
+    fun providePowerManager(app: Application): PowerManager {
+        return app.getSystemService(Context.POWER_SERVICE) as PowerManager
+    }
+
+    @Provides
     @Singleton
     fun provideSensorDataModel(sensorManager: SensorManager, wearableClient: WearableClient): SensorDataModel {
         return SensorDataModel(sensorManager, wearableClient)
@@ -44,8 +50,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideMeasurementModel(sensorDataModel: SensorDataModel, healthGuardModel: HealthGuardModel, sensorManager: SensorManager, wearableClient: WearableClient): MeasurementModel {
-        return MeasurementModel(sensorDataModel, healthGuardModel, sensorManager, wearableClient)
+    fun provideMeasurementModel(sensorDataModel: SensorDataModel, healthGuardModel: HealthGuardModel, sensorManager: SensorManager, powerManager: PowerManager, wearableClient: WearableClient): MeasurementModel {
+        return MeasurementModel(sensorDataModel, healthGuardModel, sensorManager, powerManager, wearableClient)
     }
 
 }
