@@ -40,7 +40,7 @@ class HealthEventAdapter(val context: Context, private val healthEventEntities: 
     }
 
     override fun generateView(position: Int, parent: ViewGroup?): View {
-        val swipeLayout = LayoutInflater.from(context).inflate(R.layout.health_event_item, null) as SwipeLayout
+        val swipeLayout = LayoutInflater.from(context).inflate(R.layout.health_event_item, parent) as SwipeLayout
 
         swipeLayout.showMode = SwipeLayout.ShowMode.LayDown
         swipeLayout.addSwipeListener(this@HealthEventAdapter)

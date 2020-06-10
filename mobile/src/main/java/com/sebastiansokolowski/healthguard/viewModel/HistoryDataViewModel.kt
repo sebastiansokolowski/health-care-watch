@@ -14,18 +14,13 @@ import javax.inject.Inject
 class HistoryDataViewModel
 @Inject constructor() : ViewModel() {
 
-    val currentDateLiveData: MutableLiveData<Date> = MutableLiveData()
+    val currentDateLiveData: MutableLiveData<Date> = MutableLiveData(Date())
     val viewPagerToShow: MutableLiveData<SingleEvent<Int>> = MutableLiveData()
     val healthEventEntityToShow: MutableLiveData<HealthEventEntity> = MutableLiveData()
 
-    init {
-        val currentDate = Date()
-        currentDateLiveData.postValue(currentDate)
-    }
-
     private fun changeCurrentDateDay(amount: Int) {
         val calendar = Calendar.getInstance()
-        calendar.time = currentDateLiveData.value
+        calendar.time = currentDateLiveData.value ?: Date()
         calendar.add(Calendar.DAY_OF_MONTH, amount)
 
         currentDateLiveData.postValue(calendar.time)

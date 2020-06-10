@@ -112,7 +112,7 @@ class AndroidNotification(val context: Context) {
                         val builder = createAlertNotificationBuilder(title, message, notificationId, showSMSCancelActionButton, (smsNotificationTimeout - it).toInt())
                         notificationManagerCompat.notify(notificationId, builder.build())
                     }
-            alertNotificationMap.put(notificationId, disposable)
+            alertNotificationMap[notificationId] = disposable
         } else {
             val builder = createAlertNotificationBuilder(title, message, notificationId)
             notificationManagerCompat.notify(notificationId, builder.build())

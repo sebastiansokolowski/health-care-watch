@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit
 class SensorDataModel(private val sensorManager: SensorManager, private val wearableClient: WearableClient) : SensorEventListener {
     private val TAG = javaClass.canonicalName
 
-    var measurementId = -1L
-    var liveData = false
-    var sensorsRegistered = false
+    private var measurementId = -1L
+    private var liveData = false
+    private var sensorsRegistered = false
 
     var heartRateObservable: ReplaySubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = ReplaySubject.createWithSize(10)
     val sensorsObservable: PublishSubject<com.sebastiansokolowski.shared.dataModel.SensorEvent> = PublishSubject.create()
@@ -133,15 +133,15 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                 .groupBy { it.type }
                 .subscribe {
                     it.buffer(1, TimeUnit.SECONDS)
-                            .subscribe { events ->
+                            .subscribe eventsSubscribe@{ events ->
                                 if (events.isNullOrEmpty()) {
-                                    return@subscribe
+                                    return@eventsSubscribe
                                 }
                                 if (events.size <= 2) {
                                     events.forEach {
                                         sensorDataToSend.add(it)
                                     }
-                                    return@subscribe
+                                    return@eventsSubscribe
                                 }
                                 val firstEvent = events.first()
 

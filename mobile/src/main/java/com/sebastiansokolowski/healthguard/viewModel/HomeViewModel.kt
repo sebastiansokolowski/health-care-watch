@@ -32,7 +32,7 @@ class HomeViewModel
     private val disposables = CompositeDisposable()
     private var heartRateDisposable: Disposable? = null
 
-    val setupState: LiveData<SetupModel.SetupStep> by lazy {
+    val setupState: LiveData<SetupModel.SetupStatus> by lazy {
         initSetupState()
     }
 
@@ -47,7 +47,7 @@ class HomeViewModel
     }
 
     init {
-        refreshView()
+        initEventsView()
         initHeartRate()
     }
 
@@ -88,8 +88,8 @@ class HomeViewModel
                 }
     }
 
-    private fun initSetupState(): LiveData<SetupModel.SetupStep> {
-        val setupStateFlowable = setupModel.setupComplete.toFlowable(BackpressureStrategy.LATEST)
+    private fun initSetupState(): LiveData<SetupModel.SetupStatus> {
+        val setupStateFlowable = setupModel.setupStatus.toFlowable(BackpressureStrategy.LATEST)
         return LiveDataReactiveStreams.fromPublisher(setupStateFlowable)
     }
 

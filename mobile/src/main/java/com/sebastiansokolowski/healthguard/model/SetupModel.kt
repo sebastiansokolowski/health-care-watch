@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit
  */
 class SetupModel(private val wearableClient: WearableClient, private val measurementModel: MeasurementModel, private val settingsModel: SettingsModel) {
 
-    val setupComplete: BehaviorSubject<SetupStep> = BehaviorSubject.createDefault(SetupStep.CONNECTING)
+    val setupStatus: BehaviorSubject<SetupStatus> = BehaviorSubject.createDefault(SetupStatus.CONNECTING)
 
-    enum class SetupStep {
+    enum class SetupStatus {
         CONNECTING,
         SYNC_DATA,
         COMPLETED
@@ -37,7 +37,7 @@ class SetupModel(private val wearableClient: WearableClient, private val measure
                     getMeasurementState()
                 }
 
-        setupComplete.onNext(SetupStep.CONNECTING)
+        setupStatus.onNext(SetupStatus.CONNECTING)
         wearableClient.getSupportedHealthEvents()
     }
 
@@ -50,10 +50,10 @@ class SetupModel(private val wearableClient: WearableClient, private val measure
                 }
                 .take(1)
                 .subscribe {
-                    setupComplete.onNext(SetupStep.COMPLETED)
+                    setupStatus.onNext(SetupStatus.COMPLETED)
                 }
 
-        setupComplete.onNext(SetupStep.SYNC_DATA)
+        setupStatus.onNext(SetupStatus.SYNC_DATA)
         wearableClient.getMeasurementState()
     }
 

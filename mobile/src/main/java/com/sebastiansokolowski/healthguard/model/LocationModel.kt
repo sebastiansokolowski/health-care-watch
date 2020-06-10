@@ -1,14 +1,17 @@
 package com.sebastiansokolowski.healthguard.model
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Looper
+import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
-class LocationModel(context: Context) : LocationCallback() {
+class LocationModel(private val context: Context) : LocationCallback() {
     private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     fun requestLocation(timeout: Int, callback: LocationCallback) {
@@ -23,6 +26,11 @@ class LocationModel(context: Context) : LocationCallback() {
             }
         }
 
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            callback.onLocationResult(null)
+            return
+        }
         disposable = startTimeout(timeout, gmsLocationCallback, callback)
         fusedLocationClient.requestLocationUpdates(LocationRequest.create(), gmsLocationCallback, Looper.myLooper())
     }

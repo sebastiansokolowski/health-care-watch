@@ -39,7 +39,7 @@ class LiveSensorDataViewModel
                         sensorEventsObservable = Observable.just(mutableListOf())
                         healthEventsObservable = Observable.just(mutableListOf())
                     }
-                    refreshView()
+                    initEventsView()
                 }
 
         disposables.add(disposable)

@@ -78,8 +78,8 @@ class MainActivity : DaggerAppCompatActivity() {
         } else super.onBackPressed()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return if (item?.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == android.R.id.home) {
             onBackPressed()
             true
         } else super.onOptionsItemSelected(item)

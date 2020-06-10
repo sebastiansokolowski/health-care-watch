@@ -9,8 +9,8 @@ import com.sebastiansokolowski.healthguard.util.SensorAdapterItemHelper
 /**
  * Created by Sebastian Sokołowski on 06.06.19.
  */
-class HistorySensorDataPageAdapter(val context: Context?, fragmentManager: androidx.fragment.app.FragmentManager) : FragmentPagerAdapter(fragmentManager) {
-    override fun getItem(position: Int): androidx.fragment.app.Fragment {
+class HistorySensorDataPageAdapter(val context: Context?, fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    override fun getItem(position: Int): Fragment {
         return HistorySensorDataFragment.newInstance(SensorAdapterItem.values()[position])
     }
 

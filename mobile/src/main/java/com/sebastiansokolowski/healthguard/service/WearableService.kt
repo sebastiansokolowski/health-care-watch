@@ -62,9 +62,7 @@ class WearableService : WearableListenerService() {
                 DataClientPaths.SUPPORTED_HEALTH_EVENTS_MAP_PATH -> {
                     measurementModel.onDataChanged(event.dataItem)
                 }
-                DataClientPaths.SENSOR_EVENTS_MAP_PATH -> {
-                    sensorDataModel.onDataChanged(event.dataItem)
-                }
+                DataClientPaths.SENSOR_EVENTS_MAP_PATH,
                 DataClientPaths.HEALTH_EVENT_MAP_PATH -> {
                     sensorDataModel.onDataChanged(event.dataItem)
                 }

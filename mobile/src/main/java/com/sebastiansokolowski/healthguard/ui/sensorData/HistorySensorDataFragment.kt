@@ -41,7 +41,7 @@ class HistorySensorDataFragment : SensorDataFragment() {
         historyDataViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)
                 .get(HistoryDataViewModel::class.java)
         historySensorDataViewModel.sensorType = sensorType.sensorId
-        historySensorDataViewModel.refreshView()
+        historySensorDataViewModel.initEventsView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

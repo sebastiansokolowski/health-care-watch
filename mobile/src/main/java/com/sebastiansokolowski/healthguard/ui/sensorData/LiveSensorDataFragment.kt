@@ -39,7 +39,7 @@ class LiveSensorDataFragment : SensorDataFragment() {
                 .get(LiveSensorDataViewModel::class.java)
         sensorEventViewModel = liveSensorDataViewModel
         liveSensorDataViewModel.sensorType = sensorType.sensorId
-        liveSensorDataViewModel.refreshView()
+        liveSensorDataViewModel.initEventsView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

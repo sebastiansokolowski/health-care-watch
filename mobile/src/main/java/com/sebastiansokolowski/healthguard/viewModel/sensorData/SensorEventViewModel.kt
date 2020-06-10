@@ -3,7 +3,6 @@ package com.sebastiansokolowski.healthguard.viewModel.sensorData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.hardware.Sensor
-import android.util.Log
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthguard.dataModel.ChartData
@@ -52,13 +51,13 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     fun changeCurrentDate(date: Date) {
         currentDate = date
         entryHighlighted.postValue(null)
-        refreshView()
+        initEventsView()
     }
 
-    fun refreshView() {
-        refreshHealthEvents()
+    fun initEventsView() {
+        initHealthEvents()
         if (getSensorEventsObservable() != null) {
-            refreshSensorEvents()
+            initSensorEvents()
         }
     }
 
@@ -75,7 +74,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     override fun onDeleteItem(healthEventEntity: HealthEventEntity) {
         healthEventEntityBox.remove(healthEventEntity)
         healthEventToRestore.postValue(SingleEvent(healthEventEntity))
-        refreshHealthEvents()
+        initHealthEvents()
     }
 
     //
@@ -84,7 +83,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
 
     abstract fun getSensorEventsObservable(): Observable<MutableList<SensorEventEntity>>?
 
-    private fun refreshHealthEvents() {
+    private fun initHealthEvents() {
         healthEventsDisposable?.dispose()
         healthEventsDisposable = getHealthEventsObservable()
                 .subscribeOn(Schedulers.io())
@@ -94,7 +93,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
                 }
     }
 
-    private fun refreshSensorEvents() {
+    private fun initSensorEvents() {
         val startDayTimestamp = getStartDayTimestamp(currentDate.time)
 
         sensorEventsDisposable?.dispose()
@@ -195,7 +194,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
 
     fun restoreDeletedEvent(healthEventEntity: HealthEventEntity) {
         healthEventEntityBox.put(healthEventEntity)
-        refreshHealthEvents()
+        initHealthEvents()
     }
 
     fun showHealthEvent(healthEventEntity: HealthEventEntity) {

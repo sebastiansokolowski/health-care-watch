@@ -86,7 +86,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         })
 
         val locationPreference: Preference? = findPreference(SettingsSharedPreferences.SMS_USER_LOCATION)
-        locationPreference?.setOnPreferenceChangeListener { preference, any ->
+        locationPreference?.setOnPreferenceChangeListener { _, _ ->
             if (!checkLocationPermissions()) {
                 requestLocationPermissions()
                 false
@@ -95,7 +95,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
             }
         }
         val smsPreference: Preference? = findPreference(SettingsSharedPreferences.SMS_NOTIFICATIONS)
-        smsPreference?.setOnPreferenceChangeListener { preference, any ->
+        smsPreference?.setOnPreferenceChangeListener { _, _ ->
             if (!checkSendSMSPermissions()) {
                 requestSMSPermissions()
                 false
@@ -127,7 +127,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                         }
                     }
                     SettingsSharedPreferences.HEALTH_EVENTS -> {
-                        if (settingsViewModel.setupModel.setupComplete.value != SetupModel.SetupStep.COMPLETED) {
+                        if (settingsViewModel.setupModel.setupStatus.value != SetupModel.SetupStatus.COMPLETED) {
                             Toast.makeText(context, getString(R.string.settings_health_events_not_synced), Toast.LENGTH_LONG).show()
                         } else {
                             settingsViewModel.setupPreference(preference)

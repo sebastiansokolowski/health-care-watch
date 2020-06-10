@@ -106,14 +106,14 @@ class HomeFragment : DaggerFragment() {
         homeViewModel.setupState.observe(viewLifecycleOwner, Observer {
             it?.let {
                 when (it) {
-                    SetupModel.SetupStep.CONNECTING -> {
+                    SetupModel.SetupStatus.CONNECTING -> {
                         measurement_btn.isEnabled = false
                         measurement_btn.text = getString(R.string.setup_connecting_btn)
                     }
-                    SetupModel.SetupStep.SYNC_DATA -> {
+                    SetupModel.SetupStatus.SYNC_DATA -> {
                         measurement_btn.text = getString(R.string.measurement_sync_data_btn)
                     }
-                    SetupModel.SetupStep.COMPLETED -> {
+                    SetupModel.SetupStatus.COMPLETED -> {
                         measurement_btn.isEnabled = true
                     }
                 }
@@ -157,6 +157,7 @@ class HomeFragment : DaggerFragment() {
         startActivity(shareIntent)
     }
 
+    @Suppress("DEPRECATION")
     private fun showLicencesDialog() {
         context?.let {
             val message = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {

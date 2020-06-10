@@ -31,9 +31,9 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
     val healthEventObservable: PublishSubject<HealthEventEntity> = PublishSubject.create()
 
     //boxes
-    val sensorEventEntityBox = boxStore.boxFor(SensorEventEntity::class.java)
-    val healthEventEntityBox = boxStore.boxFor(HealthEventEntity::class.java)
-    val measurementEventEntityBox = boxStore.boxFor(MeasurementEventEntity::class.java)
+    private val sensorEventEntityBox = boxStore.boxFor(SensorEventEntity::class.java)
+    private val healthEventEntityBox = boxStore.boxFor(HealthEventEntity::class.java)
+    private val measurementEventEntityBox = boxStore.boxFor(MeasurementEventEntity::class.java)
 
     private fun notifyHeartRateObservable(sensorEventEntity: SensorEventEntity) {
         heartRateObservable.onNext(sensorEventEntity)

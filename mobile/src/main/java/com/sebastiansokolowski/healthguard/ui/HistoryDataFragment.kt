@@ -58,7 +58,7 @@ class HistoryDataFragment : DaggerFragment() {
             }
         })
 
-        historyDataViewModel.currentDateLiveData.observe(this, Observer {
+        historyDataViewModel.currentDateLiveData.observe(viewLifecycleOwner, Observer {
             it?.let { date ->
                 val dateTimeFormatter = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
                 current_date_tv.text = dateTimeFormatter.format(date)
@@ -74,7 +74,7 @@ class HistoryDataFragment : DaggerFragment() {
         }
 
         val mainActivity: MainActivity = activity as MainActivity
-        mainActivity.healthEventEntitySelected.observe(this, Observer {
+        mainActivity.healthEventEntitySelected.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     historyDataViewModel.showHealthEvent(it)
@@ -113,7 +113,7 @@ class HistoryDataFragment : DaggerFragment() {
 
         context?.let {
             val calendar = Calendar.getInstance()
-            calendar.time = historyDataViewModel.currentDateLiveData.value
+            calendar.time = historyDataViewModel.currentDateLiveData.value ?: Date()
             val dialog = DatePickerDialog(it, listener,
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
