@@ -1,8 +1,8 @@
 package com.sebastiansokolowski.healthguard.viewModel.sensorData
 
+import android.hardware.Sensor
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.hardware.Sensor
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineDataSet
 import com.sebastiansokolowski.healthguard.dataModel.ChartData
@@ -15,7 +15,6 @@ import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
