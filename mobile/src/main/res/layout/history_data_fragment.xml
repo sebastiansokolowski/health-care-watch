@@ -54,7 +54,7 @@
             app:srcCompat="@drawable/ic_chevron_right_black_24dp" />
     </LinearLayout>
 
-    <androidx.viewpager.widget.ViewPager
+    <com.sebastiansokolowski.healthguard.view.ViewPagerFixed
         android:id="@+id/sensor_vp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
