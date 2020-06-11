@@ -43,12 +43,16 @@ class WearableClient(context: Context) {
     fun sendSensorEvents(events: List<SensorEvent>, urgent: Boolean) {
         Log.d(TAG, "sendSensorEvents size=${events.size}")
 
+        val gson = GsonBuilder()
+                .registerTypeAdapter(FloatArray::class.java, SensorEventValuesSerializer())
+                .create()
+
         events.chunked(maxSizeOfDataToSend).iterator().forEach {
             Log.v(TAG, "sendSensorEvents chunked size=${it.size}")
 
             val data = ArrayList<String>()
             it.forEach {
-                data.add(Gson().toJson(it))
+                data.add(gson.toJson(it))
             }
 
             val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(SENSOR_EVENTS_MAP_PATH)

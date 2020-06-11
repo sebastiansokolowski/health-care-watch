@@ -27,8 +27,6 @@ import kotlin.collections.HashMap
 abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), HealthEventAdapter.HealthEventAdapterItemListener {
     private val TAG = javaClass.canonicalName
 
-    private val disposables = CompositeDisposable()
-
     val healthEventEntityBox: Box<HealthEventEntity> = boxStore.boxFor(HealthEventEntity::class.java)
     val sensorEventEntityBox: Box<SensorEventEntity> = boxStore.boxFor(SensorEventEntity::class.java)
 
@@ -207,9 +205,8 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     }
 
     override fun onCleared() {
-        healthEventsDisposable?.dispose()
         sensorEventsDisposable?.dispose()
-        disposables.clear()
+        healthEventsDisposable?.dispose()
         super.onCleared()
     }
 }

@@ -209,9 +209,9 @@ open class SensorDataFragment : DaggerFragment() {
         val averageValueTv = createStatisticTextView()
 
         titleTv.text = title
-        minValueTv.text = Utils.format(statisticData.min, 2)
-        maxValueTv.text = Utils.format(statisticData.max, 2)
-        averageValueTv.text = Utils.format(statisticData.average, 2)
+        minValueTv.text = Utils.formatValue(statisticData.min)
+        maxValueTv.text = Utils.formatValue(statisticData.max)
+        averageValueTv.text = Utils.formatValue(statisticData.average)
 
         tableRow.addView(titleTv)
         tableRow.addView(minValueTv)

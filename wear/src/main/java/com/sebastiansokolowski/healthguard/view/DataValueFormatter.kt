@@ -9,6 +9,6 @@ import com.sebastiansokolowski.shared.util.Utils
 class DataValueFormatter : ValueFormatter() {
 
     override fun getFormattedValue(value: Float): String {
-        return Utils.format(value, 2)
+        return Utils.formatValue(value)
     }
 }

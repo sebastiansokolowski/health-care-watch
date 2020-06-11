@@ -24,7 +24,7 @@ class CustomMarkerView : MarkerView {
     override fun refreshContent(e: Entry?, highlight: Highlight?) {
 
         SafeCall.safeLet(e?.x, e?.y) { x, y ->
-            text.text = "${EntryHelper.getDate(x)}\n${Utils.format(y, 2)} $unit"
+            text.text = "${EntryHelper.getDate(x)}\n${Utils.formatValue(y)} $unit"
             text.textAlignment = View.TEXT_ALIGNMENT_CENTER
         }
 
