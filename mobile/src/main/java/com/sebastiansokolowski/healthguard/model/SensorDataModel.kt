@@ -59,6 +59,8 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
                         val sensorEvent = Gson().fromJson(it, SensorEvent::class.java)
                         val sensorEventEntity = createSensorEventEntity(sensorEvent)
 
+                        Log.d(TAG, "onDataChanged sensorEvent=${sensorEvent}")
+
                         if (isValid(sensorEventEntity)) {
                             if (sensorEventEntity.type == Sensor.TYPE_HEART_RATE) {
                                 notifyHeartRateObservable(sensorEventEntity)
@@ -69,7 +71,7 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
                         }
                     }
                     sensorEventEntityBox.put(dataToSave)
-                    Log.d(TAG, "sensorEvents size=${dataToSave.size}")
+                    Log.d(TAG, "onDataChanged dataToSave.size=${dataToSave.size}")
                 }
             }
             DataClientPaths.HEALTH_EVENT_MAP_PATH -> {

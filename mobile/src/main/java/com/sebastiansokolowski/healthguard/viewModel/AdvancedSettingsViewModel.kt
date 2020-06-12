@@ -11,7 +11,7 @@ class AdvancedSettingsViewModel
 @Inject constructor(private val measurementModel: MeasurementModel) : ViewModel() {
 
     fun onSharedPreferenceChanged(key: String) {
-        if (measurementModel.measurementRunning) {
+        if (measurementModel.measurementRunning.get()) {
             measurementModel.stopMeasurement()
             measurementModel.requestStartMeasurement()
         }

@@ -17,6 +17,7 @@ import io.objectbox.BoxStore
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 /**
@@ -25,8 +26,8 @@ import java.util.*
 class MeasurementModel(val context: Context, private val wearableClient: WearableClient, boxStore: BoxStore, private val settingsModel: SettingsModel, val sensorDataModel: SensorDataModel) {
     private val TAG = javaClass.canonicalName
 
-    var measurementRunning: Boolean = false
-    var liveData: Boolean = false
+    var measurementRunning = AtomicBoolean(false)
+    var liveData = AtomicBoolean(false)
     private var measurementEventEntity: MeasurementEventEntity? = null
 
     //observables
@@ -46,10 +47,10 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
     }
 
     private fun changeMeasurementState(state: Boolean) {
-        if (measurementRunning == state) {
+        if (measurementRunning.get() == state) {
             return
         }
-        measurementRunning = state
+        measurementRunning.set(state)
         val serviceIntent = Intent(context, MeasurementService::class.java)
         if (state) {
             context.startService(serviceIntent)
@@ -58,11 +59,11 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
             context.stopService(serviceIntent)
             sensorDataModel.heartRateObservable.onComplete()
         }
-        measurementStateObservable.onNext(measurementRunning)
+        measurementStateObservable.onNext(state)
     }
 
     fun toggleMeasurementState() {
-        if (measurementRunning) {
+        if (measurementRunning.get()) {
             wearableClient.sendStopMeasurementEvent()
             stopMeasurement()
         } else {
@@ -79,7 +80,7 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
         }
 
         wearableClient.sendStartMeasurementEvent(measurementSettings)
-        wearableClient.sendLiveData(liveData)
+        wearableClient.sendLiveData(liveData.get())
     }
 
     fun startMeasurement() {
@@ -89,7 +90,7 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
         }
 
         notifyMeasurementStateObservable(true)
-        if (measurementRunning) {
+        if (measurementRunning.get()) {
             return
         }
         changeMeasurementState(true)
@@ -103,14 +104,14 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
         }
 
         notifyMeasurementStateObservable(false)
-        if (!measurementRunning) {
+        if (!measurementRunning.get()) {
             return
         }
         changeMeasurementState(false)
     }
 
-    fun changeLiveDataState(enabled: Boolean) {
-        this.liveData = enabled
+    fun changeLiveDataState(liveData: Boolean) {
+        this.liveData.set(liveData)
         wearableClient.sendLiveData(liveData)
     }
 

@@ -26,7 +26,7 @@ class WearableClient(context: Context) {
     }
 
     fun sendStartMeasurementEvent(measurementSettings: MeasurementSettings) {
-        Log.d(TAG, "sendStartMeasurementEvent measurementSettings: $measurementSettings")
+        Log.d(TAG, "sendStartMeasurementEvent measurementSettings=$measurementSettings")
 
         val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(DataClientPaths.MEASUREMENT_START_DATA_PATH)
         putDataMapReq.dataMap.apply {
@@ -36,8 +36,10 @@ class WearableClient(context: Context) {
         sendData(putDataMapReq)
     }
 
-    fun sendLiveData(enabled: Boolean) {
-        if (enabled) {
+    fun sendLiveData(liveData: Boolean) {
+        Log.d(TAG, "sendLiveData liveData=$liveData")
+
+        if (liveData) {
             sendMessage(DataClientPaths.START_LIVE_DATA_PATH)
         } else {
             sendMessage(DataClientPaths.STOP_LIVE_DATA_PATH)

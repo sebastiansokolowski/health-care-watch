@@ -1,11 +1,14 @@
 package com.sebastiansokolowski.healthguard.client
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.sebastiansokolowski.healthguard.BuildConfig
+import com.sebastiansokolowski.healthguard.utils.SensorEventValuesSerializer
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_PATH
@@ -31,7 +34,7 @@ class WearableClient(context: Context) {
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
 
     fun sendMeasurementEvent(state: Boolean) {
-        Log.d(TAG, "sendMeasurementEvent state: $state")
+        Log.d(TAG, "sendMeasurementEvent state=$state")
 
         if (state) {
             sendMessage(DataClientPaths.START_MEASUREMENT_PATH)
@@ -48,14 +51,13 @@ class WearableClient(context: Context) {
                 .create()
 
         events.chunked(maxSizeOfDataToSend).iterator().forEach {
-            Log.v(TAG, "sendSensorEvents chunked size=${it.size}")
-
             val data = ArrayList<String>()
             it.forEach {
                 data.add(gson.toJson(it))
             }
 
             val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(SENSOR_EVENTS_MAP_PATH)
+            Log.v(TAG, "sendSensorEvents uri=${putDataMapReq.uri} size=${it.size}")
             putDataMapReq.dataMap.apply {
                 putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, data)
             }
@@ -71,7 +73,7 @@ class WearableClient(context: Context) {
     }
 
     fun sendSupportedHealthEvents(supportedHealthEventTypes: SupportedHealthEventTypes) {
-        Log.d(TAG, "sendSupportedHealthEvents healthEventTypesSupported: $supportedHealthEventTypes")
+        Log.d(TAG, "sendSupportedHealthEvents healthEventTypesSupported=$supportedHealthEventTypes")
 
         val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(SUPPORTED_HEALTH_EVENTS_MAP_PATH)
         putDataMapReq.dataMap.apply {
@@ -128,7 +130,7 @@ class WearableClient(context: Context) {
 
         if (BuildConfig.DEBUG) {
             dataItemTask.addOnSuccessListener {
-                Log.v(TAG, "Success sent data path:${request.uri} urgent:$urgent")
+                Log.v(TAG, "Success uri=${request.uri} urgent=$urgent")
             }
             dataItemTask.addOnFailureListener { ex ->
                 Log.v(TAG, "Error sending data $ex")

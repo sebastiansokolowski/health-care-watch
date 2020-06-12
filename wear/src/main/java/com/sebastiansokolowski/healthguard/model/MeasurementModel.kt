@@ -15,15 +15,16 @@ import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.ReplaySubject
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Created by Sebastian Sokołowski on 06.07.19.
  */
-class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardModel: HealthGuardModel, private val sensorManager: SensorManager, powerManager: PowerManager, private val wearableClient: WearableClient) {
+class MeasurementModel(private val sensorDataModel: SensorDataModel, private val healthGuardModel: HealthGuardModel, private val sensorManager: SensorManager, powerManager: PowerManager, private val wearableClient: WearableClient) {
     private val TAG = javaClass.canonicalName
 
-    var measurementRunning = false
-    var wakeLock: PowerManager.WakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "HealthGuard::MeasurementWakeLock")
+    private var measurementRunning = AtomicBoolean(false)
+    private var wakeLock: PowerManager.WakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "HealthGuard::MeasurementWakeLock")
 
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
@@ -34,25 +35,25 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
     }
 
     private fun changeMeasurementState(state: Boolean) {
-        if (measurementRunning == state) {
+        if (measurementRunning.get() == state) {
             return
         }
-        measurementRunning = state
+        measurementRunning.set(state)
         if (state) {
             sensorDataModel.heartRateObservable = ReplaySubject.createWithSize(10)
         } else {
             sensorDataModel.heartRateObservable.onComplete()
         }
-        measurementStateObservable.onNext(measurementRunning)
+        measurementStateObservable.onNext(measurementRunning.get())
         notifyMeasurementState()
     }
 
     fun notifyMeasurementState() {
-        wearableClient.sendMeasurementEvent(measurementRunning)
+        wearableClient.sendMeasurementEvent(measurementRunning.get())
     }
 
     fun toggleMeasurementState() {
-        if (measurementRunning) {
+        if (measurementRunning.get()) {
             stopMeasurement()
         } else {
             wearableClient.requestStartMeasurement()
@@ -61,7 +62,8 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
 
     @SuppressLint("WakelockTimeout")
     fun startMeasurement(measurementSettings: MeasurementSettings) {
-        if (measurementRunning) {
+        Log.d(TAG, "startMeasurement")
+        if (measurementRunning.get()) {
             return
         }
 
@@ -76,7 +78,8 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
     }
 
     fun stopMeasurement() {
-        if (!measurementRunning) {
+        Log.d(TAG, "stopMeasurement")
+        if (!measurementRunning.get()) {
             return
         }
         changeMeasurementState(false)
@@ -94,7 +97,7 @@ class MeasurementModel(val sensorDataModel: SensorDataModel, val healthGuardMode
 
                     Log.d(TAG, "measurementSettings=$measurementSettings")
 
-                    if (measurementRunning) {
+                    if (measurementRunning.get()) {
                         stopMeasurement()
                     }
                     startMeasurement(measurementSettings)

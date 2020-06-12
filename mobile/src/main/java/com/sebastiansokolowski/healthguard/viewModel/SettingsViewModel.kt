@@ -30,7 +30,7 @@ class SettingsViewModel
     fun onSharedPreferenceChanged(key: String) {
         when (key) {
             SettingsSharedPreferences.HEALTH_EVENTS -> {
-                if (measurementModel.measurementRunning) {
+                if (measurementModel.measurementRunning.get()) {
                     measurementModel.stopMeasurement()
                     measurementModel.requestStartMeasurement()
                 }

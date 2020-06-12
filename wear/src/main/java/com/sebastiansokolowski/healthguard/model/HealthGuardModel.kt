@@ -9,6 +9,7 @@ import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -78,7 +79,7 @@ class HealthGuardModel(private val sensorDataModel: SensorDataModel, private val
                 .groupBy { it.healthEventType }
                 .subscribe {
                     it.throttleFirst(1, TimeUnit.MINUTES)
-                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
                             .subscribe {
                                 notifyAlert(it)
                             }
