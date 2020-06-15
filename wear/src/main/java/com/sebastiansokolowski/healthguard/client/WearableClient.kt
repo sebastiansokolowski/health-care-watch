@@ -53,6 +53,9 @@ class WearableClient(context: Context) {
         events.chunked(maxSizeOfDataToSend).iterator().forEach {
             val data = ArrayList<String>()
             it.forEach {
+                if (BuildConfig.EXTRA_LOGGING) {
+                    Log.d(TAG, "sendSensorEvents sensorEvent=${it}")
+                }
                 data.add(gson.toJson(it))
             }
 

@@ -154,6 +154,11 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                                 if (events.isNullOrEmpty()) {
                                     return@eventsSubscribe
                                 }
+                                if (BuildConfig.EXTRA_LOGGING) {
+                                    events.forEach {
+                                        Log.d(TAG, "sensorDataParser event=$it")
+                                    }
+                                }
                                 var event = events.first()
                                 if (events.size > 1) {
                                     val avgValues = FloatArray(event.values.size)
