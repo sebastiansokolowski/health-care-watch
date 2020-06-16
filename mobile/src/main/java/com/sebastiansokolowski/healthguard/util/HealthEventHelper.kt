@@ -33,10 +33,9 @@ class HealthEventHelper(val context: Context) {
     fun getDate(healthEventEntity: HealthEventEntity): String {
         val timestamp = healthEventEntity.sensorEventEntity.target?.timestamp ?: return "null"
 
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = timestamp
+        val date = Date(timestamp)
 
-        return dtf.format(calendar.time)
+        return dtf.format(date.time)
     }
 
     fun getEventInfo(healthEventEntity: HealthEventEntity): String {

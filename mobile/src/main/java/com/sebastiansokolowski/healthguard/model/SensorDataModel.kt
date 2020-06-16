@@ -109,6 +109,9 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
             if (sensorEventEntity.isNull) {
                 return false
             }
+            if (sensorEventEntity.target.measurementEventEntity.isNull) {
+                return false
+            }
         }
 
         return true

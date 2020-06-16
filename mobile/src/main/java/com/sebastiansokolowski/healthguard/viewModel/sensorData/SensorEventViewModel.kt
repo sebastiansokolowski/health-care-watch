@@ -164,7 +164,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
         if (sensorEventEntity.values.isNotEmpty()) {
             val timestampFromMidnight: Int = (sensorEventEntity.timestamp - lastMidnightTimestamp).toInt()
 
-            entry = Entry(timestampFromMidnight.toFloat(), sensorEventEntity.values[index], sensorEventEntity.values)
+            entry = Entry(timestampFromMidnight.toFloat(), sensorEventEntity.values[index])
         }
         return entry
     }

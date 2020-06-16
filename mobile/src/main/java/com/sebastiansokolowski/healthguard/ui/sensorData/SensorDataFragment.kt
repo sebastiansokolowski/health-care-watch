@@ -129,8 +129,10 @@ open class SensorDataFragment : DaggerFragment() {
     fun highlightValue(entry: Entry) {
         chart_lc.data?.let { lineData ->
             lineData.dataSets?.let {
-                chart_lc.centerViewToAnimated(entry.x, entry.y, YAxis.AxisDependency.LEFT, TimeUnit.SECONDS.toMillis(1))
-                chart_lc.highlightValue(entry.x, entry.y, 0)
+                val lineDataSet = lineData.getDataSetForEntry(entry)
+                val lineDataSetIndex = lineData.getIndexOfDataSet(lineDataSet)
+                chart_lc.centerViewTo(entry.x, entry.y, YAxis.AxisDependency.LEFT)
+                chart_lc.highlightValue(entry.x, entry.y, lineDataSetIndex)
             }
         }
     }
@@ -194,10 +196,12 @@ open class SensorDataFragment : DaggerFragment() {
 
         chart_lc.legend.setCustom(legendEntries)
         chart_lc.description.isEnabled = false
+        chart_lc.setHardwareAccelerationEnabled(true)
         chart_lc.xAxis.valueFormatter = DateValueFormatter()
         chart_lc.data = LineData(lineDataSetList.toList())
         chart_lc.notifyDataSetChanged()
         chart_lc.invalidate()
+        chart_lc.setVisibleXRangeMaximum(60*60*60*40f)
     }
 
     private fun addStatisticRow(title: String?, statisticData: StatisticData) {
