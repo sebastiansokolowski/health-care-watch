@@ -72,7 +72,7 @@ class FallEngineTordu : HealthGuardEngineBase() {
                         Log.d(TAG, "isStepDetected=${stepDetector.isStepDetected()}")
 
                         if (stepDetector.isStepDetected()) {
-                            notifyHealthEvent(it.last().sensorEvent, counter.toFloat(), Gson().toJson(it))
+                            notifyHealthEvent(it.last().sensorEvent, counter.toFloat())
                         }
                     }
                 }

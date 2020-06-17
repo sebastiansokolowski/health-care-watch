@@ -29,7 +29,7 @@ abstract class HealthGuardEngineBase {
         this.measurementSettings = measurementSettings
     }
 
-    fun notifyHealthEvent(sensorEvent: SensorEvent, value: Float, details: String) {
+    fun notifyHealthEvent(sensorEvent: SensorEvent, value: Float, details: String = "") {
         val healthEvent = HealthEvent(getHealthEventType(), sensorEvent, value, details, measurementSettings.measurementId)
         healthEventObservable.onNext(healthEvent)
     }

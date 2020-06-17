@@ -78,10 +78,10 @@ class FallEngine : HealthGuardEngineBase() {
                             Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
 
                             if (measurementSettings.fallSettings.timeOfInactivity > 0) {
-                                checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson(it))
+                                checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
                             } else {
                                 Log.d(TAG, "fall detected!!")
-                                notifyHealthEvent(max.sensorEvent, diff.toFloat(), Gson().toJson(it))
+                                notifyHealthEvent(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
                             }
                         }
                     }

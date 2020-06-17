@@ -51,7 +51,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
 
                     if (percentOfPositiveSignals >= targetPercentOfPositiveSignals) {
                         Log.d(TAG, "epilepsy detected!!")
-                        notifyHealthEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat(), Gson().toJson(it))
+                        notifyHealthEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat())
                     }
                 }
                 .let {
