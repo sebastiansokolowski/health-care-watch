@@ -67,6 +67,9 @@ dependencies {
 
     // Swipe to delete
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+
+    //LeakCanary
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.3'
 }
 repositories {
     mavenCentral()
