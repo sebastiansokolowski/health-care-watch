@@ -24,4 +24,8 @@ class MeasurementEventEntity {
     @Backlink(to = "measurementEventEntity")
     lateinit var healthEventEntities: ToMany<HealthEventEntity>
 
+    override fun toString(): String {
+        return "MeasurementEventEntity(id=$id, startTimestamp=$startTimestamp, stopTimestamp=$stopTimestamp, measurementSettings='$measurementSettings')"
+    }
+
 }

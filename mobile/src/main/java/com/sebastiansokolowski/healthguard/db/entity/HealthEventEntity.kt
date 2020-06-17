@@ -29,4 +29,9 @@ class HealthEventEntity {
     lateinit var details: String
 
     lateinit var measurementEventEntity: ToOne<MeasurementEventEntity>
+
+    override fun toString(): String {
+        return "HealthEventEntity(id=$id, value=$value, sensorEventEntity=$sensorEventEntity, event=$event, details='$details', measurementEventEntity=$measurementEventEntity)"
+    }
+
 }
