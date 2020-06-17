@@ -47,7 +47,7 @@
                 android:layout_toEndOf="@+id/center_holder"
                 android:gravity="bottom"
                 android:paddingBottom="4dp"
-                android:text="@string/unit_hearth_rate"
+                android:text="@string/unit_heart_rate"
                 android:textAppearance="@style/TextAppearance.Wearable.Small"
                 android:textColor="@android:color/white" />
 

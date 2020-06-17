@@ -2,5 +2,5 @@
     <string name="app_name">mHealth Guard</string>
     <string name="measurement_button_start_label" translatable="false">START</string>
     <string name="measurement_button_stop_label" translatable="false">STOP</string>
-    <string name="unit_hearth_rate" translatable="false">bpm</string>
+    <string name="unit_heart_rate" translatable="false">bpm</string>
 </resources>

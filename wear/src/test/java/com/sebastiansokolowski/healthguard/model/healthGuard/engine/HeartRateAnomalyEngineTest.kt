@@ -53,7 +53,7 @@ class HeartRateAnomalyEngineTest {
     }
 
     @Test
-    fun testTooLowHearthRate_shouldNotify() {
+    fun testTooLowHeartRate_shouldNotify() {
         val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(30f))
         healthSensorObservable.onNext(sensorEvent)
 
@@ -61,7 +61,7 @@ class HeartRateAnomalyEngineTest {
     }
 
     @Test
-    fun testTooLowHearthRate_shouldNotNotify() {
+    fun testTooLowHeartRate_shouldNotNotify() {
         val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(41f))
         val sensorEvent2 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(141f))
         val sensorEvent3 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(120f))

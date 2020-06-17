@@ -15,10 +15,10 @@
     <string name="action_undo">UNDO</string>
     <string name="settings_health_events_not_synced">Please connect to watch earlier.</string>
     <string name="health_event_epilepsy_title">Epilepsy</string>
-    <string name="health_event_hearth_rate_anomaly_title">Hearth rate anomaly</string>
+    <string name="health_event_heart_rate_anomaly_title">Heart rate anomaly</string>
     <string name="health_event_epilepsy_message">Percentage of positive events</string>
-    <string name="health_event_hearth_rate_anomaly_message">Heart rate</string>
-    <string name="unit_hearth_rate" translatable="false">bpm</string>
+    <string name="health_event_heart_rate_anomaly_message">Heart rate</string>
+    <string name="unit_heart_rate" translatable="false">bpm</string>
     <string name="unit_percentage" translatable="false">%</string>
     <string name="unit_linear_acceleration" translatable="false">\u33A8</string>
     <string name="event_list_empty">No events</string>

@@ -3,7 +3,7 @@
 
 Mobile Health Guard is an Android app to monitoring your health in the real time using sensors from a smartwatch. 
 The app analyzes recaived data to predict:
-- hearth rate anomally
+- heart rate anomally
 - fall
 - epilepsy attack
 

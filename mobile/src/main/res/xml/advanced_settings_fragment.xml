@@ -18,7 +18,7 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/health_event_hearth_rate_anomaly_title"
+        android:title="@string/health_event_heart_rate_anomaly_title"
         app:iconSpaceReserved="false">
         <SeekBarPreference
             android:key="heart_rate_anomaly_step_detector_timeout_min"

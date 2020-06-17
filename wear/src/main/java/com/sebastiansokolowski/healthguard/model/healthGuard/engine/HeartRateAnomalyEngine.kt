@@ -36,7 +36,7 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
     }
 
     override fun getHealthEventType(): HealthEventType {
-        return HealthEventType.HEARTH_RATE_ANOMALY
+        return HealthEventType.HEART_RATE_ANOMALY
     }
 
     override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {

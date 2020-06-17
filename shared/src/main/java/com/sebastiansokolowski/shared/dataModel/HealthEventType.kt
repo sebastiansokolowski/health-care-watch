@@ -5,7 +5,7 @@ package com.sebastiansokolowski.shared.dataModel
  */
 enum class HealthEventType {
     EPILEPSY,
-    HEARTH_RATE_ANOMALY,
+    HEART_RATE_ANOMALY,
     FALL,
     FALL_TORDU,
     ALL_SENSORS,
