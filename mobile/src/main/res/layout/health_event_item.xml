@@ -64,16 +64,11 @@
             android:padding="8dp">
 
             <TextView
-                android:id="@+id/health_event_item_event_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/health_event_text_color" />
-
-            <TextView
                 android:id="@+id/health_event_item_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/health_event_text_color" />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -16,8 +16,8 @@
     <string name="settings_health_events_not_synced">Please connect to watch earlier.</string>
     <string name="health_event_epilepsy_title">Epilepsy</string>
     <string name="health_event_hearth_rate_anomaly_title">Hearth rate anomaly</string>
-    <string name="health_event_epilepsy_message">Detected motion was very high.</string>
-    <string name="health_event_hearth_rate_anomaly_message">Detected hearth rate didn\'t looks normal.</string>
+    <string name="health_event_epilepsy_message">Percentage of positive events</string>
+    <string name="health_event_hearth_rate_anomaly_message">Heart rate</string>
     <string name="unit_hearth_rate" translatable="false">bpm</string>
     <string name="unit_percentage" translatable="false">%</string>
     <string name="unit_linear_acceleration" translatable="false">\u33A8</string>
@@ -49,7 +49,7 @@
     <string name="sensor_adapter_heart_rate_title">HEART RATE</string>
     <string name="sensor_adapter_step_counter_title">STEP COUNTER</string>
     <string name="sensor_adapter_linear_acceleration">LINEAR ACCELERATION</string>
-    <string name="health_event_fall_message">Fall detected</string>
+    <string name="health_event_fall_message">Value of fall</string>
     <string name="health_event_fall_title">Fall</string>
     <string name="health_event_fall_tordu_title">Fall - Thordu algorithm</string>
     <string name="advanced_settings_title">Advanced settings</string>

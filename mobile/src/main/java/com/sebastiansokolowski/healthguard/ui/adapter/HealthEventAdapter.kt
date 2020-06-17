@@ -54,7 +54,6 @@ class HealthEventAdapter(val context: Context, private val healthEventEntities: 
             tag = item
             health_event_item_title.text = healthEventHelper.getTitle(item)
             health_event_item_date.text = healthEventHelper.getDate(item)
-            health_event_item_event_info.text = healthEventHelper.getEventInfo(item)
             health_event_item_message.text = healthEventHelper.getMessage(item)
             foreground_container.setOnClickListener {
                 healthEventAdapterItemListener.onClickItem(item)

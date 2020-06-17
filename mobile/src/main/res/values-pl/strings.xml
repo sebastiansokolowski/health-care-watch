@@ -5,7 +5,7 @@
     <string name="dialog_licences_title">O aplikacji</string>
     <string name="share_measurement_data_title">Udostępnij pomiary</string>
     <string name="event_list_empty">Brak zdarzeń</string>
-    <string name="health_event_epilepsy_message">Wykryty ruch był za wysoki</string>
+    <string name="health_event_epilepsy_message">Procent pozytywnych zdarzeń </string>
     <string name="health_event_epilepsy_title">Epilepsja</string>
     <string name="health_event_hearth_rate_anomaly_title">Anomalia bicia serca</string>
     <string name="measurement_start_btn">Zacznij pomiary</string>
@@ -19,7 +19,7 @@
     <string name="setup_connecting_btn">Łączenie</string>
     <string name="settings_health_events_not_synced">Połącz się z zegarkiem wcześniej.</string>
     <string name="notification_measurement_title">Opieka zdrowotna uruchomiona</string>
-    <string name="health_event_hearth_rate_anomaly_message">Częstotliwość bicia serca znacznie wzrosła</string>
+    <string name="health_event_hearth_rate_anomaly_message">Częstotliwość bicia serca</string>
     <string name="action_undo">COFNIJ</string>
     <string name="bottom_navigation_history">Historia</string>
     <string name="bottom_navigation_home">Dom</string>
@@ -40,7 +40,7 @@
     <string name="sensor_adapter_heart_rate_title">BICIE SERCA</string>
     <string name="sensor_adapter_step_counter_title">LICZNIK KROKÓW</string>
     <string name="sensor_adapter_linear_acceleration">PRZYŚPIESZENIE LINIOWE</string>
-    <string name="health_event_fall_message">Wykryto upadek</string>
+    <string name="health_event_fall_message">Wartość upadku</string>
     <string name="health_event_fall_title">Upadek</string>
     <string name="settings_fall_threshold">Wartość progowa upadku</string>
     <string name="settings_fall_sample_count">Wielkość próbki</string>

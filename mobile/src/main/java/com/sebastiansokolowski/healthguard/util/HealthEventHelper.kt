@@ -38,19 +38,8 @@ class HealthEventHelper(val context: Context) {
         return dtf.format(date.time)
     }
 
-    fun getEventInfo(healthEventEntity: HealthEventEntity): String {
-        val value = Utils.formatValue(healthEventEntity.value)
-        return when (healthEventEntity.event) {
-            HealthEventType.EPILEPSY -> value + " " + context.getString(R.string.unit_percentage)
-            HealthEventType.HEARTH_RATE_ANOMALY -> value + " " + context.getString(R.string.unit_hearth_rate)
-            HealthEventType.FALL -> value + " " + context.getString(R.string.unit_linear_acceleration)
-            HealthEventType.FALL_TORDU -> value + " " + context.getString(R.string.unit_linear_acceleration)
-            else -> "null"
-        }
-    }
-
     fun getNotificationMessage(healthEventEntity: HealthEventEntity): String {
-        return getTitle(healthEventEntity) + "\n" + getEventInfo(healthEventEntity) + "\n" + getMessage(healthEventEntity)
+        return getTitle(healthEventEntity) + "\n" + getMessage(healthEventEntity)
     }
 
     fun getLocationMessage(location: Location?): String {
@@ -72,10 +61,11 @@ class HealthEventHelper(val context: Context) {
     }
 
     fun getMessage(healthEventEntity: HealthEventEntity): String {
+        val value = Utils.formatValue(healthEventEntity.value)
         return when (healthEventEntity.event) {
-            HealthEventType.EPILEPSY -> context.getString(R.string.health_event_epilepsy_message)
-            HealthEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_event_hearth_rate_anomaly_message)
-            HealthEventType.FALL, HealthEventType.FALL_TORDU -> context.getString(R.string.health_event_fall_message)
+            HealthEventType.EPILEPSY -> context.getString(R.string.health_event_epilepsy_message) + " $value " + context.getString(R.string.unit_percentage)
+            HealthEventType.HEARTH_RATE_ANOMALY -> context.getString(R.string.health_event_hearth_rate_anomaly_message) + " $value " + context.getString(R.string.unit_hearth_rate)
+            HealthEventType.FALL, HealthEventType.FALL_TORDU -> context.getString(R.string.health_event_fall_message) + " $value"
             else -> "null"
         }
     }
