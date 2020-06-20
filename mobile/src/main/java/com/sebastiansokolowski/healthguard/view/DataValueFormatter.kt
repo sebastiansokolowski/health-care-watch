@@ -13,7 +13,7 @@ class DataValueFormatter : ValueFormatter() {
         return if (abs(value) <= 0.1f) {
             ""
         } else {
-            return Utils.format(value, 2)
+            return Utils.formatValue(value, 2)
         }
     }
 }
