@@ -1,8 +1,6 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
-import android.util.Log
-import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
@@ -12,13 +10,15 @@ import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 /**
  * Created by Sebastian Sokołowski on 21.09.19.
  */
-class FallEngineTordu : HealthGuardEngineBase() {
+class FallEngineAdvanced : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -29,7 +29,7 @@ class FallEngineTordu : HealthGuardEngineBase() {
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    private data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
+    data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
 
     override fun startEngine() {
         stepDetector.startDetector()
@@ -46,39 +46,50 @@ class FallEngineTordu : HealthGuardEngineBase() {
                             )
                     )
                 }
-                .buffer(6, 1)
-                .subscribe {
-                    var counter = 0
-                    var lastDataUpperThreshold = false
-                    it.forEachIndexed { index, acceDataModel ->
-                        if (index % 2 == 0) {
-                            if (acceDataModel.acceCurrent > measurementSettings.fallSettings.threshold) {
-                                lastDataUpperThreshold = true
-                            }
-                        } else {
-                            if (lastDataUpperThreshold && acceDataModel.acceCurrent > 7) {
-                                counter++
-                            }
-                            lastDataUpperThreshold = false
-                        }
+                .buffer(7000, 100, TimeUnit.MILLISECONDS)
+                .subscribe { events ->
+                    val firstEvent = events.first()
+                    val firstPeek = events.find { it.acceCurrent >= measurementSettings.fallSettings.threshold }
+                    if (firstEvent == null || firstPeek == null) {
+                        return@subscribe
                     }
 
-                    if (counter in 1..13) {
-                        Log.d(TAG, "fall detected")
-                        it.forEach {
-                            Log.d(TAG, "acceCurrent=${it.acceCurrent}")
-                        }
-                        Log.d(TAG, "counter=$counter")
-                        Log.d(TAG, "isStepDetected=${stepDetector.isStepDetected()}")
-
-                        if (stepDetector.isStepDetected()) {
-                            notifyHealthEvent(it.last().sensorEvent, counter.toFloat())
-                        }
+                    // Step 1
+                    val timeToFirstPeek = firstPeek.sensorEvent.timestamp - firstEvent.sensorEvent.timestamp
+                    if (timeToFirstPeek !in 2001..2100) {
+                        return@subscribe
                     }
+                    // Step 2
+                    val fallCounter = events.count { it.acceCurrent >= measurementSettings.fallSettings.threshold }
+                    if (fallCounter !in 4..50) {
+                        return@subscribe
+                    }
+                    // Step 3
+                    if (measurementSettings.fallSettings.inactivityDetector && !existPostFallInactivity(events)) {
+                        return@subscribe
+                    }
+
+                    Timber.d( "fall detected fallCounter=$fallCounter")
+                    val max = events.maxBy { it.acceCurrent }!!
+                    notifyHealthEvent(max.sensorEvent, max.acceCurrent.toFloat(), "fallCounter=$fallCounter")
                 }
                 .let {
                     compositeDisposable.add(it)
                 }
+    }
+
+    fun existPostFallInactivity(events: MutableList<AcceDataModel>): Boolean {
+        val lastPeek = events.findLast { it.acceCurrent >= measurementSettings.fallSettings.threshold }
+        val lastPeekIndex = events.indexOf(lastPeek)
+        val postFallEvents = events.subList(lastPeekIndex, events.lastIndex)
+        val size = TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong()).toInt() / measurementSettings.samplingMs
+        postFallEvents.windowed(size, 1).forEach {
+            val activity = it.find { it.acceCurrent >= measurementSettings.fallSettings.inactivityDetectorThreshold }
+            if (activity == null) {
+                return true
+            }
+        }
+        return false
     }
 
     override fun stopEngine() {
@@ -88,7 +99,7 @@ class FallEngineTordu : HealthGuardEngineBase() {
     }
 
     override fun getHealthEventType(): HealthEventType {
-        return HealthEventType.FALL_TORDU
+        return HealthEventType.FALL_ADVANCED
     }
 
     override fun requiredSensors(): Set<Int> {

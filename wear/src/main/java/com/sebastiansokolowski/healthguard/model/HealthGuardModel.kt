@@ -8,7 +8,6 @@ import com.sebastiansokolowski.healthguard.model.healthGuard.engine.*
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -32,7 +31,7 @@ class HealthGuardModel(private val sensorDataModel: SensorDataModel, private val
     private fun registerHealthEngines() {
         healthEnginesRegistered.add(EpilepsyEngine())
         healthEnginesRegistered.add(FallEngine())
-        healthEnginesRegistered.add(FallEngineTordu())
+        healthEnginesRegistered.add(FallEngineAdvanced())
         healthEnginesRegistered.add(HeartRateAnomalyEngine())
         healthEnginesRegistered.add(AllSensorsEngine())
         healthEnginesRegistered.add(NotificationTestEngine())

@@ -48,7 +48,7 @@
     <string name="settings_heart_beat_anomaly_min_threshold_title">Min wartość progowa</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold_title">Max wartość progowa podczas aktywności</string>
     <string name="settings_heart_beat_anomaly_inactivity_max_threshold_title">Max wartość progowa podczas bezczynności</string>
-    <string name="health_event_fall_tordu_title">Upadek - algorytm Thordu</string>
+    <string name="health_event_fall_advanced_title">Upadek - algorytm zaawansowany</string>
     <string name="advanced_settings_title">Ustawienia zaawansowane</string>
     <string name="history_data_title">Historia danych</string>
     <string name="live_data_title">Dane z zegarka</string>

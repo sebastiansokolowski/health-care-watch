@@ -51,7 +51,7 @@
     <string name="sensor_adapter_linear_acceleration">LINEAR ACCELERATION</string>
     <string name="health_event_fall_message">Value of fall</string>
     <string name="health_event_fall_title">Fall</string>
-    <string name="health_event_fall_tordu_title">Fall - Thordu algorithm</string>
+    <string name="health_event_fall_advanced_title">Fall - advanced algorithm</string>
     <string name="advanced_settings_title">Advanced settings</string>
     <string name="history_data_title">History data</string>
     <string name="live_data_title">Live data</string>

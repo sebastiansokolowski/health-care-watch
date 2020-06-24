@@ -25,7 +25,7 @@ class HealthEventHelper(val context: Context) {
             HealthEventType.EPILEPSY -> context.getString(R.string.health_event_epilepsy_title)
             HealthEventType.HEART_RATE_ANOMALY -> context.getString(R.string.health_event_heart_rate_anomaly_title)
             HealthEventType.FALL -> context.getString(R.string.health_event_fall_title)
-            HealthEventType.FALL_TORDU -> context.getString(R.string.health_event_fall_tordu_title)
+            HealthEventType.FALL_ADVANCED -> context.getString(R.string.health_event_fall_advanced_title)
             else -> healthEventType.name
         }
     }
@@ -65,7 +65,7 @@ class HealthEventHelper(val context: Context) {
         return when (healthEventEntity.event) {
             HealthEventType.EPILEPSY -> context.getString(R.string.health_event_epilepsy_message) + " $value " + context.getString(R.string.unit_percentage)
             HealthEventType.HEART_RATE_ANOMALY -> context.getString(R.string.health_event_heart_rate_anomaly_message) + " $value " + context.getString(R.string.unit_heart_rate)
-            HealthEventType.FALL, HealthEventType.FALL_TORDU -> context.getString(R.string.health_event_fall_message) + " $value"
+            HealthEventType.FALL, HealthEventType.FALL_ADVANCED -> context.getString(R.string.health_event_fall_message) + " $value"
             else -> "null"
         }
     }
