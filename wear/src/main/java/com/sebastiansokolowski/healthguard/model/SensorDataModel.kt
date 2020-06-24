@@ -19,6 +19,8 @@ import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 /**
  * Created by Sebastian Sokołowski on 18.06.19.
@@ -80,22 +82,36 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     override fun onSensorChanged(event: android.hardware.SensorEvent?) {
         val timestamp = Date().time
         event!!.apply {
+            if (sensor == null || values == null || values.isEmpty()) {
+                return
+            }
+            if (sensor.type == Sensor.TYPE_HEART_RATE && values[0] <= 0f) {
+                return
+            }
+
+            val value = when (sensor.type) {
+                Sensor.TYPE_GRAVITY,
+                Sensor.TYPE_ACCELEROMETER,
+                Sensor.TYPE_LINEAR_ACCELERATION -> {
+                    sqrt(
+                            values[0].toDouble().pow(2.0) +
+                                    values[1].toDouble().pow(2.0) +
+                                    values[2].toDouble().pow(2.0)
+                    ).toFloat()
+                }
+                else -> {
+                    values[0]
+                }
+            }
             val sensorEventWrapper = SensorEvent(
                     sensor.type,
-                    values.copyOf(),
+                    value,
                     accuracy,
                     measurementId,
                     timestamp
             )
             if (BuildConfig.EXTRA_LOGGING) {
                 Timber.d("onSensorChanged sensorEvent=$sensorEventWrapper")
-            }
-
-            if (sensor == null || values == null || values.isEmpty()) {
-                return
-            }
-            if (sensor.type == Sensor.TYPE_HEART_RATE && values[0] <= 0f) {
-                return
             }
 
             when (sensor.type) {
@@ -162,22 +178,18 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                                 }
                                 var event = events.first()
                                 if (events.size > 1) {
-                                    val avgValues = FloatArray(event.values.size)
+                                    var avgValue = 0f
                                     var avgAccuracy = 0
                                     events.forEach { event ->
-                                        event.values.forEachIndexed { index, value ->
-                                            avgValues[index] += value
-                                        }
+                                        avgValue += event.value
                                         avgAccuracy += event.accuracy
                                     }
-                                    avgValues.forEachIndexed { index, value ->
-                                        avgValues[index] = value / events.size
-                                    }
+                                    avgValue /= events.size
                                     avgAccuracy /= events.size
 
                                     event = SensorEvent(
                                             event.type,
-                                            avgValues,
+                                            avgValue,
                                             avgAccuracy,
                                             measurementId,
                                             event.timestamp)

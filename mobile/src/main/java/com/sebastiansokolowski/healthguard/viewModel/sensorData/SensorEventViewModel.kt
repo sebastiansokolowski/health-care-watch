@@ -1,6 +1,5 @@
 package com.sebastiansokolowski.healthguard.viewModel.sensorData
 
-import android.hardware.Sensor
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.Entry
@@ -100,18 +99,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
                     it.sortBy { it.timestamp }
 
                     val chartData = ChartData()
-                    when (sensorType) {
-                        Sensor.TYPE_GRAVITY,
-                        Sensor.TYPE_ACCELEROMETER,
-                        Sensor.TYPE_LINEAR_ACCELERATION -> {
-                            parseData(it, startDayTimestamp, chartData.xData, chartData.xStatisticData, 0)
-                            parseData(it, startDayTimestamp, chartData.yData, chartData.yStatisticData, 1)
-                            parseData(it, startDayTimestamp, chartData.zData, chartData.zStatisticData, 2)
-                        }
-                        else -> {
-                            parseData(it, startDayTimestamp, chartData.xData, chartData.xStatisticData, 0)
-                        }
-                    }
+                    parseData(it, startDayTimestamp, chartData.xData, chartData.xStatisticData, 0)
                     return@map chartData
                 }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -137,8 +125,8 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
             val lineDataSet = measurementDataSet.getOrPut(sensorEventData.measurementEventEntity.target.id) {
                 LineDataSet(mutableListOf(), "")
             }
-            createEntry(sensorEventData, startDayTimestamp, index)?.let { entry ->
-                val value = sensorEventData.values[index]
+            createEntry(sensorEventData, startDayTimestamp)?.let { entry ->
+                val value = sensorEventData.value
 
                 if (value < statisticData.min) {
                     statisticData.min = value
@@ -158,15 +146,10 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
         statisticData.average = statisticData.sum / statisticData.count
     }
 
-    private fun createEntry(sensorEventEntity: SensorEventEntity, lastMidnightTimestamp: Long, index: Int): Entry? {
-        var entry: Entry? = null
+    private fun createEntry(sensorEventEntity: SensorEventEntity, lastMidnightTimestamp: Long): Entry? {
+        val timestampFromMidnight: Int = (sensorEventEntity.timestamp - lastMidnightTimestamp).toInt()
 
-        if (sensorEventEntity.values.isNotEmpty()) {
-            val timestampFromMidnight: Int = (sensorEventEntity.timestamp - lastMidnightTimestamp).toInt()
-
-            entry = Entry(timestampFromMidnight.toFloat(), sensorEventEntity.values[index])
-        }
-        return entry
+        return Entry(timestampFromMidnight.toFloat(), sensorEventEntity.value)
     }
 
     //
@@ -197,7 +180,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     fun showHealthEvent(healthEventEntity: HealthEventEntity) {
         healthEventEntity.sensorEventEntity.target?.let { sensorEventData ->
             val startDayTimestamp = getStartDayTimestamp(sensorEventData.timestamp)
-            createEntry(sensorEventData, startDayTimestamp, 0)?.let { entry ->
+            createEntry(sensorEventData, startDayTimestamp)?.let { entry ->
                 entryHighlighted.postValue(entry)
             }
         }

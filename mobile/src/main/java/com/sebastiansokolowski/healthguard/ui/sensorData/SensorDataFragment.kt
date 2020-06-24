@@ -138,7 +138,7 @@ open class SensorDataFragment : DaggerFragment() {
     }
 
     fun fillChart(sensorAdapterItem: SensorAdapterItem, chartData: ChartData?) {
-        if (chartData == null || chartData.xData.isEmpty() && chartData.yData.isEmpty() && chartData.zData.isEmpty()) {
+        if (chartData == null || chartData.xData.isEmpty()) {
             chart_lc.clear()
             return
         }
@@ -147,13 +147,9 @@ open class SensorDataFragment : DaggerFragment() {
 
         val unit = " (" + SensorAdapterItemHelper.getUnit(context, sensorAdapterItem) + ")"
         var colorLineDataX = 0
-        var colorLineDataY = 0
-        var colorLineDataZ = 0
 
         context?.let { context ->
             colorLineDataX = ContextCompat.getColor(context, R.color.chart_x_color)
-            colorLineDataY = ContextCompat.getColor(context, R.color.chart_y_color)
-            colorLineDataZ = ContextCompat.getColor(context, R.color.chart_z_color)
         }
 
         //remove previous data
@@ -162,37 +158,12 @@ open class SensorDataFragment : DaggerFragment() {
         }
 
         val legendEntries = mutableListOf<LegendEntry>()
-        when (sensorAdapterItem) {
-            SensorAdapterItem.LINEAR_ACCELERATION -> {
-                val labelX = "X$unit"
-                val labelY = "Y$unit"
-                val labelZ = "Z$unit"
 
-                setupLineDataSet(chartData.xData, colorLineDataX)
-                setupLineDataSet(chartData.yData, colorLineDataY)
-                setupLineDataSet(chartData.zData, colorLineDataZ)
-
-                legendEntries.add(createLegendEntry(labelX, colorLineDataX))
-                legendEntries.add(createLegendEntry(labelY, colorLineDataY))
-                legendEntries.add(createLegendEntry(labelZ, colorLineDataZ))
-
-                lineDataSetList.addAll(chartData.xData)
-                lineDataSetList.addAll(chartData.yData)
-                lineDataSetList.addAll(chartData.zData)
-
-                addStatisticRow(labelX, chartData.xStatisticData)
-                addStatisticRow(labelY, chartData.yStatisticData)
-                addStatisticRow(labelZ, chartData.zStatisticData)
-            }
-            else -> {
-                val labelX = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem) + unit
-
-                setupLineDataSet(chartData.xData, colorLineDataX)
-                legendEntries.add(createLegendEntry(labelX, colorLineDataX))
-                lineDataSetList.addAll(chartData.xData)
-                addStatisticRow(null, chartData.xStatisticData)
-            }
-        }
+        val labelX = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem) + unit
+        setupLineDataSet(chartData.xData, colorLineDataX)
+        legendEntries.add(createLegendEntry(labelX, colorLineDataX))
+        lineDataSetList.addAll(chartData.xData)
+        addStatisticRow(chartData.xStatisticData)
 
         chart_lc.legend.setCustom(legendEntries)
         chart_lc.description.isEnabled = false
@@ -201,23 +172,20 @@ open class SensorDataFragment : DaggerFragment() {
         chart_lc.data = LineData(lineDataSetList.toList())
         chart_lc.notifyDataSetChanged()
         chart_lc.invalidate()
-        chart_lc.setVisibleXRangeMaximum(60*60*60*40f)
+        chart_lc.setVisibleXRangeMaximum(60 * 60 * 60 * 40f)
     }
 
-    private fun addStatisticRow(title: String?, statisticData: StatisticData) {
+    private fun addStatisticRow(statisticData: StatisticData) {
         val tableRow = TableRow(context)
 
-        val titleTv = createStatisticTextView()
         val minValueTv = createStatisticTextView()
         val maxValueTv = createStatisticTextView()
         val averageValueTv = createStatisticTextView()
 
-        titleTv.text = title
         minValueTv.text = Utils.formatValue(statisticData.min)
         maxValueTv.text = Utils.formatValue(statisticData.max)
         averageValueTv.text = Utils.formatValue(statisticData.average)
 
-        tableRow.addView(titleTv)
         tableRow.addView(minValueTv)
         tableRow.addView(maxValueTv)
         tableRow.addView(averageValueTv)

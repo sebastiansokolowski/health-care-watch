@@ -15,8 +15,6 @@ import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * Created by Sebastian Sokołowski on 21.09.19.
@@ -33,31 +31,19 @@ class FallEngine : HealthGuardEngineBase() {
         stepDetector.setupDetector(sensorsObservable)
     }
 
-    private data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
-
     override fun startEngine() {
         stepDetector.startDetector()
         sensorEventObservable
                 .subscribeOn(Schedulers.computation())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
-                .map {
-                    AcceDataModel(
-                            it,
-                            sqrt(
-                                    it.values[0].toDouble().pow(2.0) +
-                                            it.values[1].toDouble().pow(2.0) +
-                                            it.values[2].toDouble().pow(2.0)
-                            )
-                    )
-                }
                 .buffer(measurementSettings.fallSettings.sampleCount, 1)
-                .subscribe {
-                    val min = it.minBy { it.acceCurrent }
-                    val max = it.maxBy { it.acceCurrent }
+                .subscribe { events ->
+                    val min = events.minBy { it.value }
+                    val max = events.maxBy { it.value }
 
                     if (min != null && max != null) {
-                        val isFall = it.indexOf(max) > it.indexOf(min)
-                        val diff = abs(max.acceCurrent - min.acceCurrent)
+                        val isFall = events.indexOf(max) > events.indexOf(min)
+                        val diff = abs(max.value - min.value)
 
                         Timber.d("fallThreshold=${measurementSettings.fallSettings.threshold} " +
                                 "isStepDetected=${stepDetector.isStepDetected()} isFall=$isFall diff=$diff")
@@ -72,10 +58,10 @@ class FallEngine : HealthGuardEngineBase() {
                             return@subscribe
                         }
                         if (measurementSettings.fallSettings.inactivityDetector) {
-                            checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
+                            checkPostFallActivity(max, diff, Gson().toJson("$min $max"))
                         } else {
                             Timber.d("fall detected!!")
-                            notifyHealthEvent(max.sensorEvent, diff.toFloat(), it.map { it.sensorEvent }, Gson().toJson("$min $max"))
+                            notifyHealthEvent(max, diff, details = Gson().toJson("$min $max"))
                         }
                     }
                 }
@@ -92,7 +78,7 @@ class FallEngine : HealthGuardEngineBase() {
         return activityDetector
     }
 
-    fun checkPostFallActivity(sensorEvent: SensorEvent, value: Float, sensorEventsToSync: List<SensorEvent>, details: String) {
+    fun checkPostFallActivity(sensorEvent: SensorEvent, value: Float, details: String) {
         Timber.d("checkPostFallActivity")
         var postFallStateDetected = false
         var activityDetected = false
@@ -103,7 +89,7 @@ class FallEngine : HealthGuardEngineBase() {
                     Timber.d("checkPostFallActivity doOnComplete")
                     if (postFallStateDetected && !activityDetected) {
                         Timber.d("checkPostFallActivity fall detected!!")
-                        notifyHealthEvent(sensorEvent, value, sensorEventsToSync, details)
+                        notifyHealthEvent(sensorEvent, value, details)
                     }
                 }
                 .subscribe { activity ->

@@ -122,7 +122,7 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
             this.type = sensorEvent.type
             this.accuracy = sensorEvent.accuracy
             this.timestamp = sensorEvent.timestamp
-            this.values = sensorEvent.values
+            this.value = sensorEvent.value
             linkMeasurementEventEntity(sensorEvent.measurementId, this)
         }
     }

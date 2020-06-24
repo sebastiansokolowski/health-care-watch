@@ -20,7 +20,7 @@ class NotificationTestEngine : HealthGuardEngineBase() {
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .take(1)
                 .subscribe {
-                    notifyHealthEvent(it, 99f, Gson().toJson(it))
+                    notifyHealthEvent(it, 99f, details = Gson().toJson(it))
                 }
                 .let {
                     compositeDisposable.add(it)

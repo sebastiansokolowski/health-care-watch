@@ -26,14 +26,8 @@ class ActivityDetector(private var activityThreshold: Int, private val timeout: 
         disposable = sensorsObservable
                 .subscribeOn(Schedulers.computation())
                 .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
-                .map {
-                    sqrt(
-                            it.values[0].toDouble().pow(2.0) +
-                                    it.values[1].toDouble().pow(2.0) +
-                                    it.values[2].toDouble().pow(2.0)
-                    )
-                }.subscribe {
-                    val activityDetected = it >= activityThreshold
+                .subscribe {
+                    val activityDetected = it.value >= activityThreshold
                     if (BuildConfig.EXTRA_LOGGING) {
                         Timber.d("activityValue=$it activityDetected=$activityDetected")
                     }

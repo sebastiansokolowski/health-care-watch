@@ -79,17 +79,14 @@ class HomeViewModel
         }
 
         chartDataCounter++
-        val entry = Entry(chartDataCounter.toFloat(), sensorEvent.values[0].roundToInt().toFloat())
+        val entry = Entry(chartDataCounter.toFloat(), sensorEvent.value)
         data.add(entry)
 
         chartData.value = data
     }
 
     private fun setHeartRate(sensorEvent: SensorEvent) {
-        var result = ""
-        if (sensorEvent.values.isNotEmpty()) {
-            result = sensorEvent.values[0].toInt().toString()
-        }
+        var result = sensorEvent.value.toInt().toString()
         heartRate.postValue(result)
     }
 

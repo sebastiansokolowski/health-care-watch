@@ -48,12 +48,12 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
                 .skip(1, TimeUnit.MINUTES)
                 .filter { it.type == Sensor.TYPE_HEART_RATE }
                 .subscribe { sensorEventData ->
-                    val heartRate = sensorEventData.values[0].toInt()
+                    val heartRate = sensorEventData.value.toInt()
 
                     if (heartRate > getMaxHeartRate(measurementSettings.heartRateAnomalySettings) ||
                             heartRate < measurementSettings.heartRateAnomalySettings.minThreshold) {
                         if (!anomalyState) {
-                            notifyHealthEvent(sensorEventData, heartRate.toFloat(), Gson().toJson(sensorEventData))
+                            notifyHealthEvent(sensorEventData, heartRate.toFloat(), details = Gson().toJson(sensorEventData))
                             anomalyState = true
                         }
                     } else {

@@ -75,10 +75,7 @@ class HomeViewModel
                                 heartRate.postValue("")
                             }
                             .subscribe { sensorEventData ->
-                                var result = ""
-                                if (sensorEventData.values.isNotEmpty()) {
-                                    result = sensorEventData.values[0].toInt().toString()
-                                }
+                                val result = sensorEventData.value.toInt().toString()
                                 heartRate.postValue(result)
                             }.let {
                                 heartRateDisposable = it

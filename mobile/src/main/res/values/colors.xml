@@ -9,6 +9,4 @@
     <color name="chart_no_data_info_color">#000</color>
 
     <color name="chart_x_color">#67a1e0</color>
-    <color name="chart_y_color">#dddf65</color>
-    <color name="chart_z_color">#e06967</color>
 </resources>
