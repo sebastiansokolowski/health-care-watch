@@ -16,6 +16,9 @@ android {
         buildConfigField('boolean', 'EXTRA_LOGGING', 'false')
     }
     buildTypes {
+        preRelease {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
