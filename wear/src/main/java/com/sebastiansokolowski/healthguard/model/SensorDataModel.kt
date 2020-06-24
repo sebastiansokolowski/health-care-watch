@@ -15,6 +15,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
+import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -44,7 +45,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     }
 
     fun registerSensors(measurementId: Long, sensors: Set<Int>, samplingPeriodUs: Int) {
-        Log.d(TAG, "registerSensors measurementId=$measurementId, sensors=$sensors, samplingPeriodUs=$samplingPeriodUs")
+        Timber.d("registerSensors measurementId=$measurementId, sensors=$sensors, samplingPeriodUs=$samplingPeriodUs")
         this.measurementId = measurementId
 
         startSensorDataParser()
@@ -57,14 +58,14 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
             if (!registered) {
                 Log.e(TAG, "error register sensorEvent: $sensorId")
             } else {
-                Log.d(TAG, "registered sensorEvent: $sensorId")
+                Timber.d("registered sensorEvent: $sensorId")
             }
         }
         sensorsRegistered.set(true)
     }
 
     fun unregisterSensors() {
-        Log.d(TAG, "unregisterSensors")
+        Timber.d("unregisterSensors")
         sensorManager.unregisterListener(this)
         sensorsRegistered.set(false)
         sensorDataParserDisposables.clear()
@@ -73,7 +74,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        Log.d(TAG, "onAccuracyChanged sensorEvent=$sensor accuracy=$accuracy")
+        Timber.d("onAccuracyChanged sensorEvent=$sensor accuracy=$accuracy")
     }
 
     override fun onSensorChanged(event: android.hardware.SensorEvent?) {
@@ -87,7 +88,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                     timestamp
             )
             if (BuildConfig.EXTRA_LOGGING) {
-                Log.d(TAG, "onSensorChanged sensorEvent=$sensorEventWrapper")
+                Timber.d("onSensorChanged sensorEvent=$sensorEventWrapper")
             }
 
             if (sensor == null || values == null || values.isEmpty()) {
@@ -107,7 +108,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     }
 
     fun changeLiveDataState(liveData: Boolean) {
-        Log.d(TAG, "changeLiveDataState liveData=$liveData")
+        Timber.d("changeLiveDataState liveData=$liveData")
         this.liveData.set(liveData)
 
         if (sensorsRegistered.get()) {
@@ -117,7 +118,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
     }
 
     private fun startSensorDataSync(liveData: Boolean) {
-        Log.d(TAG, "startSensorDataSync liveData=$liveData")
+        Timber.d("startSensorDataSync liveData=$liveData")
         val period: Long = if (liveData) {
             1
         } else {
@@ -139,12 +140,12 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
             dataToSend.addAll(sensorDataToSend)
             sensorDataToSend.clear()
         }
-        Log.d(TAG, "syncSensorData dataToSend.size=${dataToSend.size}")
+        Timber.d("syncSensorData dataToSend.size=${dataToSend.size}")
         wearableClient.sendSensorEvents(dataToSend, liveData)
     }
 
     private fun startSensorDataParser() {
-        Log.d(TAG, "startSensorDataParser")
+        Timber.d("startSensorDataParser")
         sensorsObservable
                 .subscribeOn(Schedulers.io())
                 .groupBy { it.type }
@@ -156,7 +157,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                                 }
                                 if (BuildConfig.EXTRA_LOGGING) {
                                     events.forEach {
-                                        Log.d(TAG, "sensorDataParser event=$it")
+                                        Timber.d("sensorDataParser event=$it")
                                     }
                                 }
                                 var event = events.first()
@@ -181,7 +182,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                                             measurementId,
                                             event.timestamp)
                                 }
-                                Log.d(TAG, "sensorDataParser send event=$event")
+                                Timber.d("sensorDataParser send event=$event")
                                 sensorDataToSend.add(event)
                             }.let {
                                 sensorDataParserDisposables.add(it)

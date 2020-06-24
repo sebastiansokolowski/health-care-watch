@@ -1,10 +1,10 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
 import android.hardware.Sensor
-import android.util.Log
 import com.sebastiansokolowski.healthguard.model.healthGuard.DetectorBase
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicLong
 
 
@@ -22,7 +22,7 @@ class StepDetector(private val timeoutMillis: Long) : DetectorBase() {
                 .subscribeOn(Schedulers.computation())
                 .filter { it.type == Sensor.TYPE_STEP_DETECTOR }
                 .subscribe {
-                    Log.d(TAG, "isStepDetected=$it")
+                    Timber.d("isStepDetected=$it")
                     lastEventTimestamp.set(getCurrentTimestamp())
                 }
     }

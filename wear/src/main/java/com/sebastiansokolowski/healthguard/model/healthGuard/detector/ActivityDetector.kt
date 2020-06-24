@@ -1,12 +1,12 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
 import android.hardware.Sensor
-import android.util.Log
 import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.model.healthGuard.DetectorBase
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -35,7 +35,7 @@ class ActivityDetector(private var activityThreshold: Int, private val timeout: 
                 }.subscribe {
                     val activityDetected = it >= activityThreshold
                     if (BuildConfig.EXTRA_LOGGING) {
-                        Log.d(TAG, "activityValue=$it activityDetected=$activityDetected")
+                        Timber.d("activityValue=$it activityDetected=$activityDetected")
                     }
                     notifyActivityState(activityDetected)
                     if (activityDetected) {

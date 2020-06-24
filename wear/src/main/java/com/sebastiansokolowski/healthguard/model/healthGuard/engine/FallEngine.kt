@@ -1,7 +1,6 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
-import android.util.Log
 import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.ActivityDetector
@@ -13,6 +12,7 @@ import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 import kotlin.math.pow
@@ -59,14 +59,14 @@ class FallEngine : HealthGuardEngineBase() {
                         val isFall = it.indexOf(max) > it.indexOf(min)
                         val diff = abs(max.acceCurrent - min.acceCurrent)
 
-                        Log.d(TAG, "fallThreshold=${measurementSettings.fallSettings.threshold} " +
+                        Timber.d("fallThreshold=${measurementSettings.fallSettings.threshold} " +
                                 "isStepDetected=${stepDetector.isStepDetected()} isFall=$isFall diff=$diff")
 
                         if (!isFall || diff < measurementSettings.fallSettings.threshold) {
                             return@subscribe
                         }
 
-                        Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
+                        Timber.d("min=$min max=$max isFall=$isFall diff=$diff")
 
                         if (measurementSettings.fallSettings.stepDetector && !stepDetector.isStepDetected()) {
                             return@subscribe
@@ -74,8 +74,8 @@ class FallEngine : HealthGuardEngineBase() {
                         if (measurementSettings.fallSettings.inactivityDetector) {
                             checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
                         } else {
-                            Log.d(TAG, "fall detected!!")
-                            notifyHealthEvent(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
+                            Timber.d("fall detected!!")
+                            notifyHealthEvent(max.sensorEvent, diff.toFloat(), it.map { it.sensorEvent }, Gson().toJson("$min $max"))
                         }
                     }
                 }
@@ -92,27 +92,27 @@ class FallEngine : HealthGuardEngineBase() {
         return activityDetector
     }
 
-    fun checkPostFallActivity(sensorEvent: SensorEvent, value: Float, details: String) {
-        Log.d(TAG, "checkPostFallActivity")
+    fun checkPostFallActivity(sensorEvent: SensorEvent, value: Float, sensorEventsToSync: List<SensorEvent>, details: String) {
+        Timber.d("checkPostFallActivity")
         var postFallStateDetected = false
         var activityDetected = false
         val activityDetector = createActivityDetector()
         activityDetector.activityDetectedObservable
                 .take(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong(), TimeUnit.SECONDS)
                 .doOnComplete {
-                    Log.d(TAG, "checkPostFallActivity doOnComplete")
+                    Timber.d("checkPostFallActivity doOnComplete")
                     if (postFallStateDetected && !activityDetected) {
-                        Log.d(TAG, "checkPostFallActivity fall detected!!")
-                        notifyHealthEvent(sensorEvent, value, details)
+                        Timber.d("checkPostFallActivity fall detected!!")
+                        notifyHealthEvent(sensorEvent, value, sensorEventsToSync, details)
                     }
                 }
                 .subscribe { activity ->
                     if (!activity && !postFallStateDetected) {
-                        Log.d(TAG, "checkPostFallActivity postFallStateDetected")
+                        Timber.d("checkPostFallActivity postFallStateDetected")
                         postFallStateDetected = true
                     }
                     if (activity && postFallStateDetected && !activityDetected) {
-                        Log.d(TAG, "checkPostFallActivity activityDetected")
+                        Timber.d("checkPostFallActivity activityDetected")
                         activityDetected = true
                     }
                 }.let {

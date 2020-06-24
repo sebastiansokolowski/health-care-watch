@@ -2,9 +2,9 @@ package com.sebastiansokolowski.healthguard.receiver
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.sebastiansokolowski.healthguard.service.WearableService
 import dagger.android.DaggerBroadcastReceiver
+import timber.log.Timber
 
 
 /**
@@ -14,7 +14,7 @@ class BootCompletedReceiver : DaggerBroadcastReceiver() {
     private val TAG = javaClass.canonicalName
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d(TAG, "onReceive action=${intent?.action}")
+        Timber.d("onReceive action=${intent?.action}")
         super.onReceive(context, intent)
 
         context?.apply {

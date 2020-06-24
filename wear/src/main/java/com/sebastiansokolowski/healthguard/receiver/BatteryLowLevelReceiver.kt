@@ -2,9 +2,9 @@ package com.sebastiansokolowski.healthguard.receiver
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import dagger.android.DaggerBroadcastReceiver
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -18,7 +18,7 @@ class BatteryLowLevelReceiver : DaggerBroadcastReceiver() {
     lateinit var measurementModel: MeasurementModel
 
     override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d(TAG, "onReceive action=${intent?.action}")
+        Timber.d("onReceive action=${intent?.action}")
         super.onReceive(context, intent)
 
         context?.let {

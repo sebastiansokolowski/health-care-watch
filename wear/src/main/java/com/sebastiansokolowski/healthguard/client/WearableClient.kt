@@ -1,8 +1,6 @@
 package com.sebastiansokolowski.healthguard.client
 
 import android.content.Context
-import android.os.Build
-import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
 import com.google.gson.Gson
@@ -19,14 +17,13 @@ import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
+import timber.log.Timber
 
 
 /**
  * Created by Sebastian Sokołowski on 16.07.18.
  */
 class WearableClient(context: Context) {
-    private val TAG = javaClass.canonicalName
-
     private val maxSizeOfDataToSend = 500
 
     private val dataClient: DataClient = Wearable.getDataClient(context)
@@ -34,7 +31,7 @@ class WearableClient(context: Context) {
     private val capabilityClient: CapabilityClient = Wearable.getCapabilityClient(context)
 
     fun sendMeasurementEvent(state: Boolean) {
-        Log.d(TAG, "sendMeasurementEvent state=$state")
+        Timber.d("sendMeasurementEvent state=$state")
 
         if (state) {
             sendMessage(DataClientPaths.START_MEASUREMENT_PATH)
@@ -44,7 +41,7 @@ class WearableClient(context: Context) {
     }
 
     fun sendSensorEvents(events: List<SensorEvent>, urgent: Boolean) {
-        Log.d(TAG, "sendSensorEvents size=${events.size}")
+        Timber.d("sendSensorEvents size=${events.size}")
 
         val gson = GsonBuilder()
                 .registerTypeAdapter(FloatArray::class.java, SensorEventValuesSerializer())
@@ -54,13 +51,13 @@ class WearableClient(context: Context) {
             val data = ArrayList<String>()
             it.forEach {
                 if (BuildConfig.EXTRA_LOGGING) {
-                    Log.d(TAG, "sendSensorEvents sensorEvent=${it}")
+                    Timber.d("sendSensorEvents sensorEvent=${it}")
                 }
                 data.add(gson.toJson(it))
             }
 
             val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(SENSOR_EVENTS_MAP_PATH)
-            Log.v(TAG, "sendSensorEvents uri=${putDataMapReq.uri} size=${it.size}")
+            Timber.v("sendSensorEvents uri=${putDataMapReq.uri} size=${it.size}")
             putDataMapReq.dataMap.apply {
                 putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, data)
             }
@@ -70,13 +67,13 @@ class WearableClient(context: Context) {
     }
 
     fun requestStartMeasurement() {
-        Log.d(TAG, "requestStartMeasurement")
+        Timber.d("requestStartMeasurement")
 
         sendMessage(DataClientPaths.REQUEST_START_MEASUREMENT_PATH)
     }
 
     fun sendSupportedHealthEvents(supportedHealthEventTypes: SupportedHealthEventTypes) {
-        Log.d(TAG, "sendSupportedHealthEvents healthEventTypesSupported=$supportedHealthEventTypes")
+        Timber.d("sendSupportedHealthEvents healthEventTypesSupported=$supportedHealthEventTypes")
 
         val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(SUPPORTED_HEALTH_EVENTS_MAP_PATH)
         putDataMapReq.dataMap.apply {
@@ -87,7 +84,7 @@ class WearableClient(context: Context) {
     }
 
     fun sendHealthEvent(healthEvent: HealthEvent) {
-        Log.d(TAG, "sendHealthEvent sensorEvent=${healthEvent.sensorEvent}")
+        Timber.d("sendHealthEvent sensorEvent=${healthEvent.sensorEvent}")
 
         val putDataMapReq = PutDataMapRequest.createWithAutoAppendedId(HEALTH_EVENT_MAP_PATH)
         putDataMapReq.dataMap.apply {
@@ -109,15 +106,15 @@ class WearableClient(context: Context) {
                 messageClient.sendMessage(nodeId.id, message, null).apply {
                     if (BuildConfig.DEBUG) {
                         addOnSuccessListener {
-                            Log.d(TAG, "Success sent message")
+                            Timber.d("Success sent message")
                         }
                         addOnFailureListener { ex ->
-                            Log.d(TAG, "Error sending message $ex")
+                            Timber.d("Error sending message $ex")
                         }
                     }
                 }
             } else {
-                Log.d(TAG, "missing node!")
+                Timber.d("missing node!")
             }
         }).start()
     }
@@ -133,10 +130,10 @@ class WearableClient(context: Context) {
 
         if (BuildConfig.DEBUG) {
             dataItemTask.addOnSuccessListener {
-                Log.v(TAG, "Success uri=${request.uri} urgent=$urgent")
+                Timber.v("Success uri=${request.uri} urgent=$urgent")
             }
             dataItemTask.addOnFailureListener { ex ->
-                Log.v(TAG, "Error sending data $ex")
+                Timber.v("Error sending data $ex")
             }
         }
     }

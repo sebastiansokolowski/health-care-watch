@@ -1,13 +1,12 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
-import android.util.Log
-import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -50,7 +49,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
                     val targetPercentOfPositiveSignals = measurementSettings.epilepsySettings.percentOfPositiveSignals / 100.toDouble()
 
                     if (percentOfPositiveSignals >= targetPercentOfPositiveSignals) {
-                        Log.d(TAG, "epilepsy detected!!")
+                        Timber.d("epilepsy detected!!")
                         notifyHealthEvent(it.last().sensorEvent, percentOfPositiveSignals.toFloat())
                     }
                 }

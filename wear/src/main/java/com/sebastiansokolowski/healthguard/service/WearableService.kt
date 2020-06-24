@@ -1,12 +1,12 @@
 package com.sebastiansokolowski.healthguard.service
 
-import android.util.Log
 import com.google.android.gms.wearable.*
 import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
 import com.sebastiansokolowski.shared.DataClientPaths
 import dagger.android.AndroidInjection
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -49,9 +49,9 @@ class WearableService : WearableListenerService() {
 
     override fun onDataChanged(dataEvent: DataEventBuffer?) {
         dataEvent?.forEach { event ->
-            Log.v(TAG, "onDataChanged path:${event.dataItem.uri.path}")
+            Timber.v("onDataChanged path:${event.dataItem.uri.path}")
             if (event.type != DataEvent.TYPE_CHANGED) {
-                Log.d(TAG, "type not changed")
+                Timber.d( "type not changed")
                 return
             }
             when ("/" + event.dataItem.uri.pathSegments.getOrNull(0)) {

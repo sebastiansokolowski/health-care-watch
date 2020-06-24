@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.PowerManager
-import android.util.Log
 import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.DataMapItem
 import com.google.gson.Gson
@@ -14,6 +13,7 @@ import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.ReplaySubject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -62,7 +62,7 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
 
     @SuppressLint("WakelockTimeout")
     fun startMeasurement(measurementSettings: MeasurementSettings) {
-        Log.d(TAG, "startMeasurement")
+        Timber.d("startMeasurement")
         if (measurementRunning.get()) {
             return
         }
@@ -78,7 +78,7 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
     }
 
     fun stopMeasurement() {
-        Log.d(TAG, "stopMeasurement")
+        Timber.d("stopMeasurement")
         if (!measurementRunning.get()) {
             return
         }
@@ -95,7 +95,7 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
                     val json = getString(DataClientPaths.MEASUREMENT_START_DATA_JSON)
                     val measurementSettings = Gson().fromJson(json, MeasurementSettings::class.java)
 
-                    Log.d(TAG, "measurementSettings=$measurementSettings")
+                    Timber.d("measurementSettings=$measurementSettings")
 
                     if (measurementRunning.get()) {
                         stopMeasurement()
