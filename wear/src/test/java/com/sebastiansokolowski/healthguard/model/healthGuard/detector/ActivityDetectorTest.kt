@@ -45,7 +45,7 @@ class ActivityDetectorTest {
             healthSensorObservable.onNext(sensorEvent)
         }
 
-        assertFalse(testObj.activityStateObservable.blockingFirst())
+        assertFalse(testObj.activityDetectedObservable.blockingFirst())
     }
 
     @Test
@@ -56,7 +56,7 @@ class ActivityDetectorTest {
             healthSensorObservable.onNext(sensorEvent)
         }
 
-        assertTrue(testObj.activityStateObservable.blockingFirst())
+        assertTrue(testObj.activityDetectedObservable.blockingFirst())
     }
 
     @Test
@@ -66,11 +66,11 @@ class ActivityDetectorTest {
         for (i in 0..100) {
             healthSensorObservable.onNext(sensorEvent)
         }
-        testObj.activityStateObservable.blockingFirst()
+        testObj.activityDetectedObservable.blockingFirst()
         for (i in 0..100) {
             healthSensorObservable.onNext(sensorEvent)
         }
 
-        verify(exactly = 1) { testObj.notifyActivityState(any()) }
+        verify(exactly = 1) { testObj.notifyActivityDetectedState(any()) }
     }
 }

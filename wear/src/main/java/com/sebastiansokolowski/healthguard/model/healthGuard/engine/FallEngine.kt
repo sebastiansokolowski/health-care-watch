@@ -29,18 +29,11 @@ class FallEngine : HealthGuardEngineBase() {
 
     override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
-        stepDetector = StepDetector(TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.stepDetectorTimeoutInS.toLong()))
+        stepDetector = StepDetector(TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.stepDetectorTimeoutS.toLong()))
         stepDetector.setupDetector(sensorsObservable)
     }
 
     private data class AcceDataModel(val sensorEvent: SensorEvent, val acceCurrent: Double)
-
-    private fun createActivityDetector(): ActivityDetector {
-        val activityDetector = ActivityDetector(measurementSettings.fallSettings.activityThreshold, measurementSettings.fallSettings.timeOfInactivity.toLong())
-        activityDetector.setupDetector(sensorEventObservable)
-
-        return activityDetector
-    }
 
     override fun startEngine() {
         stepDetector.startDetector()
@@ -68,21 +61,21 @@ class FallEngine : HealthGuardEngineBase() {
 
                         Log.d(TAG, "fallThreshold=${measurementSettings.fallSettings.threshold} " +
                                 "isStepDetected=${stepDetector.isStepDetected()} isFall=$isFall diff=$diff")
-                        if (isFall &&
-                                diff > measurementSettings.fallSettings.threshold &&
-                                (!measurementSettings.fallSettings.stepDetector || stepDetector.isStepDetected())) {
-                            it.forEach {
-                                Log.d(TAG, "x=${it.sensorEvent.values[0]} y=${it.sensorEvent.values[1]} z=${it.sensorEvent.values[2]}")
-                                Log.d(TAG, "acceCurrent=${it.acceCurrent}")
-                            }
-                            Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
 
-                            if (measurementSettings.fallSettings.timeOfInactivity > 0) {
-                                checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
-                            } else {
-                                Log.d(TAG, "fall detected!!")
-                                notifyHealthEvent(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
-                            }
+                        if (!isFall || diff < measurementSettings.fallSettings.threshold) {
+                            return@subscribe
+                        }
+
+                        Log.d(TAG, "min=$min max=$max isFall=$isFall diff=$diff")
+
+                        if (measurementSettings.fallSettings.stepDetector && !stepDetector.isStepDetected()) {
+                            return@subscribe
+                        }
+                        if (measurementSettings.fallSettings.inactivityDetector) {
+                            checkPostFallActivity(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
+                        } else {
+                            Log.d(TAG, "fall detected!!")
+                            notifyHealthEvent(max.sensorEvent, diff.toFloat(), Gson().toJson("$min $max"))
                         }
                     }
                 }
@@ -91,17 +84,40 @@ class FallEngine : HealthGuardEngineBase() {
                 }
     }
 
+    private fun createActivityDetector(): ActivityDetector {
+        val activityDetector = ActivityDetector(measurementSettings.fallSettings.inactivityDetectorThreshold,
+                TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong()))
+        activityDetector.setupDetector(sensorEventObservable)
+
+        return activityDetector
+    }
+
     fun checkPostFallActivity(sensorEvent: SensorEvent, value: Float, details: String) {
         Log.d(TAG, "checkPostFallActivity")
+        var postFallStateDetected = false
+        var activityDetected = false
         val activityDetector = createActivityDetector()
-        activityDetector.activityStateObservable.subscribe { activity ->
-            if (!activity) {
-                Log.d(TAG, "fall detected!!")
-                notifyHealthEvent(sensorEvent, value, details)
-            }
-        }.let {
-            compositeDisposable.add(it)
-        }
+        activityDetector.activityDetectedObservable
+                .take(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong(), TimeUnit.SECONDS)
+                .doOnComplete {
+                    Log.d(TAG, "checkPostFallActivity doOnComplete")
+                    if (postFallStateDetected && !activityDetected) {
+                        Log.d(TAG, "checkPostFallActivity fall detected!!")
+                        notifyHealthEvent(sensorEvent, value, details)
+                    }
+                }
+                .subscribe { activity ->
+                    if (!activity && !postFallStateDetected) {
+                        Log.d(TAG, "checkPostFallActivity postFallStateDetected")
+                        postFallStateDetected = true
+                    }
+                    if (activity && postFallStateDetected && !activityDetected) {
+                        Log.d(TAG, "checkPostFallActivity activityDetected")
+                        activityDetected = true
+                    }
+                }.let {
+                    compositeDisposable.add(it)
+                }
         activityDetector.startDetector()
     }
 

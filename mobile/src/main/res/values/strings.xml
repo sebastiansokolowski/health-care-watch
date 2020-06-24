@@ -11,7 +11,7 @@
     <string name="measurement_sync_data_btn">Sync data</string>
     <string name="dialog_licences_title">About</string>
     <string name="share_measurement_data_title">Share measurement data</string>
-    <string name="action_ok" translatable="false">Ok</string>
+    <string name="action_ok" translatable="false">OK</string>
     <string name="action_undo">UNDO</string>
     <string name="settings_health_events_not_synced">Please connect to watch earlier.</string>
     <string name="health_event_epilepsy_title">Epilepsy</string>
@@ -37,13 +37,13 @@
     <string name="settings_select_events">Select events</string>
     <string name="settings_sms_notification">SMS message</string>
     <string name="settings_sms_user_location">User\'s location in an SMS</string>
-    <string name="settings_sampling_time">Sampling time (ms)</string>
-    <string name="settings_fall_threshold">Fall threshold value</string>
-    <string name="settings_fall_sample_count">Fall sample count</string>
-    <string name="settings_heart_beat_anomaly_step_detector_timeout">Step detector timeout (min)</string>
-    <string name="settings_heart_beat_anomaly_min_threshold">Min threshold value</string>
-    <string name="settings_heart_beat_anomaly_activity_max_threshold">Max threshold value during activity</string>
-    <string name="settings_heart_beat_anomaly_inactivity_max_threshold">Max threshold value during inactivity</string>
+    <string name="settings_sampling_time_title">Sampling time (ms)</string>
+    <string name="settings_fall_upper_threshold_title">Upper threshold value</string>
+    <string name="settings_fall_sample_count_title">Sample size</string>
+    <string name="settings_heart_beat_anomaly_activity_detector_timeout_title">Activity detection timeout (min)</string>
+    <string name="settings_heart_beat_anomaly_min_threshold_title">Min threshold value</string>
+    <string name="settings_heart_beat_anomaly_activity_max_threshold_title">Max threshold value during activity</string>
+    <string name="settings_heart_beat_anomaly_inactivity_max_threshold_title">Max threshold value during inactivity</string>
     <string name="sensor_data_chart_history_no_data">No chart data available</string>
     <string name="sensor_data_chart_live_no_data">Start measurement to see a data</string>
     <string name="sensor_adapter_heart_rate_title">HEART RATE</string>
@@ -56,11 +56,34 @@
     <string name="history_data_title">History data</string>
     <string name="live_data_title">Live data</string>
     <string name="settings_title">Settings</string>
-    <string name="settings_fall_step_detector">Step detector</string>
-    <string name="settings_fall_step_detector_timeout">Step detector timeout (s)</string>
+    <string name="settings_fall_step_detector_title">Step detector</string>
+    <string name="settings_fall_step_detector_timeout_title">Step detector timeout (s)</string>
     <string name="cancel_sending_sms_notification">Cancel sending SMS notification</string>
     <string name="sms_message_google_map_url" translatable="false">http://www.google.com/maps/place/%1$s</string>
     <string name="sms_message_location_accuracy">accuracy %1$dm</string>
     <string name="sms_message_unknow_location">unknown</string>
     <string name="sms_message_user_location">User\'s location</string>
+    <string name="settings_fall_inactivity_detector_timeout_title">Inactivity timeout (s)</string>
+    <string name="settings_fall_inactivity_detector_timeout_summary">Inactivity timeout above which the event will be recognized as a fall</string>
+    <string name="settings_heart_beat_anomaly_min_threshold_summary">The value below which the event will be recognized as a heartbeat anomaly</string>
+    <string name="settings_heart_beat_anomaly_inactivity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during inactivity</string>
+    <string name="settings_heart_beat_anomaly_activity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during activity</string>
+    <string name="settings_epilepsy_threshold_title">Threshold value</string>
+    <string name="settings_fall_sample_count_summary">Sample size for analysis</string>
+    <string name="settings_fall_step_detector_summary">The event will only be detected in motion</string>
+    <string name="settings_fall_step_detector_timeout_summary">Step detection timeout after which the event will be recognized as a motionless</string>
+    <string name="settings_fall_inactivity_detector_threshold_title">Inactivity threshold</string>
+    <string name="settings_fall_inactivity_detector_threshold_summary">The value above which the event will be recognized as an activity</string>
+    <string name="settings_epilepsy_threshold_summary">The value above which the event will be recognized as a positive</string>
+    <string name="settings_epilepsy_time_title">Sampling time (s)</string>
+    <string name="settings_epilepsy_time_summary">Data collection time for analysis</string>
+    <string name="settings_epilepsy_percent_of_positive_events_summary">The percentage of positive events above which an attack will be detected</string>
+    <string name="settings_sampling_time_summary">Frequency of refreshing data from sensors</string>
+    <string name="settings_heart_beat_anomaly_activity_detector_timeout_summary">Activity detection timeout after which the event will be recognized as inactivity.</string>
+    <string name="settings_fall_threshold_summary">The value above which the event will be recognized as a fall</string>
+    <string name="settings_fall_inactivity_detector_title">Inactivity detector</string>
+    <string name="settings_fall_inactivity_detector_summary">Detection of inactivity after a fall</string>
+    <string name="settings_epilepsy_percent_of_positive_events_title">Percentage of positive events</string>
+    <string name="settings_heart_beat_anomaly_activity_detector_threshold_summary">The value above which the event will be recognized as an activity</string>
+    <string name="settings_heart_beat_anomaly_activity_detector_threshold_title">Activity threshold value</string>
 </resources>
