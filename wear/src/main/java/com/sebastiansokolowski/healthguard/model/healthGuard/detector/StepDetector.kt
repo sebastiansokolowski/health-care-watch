@@ -5,16 +5,17 @@ import android.util.Log
 import com.sebastiansokolowski.healthguard.model.healthGuard.DetectorBase
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.atomic.AtomicLong
 
 
 /**
  * Created by Sebastian Sokołowski on 21.09.19.
  */
-class StepDetector(private var timeout: Long) : DetectorBase() {
+class StepDetector(private val timeoutMillis: Long) : DetectorBase() {
     val TAG = this::class.java.simpleName
 
     private var disposable: Disposable? = null
-    private var lastEventTimestamp: Long? = null
+    private var lastEventTimestamp: AtomicLong = AtomicLong(0)
 
     override fun startDetector() {
         disposable = sensorsObservable
@@ -22,7 +23,7 @@ class StepDetector(private var timeout: Long) : DetectorBase() {
                 .filter { it.type == Sensor.TYPE_STEP_DETECTOR }
                 .subscribe {
                     Log.d(TAG, "isStepDetected=$it")
-                    lastEventTimestamp = getCurrentTimestamp()
+                    lastEventTimestamp.set(getCurrentTimestamp())
                 }
     }
 
@@ -37,13 +38,12 @@ class StepDetector(private var timeout: Long) : DetectorBase() {
     private fun isLastEventValid(timestamp: Long): Boolean {
         val timestampDiff = getCurrentTimestamp() - timestamp
 
-        return timestampDiff < timeout
+        return timestampDiff < timeoutMillis
     }
 
     fun isStepDetected(): Boolean {
-        lastEventTimestamp?.let {
+        lastEventTimestamp.get().let {
             return isLastEventValid(it)
         }
-        return false
     }
 }
