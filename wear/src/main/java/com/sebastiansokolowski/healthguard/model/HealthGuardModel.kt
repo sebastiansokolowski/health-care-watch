@@ -78,7 +78,7 @@ class HealthGuardModel(private val sensorDataModel: SensorDataModel, private val
         notifyObservable
                 .groupBy { it.healthEventType }
                 .subscribe {
-                    it.throttleFirst(1, TimeUnit.MINUTES)
+                    it.debounce(5, TimeUnit.SECONDS)
                             .subscribeOn(Schedulers.io())
                             .subscribe {
                                 notifyAlert(it)
