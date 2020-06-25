@@ -9,6 +9,7 @@ import java.util.*
 class EntryHelper {
     companion object {
         private val dtf = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+        private val dtfMilliseconds = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
 
         private val timestampAtMidnight = initTimestampAtMidnight()
 
@@ -22,10 +23,14 @@ class EntryHelper {
             return calendar.timeInMillis
         }
 
-        fun getDate(value: Float): String {
+        fun getDate(value: Float, showMilliseconds: Boolean = false): String {
             val timestampFromMidnight = value.toInt()
             val date = Date(timestampAtMidnight + timestampFromMidnight)
-            return dtf.format(date.time)
+            return if (showMilliseconds) {
+                dtfMilliseconds.format(date.time)
+            } else {
+                dtf.format(date.time)
+            }
         }
     }
 }

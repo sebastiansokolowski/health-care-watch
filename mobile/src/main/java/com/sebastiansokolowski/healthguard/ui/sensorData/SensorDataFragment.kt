@@ -170,6 +170,7 @@ open class SensorDataFragment : DaggerFragment() {
         chart_lc.setHardwareAccelerationEnabled(true)
         chart_lc.xAxis.valueFormatter = DateValueFormatter()
         chart_lc.data = LineData(lineDataSetList.toList())
+        chart_lc.setMaxVisibleValueCount(20)
         chart_lc.notifyDataSetChanged()
         chart_lc.invalidate()
         chart_lc.setVisibleXRangeMaximum(60 * 60 * 60 * 40f)
