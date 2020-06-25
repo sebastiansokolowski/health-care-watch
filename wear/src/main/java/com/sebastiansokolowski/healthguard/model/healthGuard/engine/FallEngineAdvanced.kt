@@ -90,7 +90,6 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
 
     override fun requiredSensors(): Set<Int> {
         return setOf(Sensor.TYPE_LINEAR_ACCELERATION,
-                Sensor.TYPE_GYROSCOPE,
                 Sensor.TYPE_STEP_DETECTOR)
     }
 }
