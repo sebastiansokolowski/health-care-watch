@@ -71,6 +71,6 @@ class ActivityDetectorTest {
             healthSensorObservable.onNext(sensorEvent)
         }
 
-        verify(exactly = 1) { testObj.notifyActivityDetectedState(any()) }
+        verify(exactly = 1) { testObj.notifyActivityState(any()) }
     }
 }

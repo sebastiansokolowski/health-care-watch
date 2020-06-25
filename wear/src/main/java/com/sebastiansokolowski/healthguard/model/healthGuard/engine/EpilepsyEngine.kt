@@ -35,7 +35,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
 
                     if (percentOfPositiveSignals >= targetPercentOfPositiveSignals) {
                         Timber.d("epilepsy detected!!")
-                        notifyHealthEvent(events.last(), percentOfPositiveSignals.toFloat())
+                        notifyHealthEvent(events.last(), percentOfPositiveSignals.toFloat(), events)
                     }
                 }
                 .let {

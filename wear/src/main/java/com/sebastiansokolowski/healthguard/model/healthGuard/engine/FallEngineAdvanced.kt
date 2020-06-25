@@ -57,7 +57,7 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
 
                     Timber.d("fall detected fallCounter=$fallCounter")
                     val max = events.maxBy { it.value }!!
-                    notifyHealthEvent(max, max.value, details = "fallCounter=$fallCounter")
+                    notifyHealthEvent(max, max.value, events, "fallCounter=$fallCounter")
                 }
                 .let {
                     compositeDisposable.add(it)

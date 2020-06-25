@@ -9,6 +9,7 @@ import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.MeasurementEventEntity
 import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.SensorEventEntity_
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
@@ -48,13 +49,24 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
         healthEventObservable.onNext(healthEventEntity)
     }
 
+    private fun removeDuplicatedSensorEvents(sampleSensorEvents: MutableList<SensorEventEntity>) {
+        if (sampleSensorEvents.isNotEmpty()) {
+            val event = sampleSensorEvents.first()
+            sensorEventEntityBox.query().apply {
+                equal(SensorEventEntity_.type, event.type.toLong())
+                between(SensorEventEntity_.timestamp, sampleSensorEvents.first().timestamp, sampleSensorEvents.last().timestamp)
+            }.build().remove()
+        }
+    }
+
     fun onDataChanged(dataItem: DataItem) {
         when ("/" + dataItem.uri.pathSegments.getOrNull(0)) {
             DataClientPaths.SENSOR_EVENTS_MAP_PATH -> {
                 DataMapItem.fromDataItem(dataItem).dataMap.apply {
                     val sensorEventsJson = getStringArrayList(DataClientPaths.SENSOR_EVENTS_MAP_ARRAY_LIST)
+                    val highFrequencyData = getBoolean(DataClientPaths.SENSOR_EVENTS_HIGH_FREQUENCY_DATA)
 
-                    val dataToSave = mutableListOf<SensorEventEntity>()
+                    val sensorEvents = mutableListOf<SensorEventEntity>()
                     sensorEventsJson.forEach {
                         val sensorEvent = Gson().fromJson(it, SensorEvent::class.java)
                         val sensorEventEntity = createSensorEventEntity(sensorEvent)
@@ -67,11 +79,16 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
                             }
                             notifySensorsObservable(sensorEventEntity)
 
-                            dataToSave.add(sensorEventEntity)
+                            sensorEvents.add(sensorEventEntity)
                         }
                     }
-                    sensorEventEntityBox.put(dataToSave)
-                    Log.d(TAG, "onDataChanged dataToSave.size=${dataToSave.size}")
+
+                    if(highFrequencyData){
+                        removeDuplicatedSensorEvents(sensorEvents)
+                    }
+
+                    sensorEventEntityBox.put(sensorEvents)
+                    Log.d(TAG, "onDataChanged dataToSave.size=${sensorEvents.size}")
                 }
             }
             DataClientPaths.HEALTH_EVENT_MAP_PATH -> {

@@ -87,6 +87,7 @@ class HealthGuardModel(private val sensorDataModel: SensorDataModel, private val
 
     private fun notifyAlert(healthEvent: HealthEvent) {
         sensorDataModel.syncSensorData(true)
+        wearableClient.sendSensorEvents(healthEvent.sensorEventsSample, urgent = true, highFrequencyData = true)
         wearableClient.sendHealthEvent(healthEvent)
     }
 

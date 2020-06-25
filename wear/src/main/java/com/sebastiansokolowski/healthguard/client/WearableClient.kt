@@ -10,6 +10,7 @@ import com.sebastiansokolowski.healthguard.utils.SensorEventValuesSerializer
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_JSON
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.HEALTH_EVENT_MAP_PATH
+import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENTS_HIGH_FREQUENCY_DATA
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENTS_MAP_ARRAY_LIST
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SENSOR_EVENTS_MAP_PATH
 import com.sebastiansokolowski.shared.DataClientPaths.Companion.SUPPORTED_HEALTH_EVENTS_MAP_JSON
@@ -40,7 +41,7 @@ class WearableClient(context: Context) {
         }
     }
 
-    fun sendSensorEvents(events: List<SensorEvent>, urgent: Boolean) {
+    fun sendSensorEvents(events: List<SensorEvent>, urgent: Boolean, highFrequencyData: Boolean = false) {
         Timber.d("sendSensorEvents size=${events.size}")
 
         val gson = GsonBuilder()
@@ -60,6 +61,7 @@ class WearableClient(context: Context) {
             Timber.v("sendSensorEvents uri=${putDataMapReq.uri} size=${it.size}")
             putDataMapReq.dataMap.apply {
                 putStringArrayList(SENSOR_EVENTS_MAP_ARRAY_LIST, data)
+                putBoolean(SENSOR_EVENTS_HIGH_FREQUENCY_DATA, highFrequencyData)
             }
 
             send(putDataMapReq, urgent)

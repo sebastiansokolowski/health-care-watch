@@ -57,11 +57,14 @@ class FallEngine : HealthGuardEngineBase() {
                         if (measurementSettings.fallSettings.stepDetector && !stepDetector.isStepDetected()) {
                             return@subscribe
                         }
+                        val notifyHealthEventUnit = {
+                            notifyHealthEvent(max, diff, events, Gson().toJson("$min $max"))
+                        }
                         if (measurementSettings.fallSettings.inactivityDetector) {
-                            checkPostFallActivity(max, diff, Gson().toJson("$min $max"))
+                            checkPostFallActivity(notifyHealthEventUnit)
                         } else {
                             Timber.d("fall detected!!")
-                            notifyHealthEvent(max, diff, details = Gson().toJson("$min $max"))
+                            notifyHealthEventUnit.invoke()
                         }
                     }
                 }
@@ -78,7 +81,7 @@ class FallEngine : HealthGuardEngineBase() {
         return activityDetector
     }
 
-    fun checkPostFallActivity(sensorEvent: SensorEvent, value: Float, details: String) {
+    fun checkPostFallActivity(sensorEvent: () -> Unit) {
         Timber.d("checkPostFallActivity")
         var postFallStateDetected = false
         var activityDetected = false
@@ -89,7 +92,7 @@ class FallEngine : HealthGuardEngineBase() {
                     Timber.d("checkPostFallActivity doOnComplete")
                     if (postFallStateDetected && !activityDetected) {
                         Timber.d("checkPostFallActivity fall detected!!")
-                        notifyHealthEvent(sensorEvent, value, details)
+                        sensorEvent.invoke()
                     }
                 }
                 .subscribe { activity ->

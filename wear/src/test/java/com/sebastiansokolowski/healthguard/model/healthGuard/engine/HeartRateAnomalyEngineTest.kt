@@ -2,6 +2,7 @@ package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
 import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.ActivityDetector
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
@@ -35,18 +36,19 @@ class HeartRateAnomalyEngineTest {
     lateinit var measurementSettings: MeasurementSettings
 
     @RelaxedMockK
-    lateinit var stepDetector: StepDetector
+    lateinit var activityDetector: ActivityDetector
 
     @BeforeEach
     fun setUp() {
-        every { stepDetector.isStepDetected() } returns true
-        every { measurementSettings.heartRateAnomalySettings.stepDetectorTimeoutInMin } returns 5
+        every { activityDetector.isActivityDetected() } returns true
+        every { measurementSettings.heartRateAnomalySettings.activityDetectorThreshold } returns 5
+        every { measurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin } returns 5
         every { measurementSettings.heartRateAnomalySettings.minThreshold } returns 40
         every { measurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity } returns 120
         every { measurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity } returns 150
 
         testObj.setupEngine(healthSensorObservable, notifyObservable, measurementSettings)
-        testObj.stepDetector = stepDetector
+        testObj.activityDetector = activityDetector
         testObj.startEngine()
 
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
@@ -67,11 +69,11 @@ class HeartRateAnomalyEngineTest {
         val sensorEvent3 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(120f))
         val sensorEvent4 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(110f))
         val sensorEvent5 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, values = floatArrayOf(90f))
-        every { stepDetector.isStepDetected() } returns true
+        every { activityDetector.isActivityDetected() } returns true
         healthSensorObservable.onNext(sensorEvent)
         healthSensorObservable.onNext(sensorEvent2)
         healthSensorObservable.onNext(sensorEvent3)
-        every { stepDetector.isStepDetected() } returns false
+        every { activityDetector.isActivityDetected() } returns false
         healthSensorObservable.onNext(sensorEvent4)
         healthSensorObservable.onNext(sensorEvent5)
 
