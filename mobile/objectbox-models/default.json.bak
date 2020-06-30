@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:5945329733278448333",
-      "lastPropertyId": "6:1286975813170352939",
+      "lastPropertyId": "7:2994917323891211530",
       "name": "SensorEventEntity",
       "properties": [
         {
@@ -33,17 +33,18 @@
           "flags": 4
         },
         {
-          "id": "5:744993564005451496",
-          "name": "values",
-          "type": 9
-        },
-        {
           "id": "6:1286975813170352939",
           "name": "measurementEventEntityId",
           "indexId": "6:1130056037093122062",
           "type": 11,
           "flags": 1548,
           "relationTarget": "MeasurementEventEntity"
+        },
+        {
+          "id": "7:2994917323891211530",
+          "name": "value",
+          "type": 7,
+          "flags": 4
         }
       ],
       "relations": []
@@ -163,7 +164,8 @@
     434577011767814188,
     7653534876444662562,
     1305624111765357504,
-    3028851016774480487
+    3028851016774480487,
+    744993564005451496
   ],
   "retiredRelationUids": [],
   "version": 1
