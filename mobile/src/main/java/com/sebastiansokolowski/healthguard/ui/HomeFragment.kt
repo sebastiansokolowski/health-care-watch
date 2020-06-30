@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.MainActivity
 import com.sebastiansokolowski.healthguard.R
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
@@ -130,7 +131,11 @@ class HomeFragment : DaggerFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.home_menu, menu)
+        if (BuildConfig.DEBUG) {
+            inflater.inflate(R.menu.home_menu_debug, menu)
+        } else {
+            inflater.inflate(R.menu.home_menu_release, menu)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
