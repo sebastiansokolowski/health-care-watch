@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
+import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
@@ -20,20 +21,23 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val stepDetector = StepDetector(10 * 1000)
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
+    var stepDetector = StepDetector(10 * 1000)
+
+    override fun setupEngine(sensorsObservable: SensorsObservable, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector.setupDetector(sensorsObservable)
     }
 
     override fun startEngine() {
         stepDetector.startDetector()
-        sensorEventObservable
+        sensorsObservable.linearAccelerationObservable
                 .subscribeOn(Schedulers.computation())
-                .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .buffer(7000, 100, TimeUnit.MILLISECONDS)
                 .subscribe { events ->
+                    if (events.isNullOrEmpty()) {
+                        return@subscribe
+                    }
                     val firstEvent = events.first()
                     val firstPeek = events.find { it.value >= measurementSettings.fallSettings.threshold }
                     if (firstEvent == null || firstPeek == null) {
@@ -47,7 +51,7 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
                     }
                     // Step 2
                     val fallCounter = events.count { it.value >= measurementSettings.fallSettings.threshold }
-                    if (fallCounter !in 4..50) {
+                    if (fallCounter !in 1..50) {
                         return@subscribe
                     }
                     // Step 3

@@ -1,6 +1,5 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
-import android.hardware.Sensor
 import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.model.healthGuard.DetectorBase
 import io.reactivex.disposables.Disposable
@@ -8,8 +7,6 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicLong
-import kotlin.math.pow
-import kotlin.math.sqrt
 
 /**
  * Created by Sebastian Sokołowski on 20.01.20.
@@ -23,9 +20,8 @@ class ActivityDetector(private var activityThreshold: Int, private val timeout: 
     val activityDetectedObservable: PublishSubject<Boolean> = PublishSubject.create()
 
     override fun startDetector() {
-        disposable = sensorsObservable
+        disposable = sensorsObservable.linearAccelerationObservable
                 .subscribeOn(Schedulers.computation())
-                .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .subscribe {
                     val activityDetected = it.value >= activityThreshold
                     if (BuildConfig.EXTRA_LOGGING) {

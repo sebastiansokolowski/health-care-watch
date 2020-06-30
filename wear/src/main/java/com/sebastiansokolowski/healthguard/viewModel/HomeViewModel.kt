@@ -53,7 +53,7 @@ class HomeViewModel
                 .filter { it }
                 .subscribe {
                     heartRateDisposable?.dispose()
-                    sensorDataModel.heartRateObservable
+                    sensorDataModel.sensorsObservable.heartRateObservable
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .doOnComplete {

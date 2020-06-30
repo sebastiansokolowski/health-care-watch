@@ -2,11 +2,11 @@ package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
 import com.google.gson.Gson
+import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
-import com.sebastiansokolowski.healthguard.model.healthGuard.detector.ActivityDetector
+import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
-import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.HeartRateAnomalySettings
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
@@ -21,12 +21,12 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     private var anomalyState = false
-    lateinit var activityDetector: ActivityDetector
+    lateinit var stepDetector: StepDetector
 
     override fun requiredSensors(): Set<Int> {
         return setOf(
                 Sensor.TYPE_HEART_RATE,
-                Sensor.TYPE_LINEAR_ACCELERATION
+                Sensor.TYPE_STEP_DETECTOR
         )
     }
 
@@ -34,19 +34,17 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
         return HealthEventType.HEART_RATE_ANOMALY
     }
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: SensorsObservable, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
-        activityDetector = ActivityDetector(measurementSettings.heartRateAnomalySettings.activityDetectorThreshold,
-                TimeUnit.MINUTES.toMillis(measurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin.toLong()))
-        activityDetector.setupDetector(sensorsObservable)
+        stepDetector = StepDetector(TimeUnit.MINUTES.toMillis(measurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin.toLong()))
+        stepDetector.setupDetector(sensorsObservable)
     }
 
     override fun startEngine() {
-        activityDetector.startDetector()
-        sensorEventObservable
+        stepDetector.startDetector()
+        sensorsObservable.heartRateObservable
                 .subscribeOn(Schedulers.computation())
                 .skip(1, TimeUnit.MINUTES)
-                .filter { it.type == Sensor.TYPE_HEART_RATE }
                 .subscribe { sensorEventData ->
                     val heartRate = sensorEventData.value.toInt()
 
@@ -65,14 +63,14 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
     }
 
     override fun stopEngine() {
-        activityDetector.stopDetector()
+        stepDetector.stopDetector()
 
         compositeDisposable.clear()
     }
 
 
     private fun getMaxHeartRate(heartRateAnomalySettings: HeartRateAnomalySettings): Int {
-        return if (activityDetector.isActivityDetected()) {
+        return if (stepDetector.isStepDetected()) {
             heartRateAnomalySettings.maxThresholdDuringActivity
         } else {
             heartRateAnomalySettings.maxThresholdDuringInactivity

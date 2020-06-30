@@ -2,15 +2,14 @@ package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
 import com.google.gson.Gson
+import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.ActivityDetector
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
-import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -25,7 +24,7 @@ class FallEngine : HealthGuardEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     lateinit var stepDetector: StepDetector
 
-    override fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
+    override fun setupEngine(sensorsObservable: SensorsObservable, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         stepDetector = StepDetector(TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.stepDetectorTimeoutS.toLong()))
         stepDetector.setupDetector(sensorsObservable)
@@ -33,9 +32,8 @@ class FallEngine : HealthGuardEngineBase() {
 
     override fun startEngine() {
         stepDetector.startDetector()
-        sensorEventObservable
-                .subscribeOn(Schedulers.computation())
-                .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
+        sensorsObservable.linearAccelerationObservable
+                .subscribeOn(scheduler())
                 .buffer(measurementSettings.fallSettings.sampleCount, 1)
                 .subscribe { events ->
                     val min = events.minBy { it.value }
@@ -76,7 +74,7 @@ class FallEngine : HealthGuardEngineBase() {
     private fun createActivityDetector(): ActivityDetector {
         val activityDetector = ActivityDetector(measurementSettings.fallSettings.inactivityDetectorThreshold,
                 TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong()))
-        activityDetector.setupDetector(sensorEventObservable)
+        activityDetector.setupDetector(sensorsObservable)
 
         return activityDetector
     }

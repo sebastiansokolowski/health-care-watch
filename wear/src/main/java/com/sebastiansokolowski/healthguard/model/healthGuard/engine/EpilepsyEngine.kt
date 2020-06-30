@@ -17,9 +17,8 @@ class EpilepsyEngine : HealthGuardEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun startEngine() {
-        sensorEventObservable
+        sensorsObservable.linearAccelerationObservable
                 .subscribeOn(Schedulers.computation())
-                .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .buffer(measurementSettings.epilepsySettings.timeS.toLong(),
                         1,
                         TimeUnit.SECONDS)

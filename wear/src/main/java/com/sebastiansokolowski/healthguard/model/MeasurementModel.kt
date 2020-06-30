@@ -11,6 +11,8 @@ import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.ReplaySubject
 import timber.log.Timber
@@ -27,6 +29,7 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
     private var wakeLock: PowerManager.WakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "HealthGuard::MeasurementWakeLock")
 
     val measurementStateObservable: BehaviorSubject<Boolean> = BehaviorSubject.create()
+    var measurementSettings = MeasurementSettings()
 
     fun notifySupportedHealthEvents() {
         val sensors = sensorManager.getSensorList(Sensor.TYPE_ALL)
@@ -40,9 +43,9 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
         }
         measurementRunning.set(state)
         if (state) {
-            sensorDataModel.heartRateObservable = ReplaySubject.createWithSize(10)
+            sensorDataModel.sensorsObservable.heartRateObservable = ReplaySubject.createWithSize(10)
         } else {
-            sensorDataModel.heartRateObservable.onComplete()
+            sensorDataModel.sensorsObservable.heartRateObservable.onComplete()
         }
         measurementStateObservable.onNext(measurementRunning.get())
         notifyMeasurementState()
@@ -63,6 +66,7 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
     @SuppressLint("WakelockTimeout")
     fun startMeasurement(measurementSettings: MeasurementSettings) {
         Timber.d("startMeasurement")
+        this.measurementSettings = measurementSettings
         if (measurementRunning.get()) {
             return
         }
@@ -75,7 +79,9 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
         healthGuardModel.startEngines(measurementSettings)
         sensorDataModel.registerSensors(measurementSettings.measurementId, sensors, samplingPeriodUs)
         wakeLock.acquire()
+//        startBatterySaveEnabler()
     }
+
 
     fun stopMeasurement() {
         Timber.d("stopMeasurement")
@@ -83,9 +89,60 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
             return
         }
         changeMeasurementState(false)
+//        startBatterySaveEnablerDisposable?.dispose()
+//        startBatterySaveDisablerDisposable?.dispose()
         healthGuardModel.stopEngines()
         sensorDataModel.unregisterSensors()
         wakeLock.release()
+    }
+
+//    var startBatterySaveEnablerDisposable: Disposable? = null
+//    var startBatterySaveDisablerDisposable: Disposable? = null
+
+//    private fun startBatterySaveEnabler() {
+//        sensorDataModel.stepDetectorObservable
+//                .subscribeOn(Schedulers.io())
+//                .timeout(1, TimeUnit.MINUTES)
+//                .subscribe({
+//                }, {
+//                    sensorDataModel.unregisterSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+//                    healthGuardModel.setBatterySaveMode(true)
+//                    startBatterySaveDisabler()
+//                })
+//                .let {
+//                    startBatterySaveEnablerDisposable = it
+//                }
+//    }
+//
+//    private fun startBatterySaveDisabler() {
+//        sensorDataModel.stepDetectorObservable
+//                .subscribeOn(Schedulers.io())
+//                .take(1)
+//                .subscribe {
+//                    sensorDataModel.registerSensor(Sensor.TYPE_LINEAR_ACCELERATION, TimeUnit.MILLISECONDS.toMicros(measurementSettings.samplingMs.toLong()).toInt())
+//                    healthGuardModel.setBatterySaveMode(false)
+//
+//                    startBatterySaveEnabler()
+//                }.let {
+//                    startBatterySaveDisablerDisposable = it
+//                }
+//    }
+
+    fun isAvailableSafeBatteryMode(sensors: Set<Int>): Boolean {
+        sensors.forEach {
+            when (it) {
+                Sensor.TYPE_STEP_DETECTOR,
+                Sensor.TYPE_HEART_RATE -> {
+                    val sensorList = sensorManager.getSensorList(it)
+                    val wakeUpSensor = sensorList.find { it.isWakeUpSensor }
+                    if (wakeUpSensor == null) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return true
     }
 
     fun onDataChanged(dataItem: DataItem) {

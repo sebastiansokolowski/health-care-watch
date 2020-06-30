@@ -1,5 +1,6 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard
 
+import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
@@ -12,7 +13,7 @@ import io.reactivex.subjects.PublishSubject
 abstract class HealthGuardEngineBase {
 
     lateinit var healthEventObservable: PublishSubject<HealthEvent>
-    lateinit var sensorEventObservable: PublishSubject<SensorEvent>
+    lateinit var sensorsObservable: SensorsObservable
     lateinit var measurementSettings: MeasurementSettings
 
     abstract fun startEngine()
@@ -23,8 +24,8 @@ abstract class HealthGuardEngineBase {
 
     abstract fun requiredSensors(): Set<Int>
 
-    open fun setupEngine(sensorsObservable: PublishSubject<SensorEvent>, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
-        this.sensorEventObservable = sensorsObservable
+    open fun setupEngine(sensorsObservable: SensorsObservable, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
+        this.sensorsObservable = sensorsObservable
         this.healthEventObservable = notifyObservable
         this.measurementSettings = measurementSettings
     }

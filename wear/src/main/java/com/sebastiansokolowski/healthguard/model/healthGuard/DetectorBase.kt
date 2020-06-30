@@ -1,16 +1,15 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard
 
-import com.sebastiansokolowski.shared.dataModel.SensorEvent
-import io.reactivex.subjects.PublishSubject
+import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 
 /**
  * Created by Sebastian Sokołowski on 21.09.19.
  */
 abstract class DetectorBase {
 
-    lateinit var sensorsObservable: PublishSubject<SensorEvent>
+    lateinit var sensorsObservable: SensorsObservable
 
-    fun setupDetector(sensorsObservable: PublishSubject<SensorEvent>) {
+    fun setupDetector(sensorsObservable: SensorsObservable) {
         this.sensorsObservable = sensorsObservable
     }
 
