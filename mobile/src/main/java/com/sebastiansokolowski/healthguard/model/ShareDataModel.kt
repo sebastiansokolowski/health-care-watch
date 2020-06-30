@@ -32,20 +32,30 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
     private val healthEventEntityBox: Box<HealthEventEntity> = boxStore.boxFor(HealthEventEntity::class.java)
     private val sensorEventEntityBox: Box<SensorEventEntity> = boxStore.boxFor(SensorEventEntity::class.java)
 
-    val fileToShareObservable: PublishSubject<SingleEvent<Uri>> = PublishSubject.create()
+    val filesToShareObservable: PublishSubject<SingleEvent<ArrayList<Uri>>> = PublishSubject.create()
 
     private val disposables = CompositeDisposable()
 
-    fun shareMeasurementData() {
+    fun shareDataForTesting() {
         val disposable = Single.zip(getHealthEventsObservable(), getSensorEventsObservable(), BiFunction { healthEvents: MutableList<HealthEvent>, sensorEvents: MutableList<SensorEvent> ->
             val exportData = DataExport(healthEvents, sensorEvents)
-            val uri = saveDataToFile(Gson().toJson(exportData))
-            fileToShareObservable.onNext(SingleEvent(uri))
+
+            val exportDataUri = saveDataToFile(Gson().toJson(exportData))
+            val databaseUri = getDatabaseUri()
+            filesToShareObservable.onNext(SingleEvent(arrayListOf(exportDataUri, databaseUri)))
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
         disposables.add(disposable)
+    }
+
+    private fun getDatabaseUri(): Uri {
+        val file = File(context.filesDir, "/objectbox/objectbox/data.mdb")
+        return FileProvider.getUriForFile(
+                context,
+                BuildConfig.APPLICATION_ID + ".provider",
+                file)
     }
 
     private fun getHealthEventsObservable(): Single<MutableList<HealthEvent>> {

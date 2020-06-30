@@ -120,7 +120,7 @@ class HomeFragment : DaggerFragment() {
                 }
             }
         })
-        homeViewModel.fileToShare.observe(viewLifecycleOwner, Observer {
+        homeViewModel.filesToShare.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled().let {
                 it?.let {
                     showShareScreen(it)
@@ -144,18 +144,18 @@ class HomeFragment : DaggerFragment() {
                 showLicencesDialog()
                 return true
             }
-            R.id.share_measurements -> {
-                homeViewModel.shareMeasurementData()
+            R.id.share_data_for_testing -> {
+                homeViewModel.shareDataForTesting()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showShareScreen(uri: Uri) {
+    private fun showShareScreen(uris: ArrayList<Uri>) {
         val shareIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_STREAM, uri)
+            action = Intent.ACTION_SEND_MULTIPLE
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
             type = "text/*"
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }

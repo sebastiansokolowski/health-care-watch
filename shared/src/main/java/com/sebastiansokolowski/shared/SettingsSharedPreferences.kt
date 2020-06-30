@@ -5,7 +5,6 @@ package com.sebastiansokolowski.shared
  */
 class SettingsSharedPreferences {
     companion object {
-        // mobile
         const val CONTACTS = "contacts"
         const val HEALTH_EVENTS = "health_events"
         const val SUPPORTED_HEALTH_EVENTS = "supported_health_events"
@@ -13,7 +12,6 @@ class SettingsSharedPreferences {
         const val ANDROID_NOTIFICATIONS = "android_notifications_enabled"
         const val SMS_NOTIFICATIONS = "sms_notifications_enabled"
         const val SMS_USER_LOCATION = "sms_user_location_enabled"
-        // mobile and wear
         const val SAMPLING_US = "sampling_us"
         const val BATTERY_SAVER = "battery_saver"
         const val TEST_MODE = "test_mode"
@@ -32,9 +30,5 @@ class SettingsSharedPreferences {
         const val EPILEPSY_THRESHOLD = "epilepsy_threshold"
         const val EPILEPSY_TIME = "epilepsy_time"
         const val EPILEPSY_PERCENT_OF_POSITIVE_EVENTS = "epilepsy_percent_of_positive_events"
-
-
-        // wear
-        const val SENSORS = "sensors"
     }
 }

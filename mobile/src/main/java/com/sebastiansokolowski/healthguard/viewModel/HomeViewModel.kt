@@ -42,8 +42,8 @@ class HomeViewModel
 
     val heartRate: MutableLiveData<String> = MutableLiveData()
 
-    val fileToShare: LiveData<SingleEvent<Uri>> by lazy {
-        initFileToShareLiveData()
+    val filesToShare: LiveData<SingleEvent<ArrayList<Uri>>> by lazy {
+        initFilesToShareLiveData()
     }
 
     init {
@@ -95,13 +95,13 @@ class HomeViewModel
         return LiveDataReactiveStreams.fromPublisher(measurementStateFlowable)
     }
 
-    private fun initFileToShareLiveData(): LiveData<SingleEvent<Uri>> {
-        val fileToShareFlowable = shareDataModel.fileToShareObservable.toFlowable(BackpressureStrategy.LATEST)
-        return LiveDataReactiveStreams.fromPublisher(fileToShareFlowable)
+    private fun initFilesToShareLiveData(): LiveData<SingleEvent<ArrayList<Uri>>> {
+        val filesToShareFlowable = shareDataModel.filesToShareObservable.toFlowable(BackpressureStrategy.LATEST)
+        return LiveDataReactiveStreams.fromPublisher(filesToShareFlowable)
     }
 
-    fun shareMeasurementData() {
-        shareDataModel.shareMeasurementData()
+    fun shareDataForTesting() {
+        shareDataModel.shareDataForTesting()
     }
 
     fun toggleMeasurementState() {

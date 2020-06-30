@@ -3,7 +3,7 @@
     <string name="app_name">Podręczny strażnik zdrowia</string>
     <string name="notification_alert_title">Ostrzeżenie!</string>
     <string name="dialog_licences_title">O aplikacji</string>
-    <string name="share_measurement_data_title">Udostępnij pomiary</string>
+    <string name="share_data_for_testing">Udostępnij dane do testowania</string>
     <string name="event_list_empty">Brak zdarzeń</string>
     <string name="health_event_epilepsy_message">Procent pozytywnych zdarzeń </string>
     <string name="health_event_epilepsy_title">Epilepsja</string>
