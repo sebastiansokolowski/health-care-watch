@@ -72,6 +72,18 @@ class HealthGuardModel(private val sensorDataModel: SensorDataModel, private val
         healthEngines.clear()
     }
 
+    fun setBatterySaveMode(batterySaveMode: Boolean) {
+        healthEngines.forEach {
+            if (it.requiredSensors().contains(Sensor.TYPE_LINEAR_ACCELERATION)) {
+                if (batterySaveMode) {
+                    it.stopEngine()
+                } else {
+                    it.startEngine()
+                }
+            }
+        }
+    }
+
     @SuppressLint("CheckResult")
     private fun subscribeToNotifyObservable() {
         notifyObservable
