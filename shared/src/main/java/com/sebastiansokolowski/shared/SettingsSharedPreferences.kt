@@ -5,6 +5,7 @@ package com.sebastiansokolowski.shared
  */
 class SettingsSharedPreferences {
     companion object {
+        const val CLEAR_DATABASE = "clear_database"
         const val CONTACTS = "contacts"
         const val HEALTH_EVENTS = "health_events"
         const val SUPPORTED_HEALTH_EVENTS = "supported_health_events"

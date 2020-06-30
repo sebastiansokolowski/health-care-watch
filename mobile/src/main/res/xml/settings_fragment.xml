@@ -51,4 +51,13 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="@string/settings_database_category"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:title="@string/settings_clear_database_title"
+            app:iconSpaceReserved="false"
+            app:key="clear_database" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

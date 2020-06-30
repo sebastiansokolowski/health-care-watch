@@ -21,6 +21,7 @@
     <string name="notification_measurement_title">Opieka zdrowotna uruchomiona</string>
     <string name="health_event_heart_rate_anomaly_message">Częstotliwość bicia serca</string>
     <string name="action_undo">COFNIJ</string>
+    <string name="action_cancel">ANULUJ</string>
     <string name="bottom_navigation_history">Historia</string>
     <string name="bottom_navigation_home">Dom</string>
     <string name="bottom_navigation_settings">Ustawienia</string>
@@ -35,6 +36,9 @@
     <string name="settings_sms_user_location">Lokalizacja użytkownika w wiadomości SMS</string>
     <string name="settings_sampling_time_title">Czas próbkowania (ms)</string>
     <string name="settings_health_events_category">Zdarzenia</string>
+    <string name="settings_database_category">Baza danych</string>
+    <string name="settings_clear_database_title">Wyczyść bazę danych</string>
+    <string name="settings_clear_database_message">Czy jesteś pewien, że chesz wyczyścić bazę danych?</string>
     <string name="sensor_data_chart_history_no_data">Brak danych</string>
     <string name="sensor_data_chart_live_no_data">Zacznij pomiary aby zobaczyć dane</string>
     <string name="sensor_adapter_heart_rate_title">BICIE SERCA</string>

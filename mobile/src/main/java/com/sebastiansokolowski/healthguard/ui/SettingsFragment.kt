@@ -1,7 +1,9 @@
 package com.sebastiansokolowski.healthguard.ui
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
@@ -103,6 +105,22 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
                 true
             }
         }
+        val clearDatabase: Preference? = findPreference(SettingsSharedPreferences.CLEAR_DATABASE)
+        clearDatabase?.setOnPreferenceClickListener {
+            showClearDatabaseDialog()
+            true
+        }
+    }
+
+    private fun showClearDatabaseDialog() {
+        val builder = AlertDialog.Builder(activity)
+        builder.setMessage(R.string.settings_clear_database_message)
+                .setPositiveButton(R.string.action_ok) { _, _ ->
+                    settingsViewModel.clearDatabase()
+                }
+                .setNegativeButton(R.string.action_cancel) { _, _ ->
+                }
+        builder.create().show()
     }
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
@@ -191,7 +209,7 @@ class SettingsFragment : PreferenceFragmentCompat(), HasSupportFragmentInjector,
         }
     }
 
-    //SharedPreferences.OnSharedPreferenceChangeListener
+//SharedPreferences.OnSharedPreferenceChangeListener
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         key?.let {

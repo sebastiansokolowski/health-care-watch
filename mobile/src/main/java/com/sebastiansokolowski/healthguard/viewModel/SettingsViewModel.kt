@@ -14,13 +14,14 @@ import com.sebastiansokolowski.healthguard.util.HealthEventHelper
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import com.sebastiansokolowski.healthguard.view.preference.CustomMultiSelectListPreference
 import com.sebastiansokolowski.shared.SettingsSharedPreferences
+import io.objectbox.BoxStore
 import javax.inject.Inject
 
 /**
  * Created by Sebastian Sokołowski on 10.03.19.
  */
 class SettingsViewModel
-@Inject constructor(context: Context, private val settingsModel: SettingsModel, private val measurementModel: MeasurementModel, private val contentResolver: ContentResolver, val setupModel: SetupModel) : ViewModel() {
+@Inject constructor(context: Context, private val settingsModel: SettingsModel, private val measurementModel: MeasurementModel, private val contentResolver: ContentResolver, val setupModel: SetupModel, val boxStore: BoxStore) : ViewModel() {
 
     private val healthEventHelper = HealthEventHelper(context)
 
@@ -109,5 +110,9 @@ class SettingsViewModel
                 refreshView.postValue(SingleEvent(true))
             }
         }
+    }
+
+    fun clearDatabase() {
+        boxStore.removeAllObjects()
     }
 }
