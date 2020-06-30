@@ -7,7 +7,7 @@ import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.DataMapItem
 import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.client.WearableClient
-import com.sebastiansokolowski.healthguard.db.entity.MeasurementEventEntity
+import com.sebastiansokolowski.healthguard.db.entity.*
 import com.sebastiansokolowski.healthguard.service.MeasurementService
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
@@ -36,6 +36,8 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
 
     //boxes
     val measurementEventEntityBox = boxStore.boxFor(MeasurementEventEntity::class.java)
+    val healthEventEntityBox = boxStore.boxFor(HealthEventEntity::class.java)
+    val sensorEventEntityBox = boxStore.boxFor(SensorEventEntity::class.java)
 
     private fun notifyMeasurementStateObservable(measurementState: Boolean) {
         measurementStateObservable.onNext(measurementState)
@@ -95,6 +97,7 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
         }
         changeMeasurementState(true)
         sensorDataModel.measurementEventEntity = measurementEventEntity
+        removeHistoryDataExpiredIfExist()
     }
 
     fun stopMeasurement() {
@@ -134,5 +137,32 @@ class MeasurementModel(val context: Context, private val wearableClient: Wearabl
         return MeasurementEventEntity().apply {
             this.measurementSettings = Gson().toJson(measurementSettings)
         }
+    }
+
+    private fun removeHistoryDataExpiredIfExist() {
+        val historyDataExpireDays = settingsModel.getHistoryDataExpireDays()
+
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, historyDataExpireDays * -1)
+
+        val historyDataExpireTimestamp = calendar.timeInMillis
+
+        val measurementEntities = measurementEventEntityBox.query()
+                .apply {
+                    less(MeasurementEventEntity_.stopTimestamp, historyDataExpireTimestamp)
+                    less(MeasurementEventEntity_.startTimestamp, historyDataExpireTimestamp)
+                }.build()
+        measurementEntities.remove()
+        val healthEventEntities = healthEventEntityBox.query()
+                .apply {
+                    link(HealthEventEntity_.sensorEventEntity)
+                            .less(SensorEventEntity_.timestamp, historyDataExpireTimestamp)
+                }.build()
+        healthEventEntities.remove()
+        val sensorEventEntities = sensorEventEntityBox.query()
+                .apply {
+                    less(SensorEventEntity_.timestamp, historyDataExpireTimestamp)
+                }.build()
+        sensorEventEntities.remove()
     }
 }

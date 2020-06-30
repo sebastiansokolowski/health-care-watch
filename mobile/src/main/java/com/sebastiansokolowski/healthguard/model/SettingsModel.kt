@@ -14,6 +14,11 @@ import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
  */
 class SettingsModel(private val sharedPreferences: SharedPreferences) {
 
+    private val androidNotificationsDefValue = true
+    private val smsNotificationsDefValue = false
+    private val smsUserLocationDefValue = false
+    private val historyDataExpireDays = 30
+
     init {
         setDefaultMeasurementSettings()
     }
@@ -22,9 +27,10 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val defaultMeasurementSettings = MeasurementSettings()
 
         sharedPreferences.edit()?.apply {
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.ANDROID_NOTIFICATIONS, true)
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_NOTIFICATIONS, false)
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_USER_LOCATION, false)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.ANDROID_NOTIFICATIONS, androidNotificationsDefValue)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_NOTIFICATIONS, smsNotificationsDefValue)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_USER_LOCATION, smsUserLocationDefValue)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HISTORY_DATA_EXPIRE_DAYS, historyDataExpireDays)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SAMPLING_US, defaultMeasurementSettings.samplingMs)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.BATTERY_SAVER, defaultMeasurementSettings.batterySaver)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.TEST_MODE, defaultMeasurementSettings.testMode)
@@ -147,15 +153,19 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
     }
 
     fun isAndroidNotificationEnabled(): Boolean {
-        return sharedPreferences.getBoolean(SettingsSharedPreferences.ANDROID_NOTIFICATIONS, true)
+        return sharedPreferences.getBoolean(SettingsSharedPreferences.ANDROID_NOTIFICATIONS, androidNotificationsDefValue)
     }
 
     fun isSmsNotificationEnabled(): Boolean {
-        return sharedPreferences.getBoolean(SettingsSharedPreferences.SMS_NOTIFICATIONS, false)
+        return sharedPreferences.getBoolean(SettingsSharedPreferences.SMS_NOTIFICATIONS, smsNotificationsDefValue)
     }
 
     fun isSmsUserLocationEnabled(): Boolean {
-        return sharedPreferences.getBoolean(SettingsSharedPreferences.SMS_USER_LOCATION, false)
+        return sharedPreferences.getBoolean(SettingsSharedPreferences.SMS_USER_LOCATION, smsUserLocationDefValue)
+    }
+
+    fun getHistoryDataExpireDays(): Int {
+        return sharedPreferences.getInt(SettingsSharedPreferences.HISTORY_DATA_EXPIRE_DAYS, historyDataExpireDays)
     }
 
     //set

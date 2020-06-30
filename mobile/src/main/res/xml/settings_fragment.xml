@@ -58,6 +58,15 @@
             android:title="@string/settings_clear_database_title"
             app:iconSpaceReserved="false"
             app:key="clear_database" />
+
+        <SeekBarPreference
+            android:key="history_data_expire_days"
+            android:max="30"
+            android:summary="@string/settings_history_data_expire_summary"
+            android:title="@string/settings_history_data_expire_title"
+            app:iconSpaceReserved="false"
+            app:min="1"
+            app:showSeekBarValue="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>
