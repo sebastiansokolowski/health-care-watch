@@ -15,9 +15,8 @@ class NotificationTestEngine : HealthGuardEngineBase() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun startEngine() {
-        sensorEventObservable
+        sensorsObservable.linearAccelerationObservable
                 .subscribeOn(Schedulers.computation())
-                .filter { it.type == Sensor.TYPE_LINEAR_ACCELERATION }
                 .take(1)
                 .subscribe {
                     notifyHealthEvent(it, 99f, details = Gson().toJson(it))
