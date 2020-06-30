@@ -14,6 +14,13 @@
             android:key="advanced_settings"
             android:title="Ustawienia zaawansowane"
             app:iconSpaceReserved="false" />
+
+        <SwitchPreference
+            android:key="battery_saver"
+            android:summary="@string/battery_saver_summary"
+            android:title="@string/battery_saver_title"
+            app:iconSpaceReserved="false" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

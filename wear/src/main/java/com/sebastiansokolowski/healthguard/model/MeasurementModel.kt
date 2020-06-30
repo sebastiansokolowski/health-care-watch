@@ -75,9 +75,11 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
 
         changeMeasurementState(true)
         healthGuardModel.startEngines(measurementSettings)
-        sensorDataModel.registerSensors(measurementSettings.measurementId, sensors, samplingPeriodUs)
+        sensorDataModel.registerSensors(measurementSettings, sensors, samplingPeriodUs)
         wakeLock.acquire()
-        startBatterySaveEnabler(measurementSettings)
+        if (measurementSettings.batterySaver) {
+            startBatterySaveEnabler(measurementSettings)
+        }
     }
 
 

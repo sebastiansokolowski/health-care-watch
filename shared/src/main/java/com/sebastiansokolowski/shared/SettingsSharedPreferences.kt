@@ -15,6 +15,8 @@ class SettingsSharedPreferences {
         const val SMS_USER_LOCATION = "sms_user_location_enabled"
         // mobile and wear
         const val SAMPLING_US = "sampling_us"
+        const val BATTERY_SAVER = "battery_saver"
+        const val TEST_MODE = "test_mode"
         const val HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_TIMEOUT_MIN = "heart_rate_anomaly_activity_detector_timeout_min"
         const val HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_THRESHOLD = "heart_rate_anomaly_activity_detector_threshold"
         const val HEART_RATE_ANOMALY_MIN_THRESHOLD = "heart_rate_anomaly_min_threshold"

@@ -80,6 +80,10 @@
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_summary">Limit czasu wykrycia aktywności po którym zdarzenie zostanie rozpoznane jako bezczynność</string>
     <string name="settings_fall_inactivity_detector_title">Wykrywanie bezczynności</string>
     <string name="settings_fall_inactivity_detector_summary">Wykrywanie bezczynności po upadku</string>
+    <string name="test_mode_title">Tryb testowy</string>
+    <string name="test_mode_summary">W trybie testowym każdy odczyt jest synchronizowany.</string>
+    <string name="battery_saver_title">Tryb oszczędzania baterii</string>
+    <string name="battery_saver_summary">Upadek zostanie wykryty wyłącznie w ruchu.</string>
     <string name="settings_heart_beat_anomaly_activity_detector_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako aktywność</string>
     <string name="settings_heart_beat_anomaly_activity_detector_threshold_title">Wartośc progowa aktywności</string>
 </resources>

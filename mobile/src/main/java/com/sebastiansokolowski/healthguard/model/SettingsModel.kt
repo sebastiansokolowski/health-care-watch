@@ -26,6 +26,8 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_NOTIFICATIONS, false)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SMS_USER_LOCATION, false)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.SAMPLING_US, defaultMeasurementSettings.samplingMs)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.BATTERY_SAVER, defaultMeasurementSettings.batterySaver)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.TEST_MODE, defaultMeasurementSettings.testMode)
             //heart rate anomaly
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_TIMEOUT_MIN, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorThreshold)
@@ -67,6 +69,8 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val defaultMeasurementSettings = MeasurementSettings()
 
         val samplingMs = sharedPreferences.getInt(SettingsSharedPreferences.SAMPLING_US, defaultMeasurementSettings.samplingMs)
+        val batterySaver = sharedPreferences.getBoolean(SettingsSharedPreferences.BATTERY_SAVER, defaultMeasurementSettings.batterySaver)
+        val testMode = sharedPreferences.getBoolean(SettingsSharedPreferences.TEST_MODE, defaultMeasurementSettings.testMode)
         //heart rate anomaly
         val heartRateActivityDetectorTimeoutInMin = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_TIMEOUT_MIN, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin)
         val heartRateActivityDetectorThreshold = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorThreshold)
@@ -97,7 +101,10 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
                 fallActivityDetector, fallActivityDetectorTimeoutS, fallActivityDetectorThreshold)
         val epilepsySettings = EpilepsySettings(epilepsyThreshold, epilepsyTime, epilepsyPercentOfPositiveEvents)
 
-        return MeasurementSettings(samplingMs, healthEvents, heartRateAnomalySettings, fallSettings, epilepsySettings)
+        return MeasurementSettings(samplingMs, healthEvents, batterySaver, testMode,
+                heartRateAnomalySettings,
+                fallSettings,
+                epilepsySettings)
     }
 
     private fun getHealthEvents(): Set<HealthEventType> {

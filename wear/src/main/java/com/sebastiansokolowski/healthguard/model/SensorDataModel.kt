@@ -9,12 +9,11 @@ import com.sebastiansokolowski.healthguard.BuildConfig
 import com.sebastiansokolowski.healthguard.client.WearableClient
 import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
+import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.ReplaySubject
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -28,7 +27,7 @@ import kotlin.math.sqrt
 class SensorDataModel(private val sensorManager: SensorManager, private val wearableClient: WearableClient) : SensorEventListener {
     private val TAG = javaClass.canonicalName
 
-    private var measurementId = -1L
+    private var measurementSettings: MeasurementSettings = MeasurementSettings()
     private var liveData = AtomicBoolean(false)
     private var sensorsRegistered = AtomicBoolean(false)
     private val sensorHandler = initSensorHandler()
@@ -46,9 +45,9 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
         return Handler(handlerThread.looper)
     }
 
-    fun registerSensors(measurementId: Long, sensors: Set<Int>, samplingPeriodUs: Int) {
-        Timber.d("registerSensors measurementId=$measurementId, sensors=$sensors, samplingPeriodUs=$samplingPeriodUs")
-        this.measurementId = measurementId
+    fun registerSensors(measurementSettings: MeasurementSettings, sensors: Set<Int>, samplingPeriodUs: Int) {
+        Timber.d("registerSensors measurementSettings=$measurementSettings, sensors=$sensors, samplingPeriodUs=$samplingPeriodUs")
+        this.measurementSettings = measurementSettings
 
         startSensorDataParser()
         startSensorDataSync(liveData.get())
@@ -103,7 +102,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
             if (sensor == null || values == null || values.isEmpty()) {
                 return
             }
-            if (sensor.type == Sensor.TYPE_HEART_RATE && values[0] <= 0f) {
+            if (sensor.type == Sensor.TYPE_HEART_RATE && values[0] <= 1f) {
                 return
             }
 
@@ -125,7 +124,7 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                     sensor.type,
                     value,
                     accuracy,
-                    measurementId,
+                    measurementSettings.measurementId,
                     timestamp
             )
             if (BuildConfig.EXTRA_LOGGING) {
@@ -195,42 +194,57 @@ class SensorDataModel(private val sensorManager: SensorManager, private val wear
                 }.let {
                     sensorDataParserDisposables.add(it)
                 }
-        sensorsObservable.linearAccelerationObservable
-                .subscribeOn(Schedulers.io())
-                .buffer(1, TimeUnit.SECONDS)
-                .subscribe { events ->
-                    if (events.isNullOrEmpty()) {
-                        return@subscribe
-                    }
-                    if (BuildConfig.EXTRA_LOGGING) {
-                        events.forEach {
-                            Timber.d("sensorDataParser event=$it")
+        if (measurementSettings.testMode) {
+            sensorsObservable.linearAccelerationObservable
+                    .subscribeOn(Schedulers.io())
+                    .subscribe { event ->
+                        if (BuildConfig.EXTRA_LOGGING) {
+                            Timber.d("sensorDataParser send event=$event")
                         }
-                    }
-                    var event = events.first()
-                    if (events.size > 1) {
-                        var avgValue = 0f
-                        var avgAccuracy = 0
-                        events.forEach { event ->
-                            avgValue += event.value
-                            avgAccuracy += event.accuracy
+                        synchronized(sensorDataToSend) {
+                            sensorDataToSend.add(event)
                         }
-                        avgValue /= events.size
-                        avgAccuracy /= events.size
+                    }.let {
+                        sensorDataParserDisposables.add(it)
+                    }
+        } else {
+            sensorsObservable.linearAccelerationObservable
+                    .subscribeOn(Schedulers.io())
+                    .buffer(1, TimeUnit.SECONDS)
+                    .subscribe { events ->
+                        if (events.isNullOrEmpty()) {
+                            return@subscribe
+                        }
+                        if (BuildConfig.EXTRA_LOGGING) {
+                            events.forEach {
+                                Timber.d("sensorDataParser event=$it")
+                            }
+                        }
+                        var event = events.first()
+                        if (events.size > 1) {
+                            var avgValue = 0f
+                            var avgAccuracy = 0
+                            events.forEach { event ->
+                                avgValue += event.value
+                                avgAccuracy += event.accuracy
+                            }
+                            avgValue /= events.size
+                            avgAccuracy /= events.size
 
-                        event = SensorEvent(
-                                event.type,
-                                avgValue,
-                                avgAccuracy,
-                                measurementId,
-                                event.timestamp)
+                            event = SensorEvent(
+                                    event.type,
+                                    avgValue,
+                                    avgAccuracy,
+                                    measurementSettings.measurementId,
+                                    event.timestamp)
+                        }
+                        Timber.d("sensorDataParser send event=$event")
+                        synchronized(sensorDataToSend) {
+                            sensorDataToSend.add(event)
+                        }
+                    }.let {
+                        sensorDataParserDisposables.add(it)
                     }
-                    Timber.d("sensorDataParser send event=$event")
-                    synchronized(sensorDataToSend) {
-                        sensorDataToSend.add(event)
-                    }
-                }.let {
-                    sensorDataParserDisposables.add(it)
-                }
+        }
     }
 }
