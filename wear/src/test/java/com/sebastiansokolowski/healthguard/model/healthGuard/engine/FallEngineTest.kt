@@ -49,7 +49,7 @@ class FallEngineTest {
         whenever(measurementSettings.fallSettings.stepDetector).doReturn(true)
         whenever(measurementSettings.fallSettings.stepDetectorTimeoutS).doReturn(10)
         whenever(measurementSettings.fallSettings.inactivityDetector).doReturn(false)
-        whenever(measurementSettings.fallSettings.sampleCount).doReturn(10)
+        whenever(measurementSettings.fallSettings.samplingTimeS).doReturn(10)
         whenever(measurementSettings.measurementId).doReturn(1)
 
         testObj.setupEngine(sensorsObservable, notifyObservable, measurementSettings)

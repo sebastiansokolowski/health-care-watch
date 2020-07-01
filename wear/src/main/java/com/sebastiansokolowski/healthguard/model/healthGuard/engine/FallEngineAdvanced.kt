@@ -3,13 +3,11 @@ package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 import android.hardware.Sensor
 import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
-import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -22,18 +20,15 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    var stepDetector = StepDetector(10 * 1000)
-
     override fun setupEngine(sensorsObservable: SensorsObservable, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
-        stepDetector.setupDetector(sensorsObservable)
     }
 
     override fun startEngine() {
-        stepDetector.startDetector()
         sensorsObservable.linearAccelerationObservable
                 .subscribeOn(scheduler)
-                .buffer(7000, 100, TimeUnit.MILLISECONDS, scheduler)
+                .buffer(TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.samplingTimeS.toLong()),
+                        100, TimeUnit.MILLISECONDS, scheduler)
                 .subscribe { events ->
                     if (events.isNullOrEmpty()) {
                         return@subscribe
@@ -83,8 +78,6 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
     }
 
     override fun stopEngine() {
-        stepDetector.stopDetector()
-
         compositeDisposable.clear()
     }
 

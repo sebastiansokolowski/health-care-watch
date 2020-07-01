@@ -82,28 +82,12 @@
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            android:key="fall_sample_count"
-            android:max="500"
-            android:summary="@string/settings_fall_sample_count_summary"
-            android:title="@string/settings_fall_sample_count_title"
+            android:key="fall_sampling_time_s"
+            android:max="10"
+            android:summary="@string/settings_fall_sampling_time_summary"
+            android:title="@string/settings_fall_sampling_time_title"
             app:iconSpaceReserved="false"
-            app:min="5"
-            app:showSeekBarValue="true" />
-
-        <SwitchPreference
-            android:key="fall_step_detector"
-            android:summary="@string/settings_fall_step_detector_summary"
-            android:title="@string/settings_fall_step_detector_title"
-            app:iconSpaceReserved="false" />
-
-        <SeekBarPreference
-            android:dependency="fall_step_detector"
-            android:key="fall_step_detector_timeout_s"
-            android:max="30"
-            android:summary="@string/settings_fall_step_detector_timeout_summary"
-            android:title="@string/settings_fall_step_detector_timeout_title"
-            app:iconSpaceReserved="false"
-            app:min="1"
+            app:min="3"
             app:showSeekBarValue="true" />
 
         <SwitchPreference
@@ -147,7 +131,7 @@
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            android:key="epilepsy_time"
+            android:key="epilepsy_sampling_time_s"
             android:max="60"
             android:summary="@string/settings_epilepsy_time_summary"
             android:title="@string/settings_epilepsy_time_title"

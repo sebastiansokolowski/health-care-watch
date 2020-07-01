@@ -5,12 +5,10 @@ import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.ActivityDetector
-import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -23,19 +21,15 @@ class FallEngine : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    lateinit var stepDetector: StepDetector
 
     override fun setupEngine(sensorsObservable: SensorsObservable, notifyObservable: PublishSubject<HealthEvent>, measurementSettings: MeasurementSettings) {
         super.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
-        stepDetector = StepDetector(TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.stepDetectorTimeoutS.toLong()))
-        stepDetector.setupDetector(sensorsObservable)
     }
 
     override fun startEngine() {
-        stepDetector.startDetector()
         sensorsObservable.linearAccelerationObservable
                 .subscribeOn(scheduler)
-                .buffer(measurementSettings.fallSettings.sampleCount, 1)
+                .buffer(200, 1)
                 .subscribe { events ->
                     val min = events.minBy { it.value }
                     val max = events.maxBy { it.value }
@@ -44,8 +38,7 @@ class FallEngine : HealthGuardEngineBase() {
                         val isFall = events.indexOf(max) > events.indexOf(min)
                         val diff = abs(max.value - min.value)
 
-                        Timber.d("fallThreshold=${measurementSettings.fallSettings.threshold} " +
-                                "isStepDetected=${stepDetector.isStepDetected()} isFall=$isFall diff=$diff")
+                        Timber.d("fallThreshold=${measurementSettings.fallSettings.threshold} isFall=$isFall diff=$diff")
 
                         if (!isFall || diff < measurementSettings.fallSettings.threshold) {
                             return@subscribe
@@ -53,9 +46,6 @@ class FallEngine : HealthGuardEngineBase() {
 
                         Timber.d("min=$min max=$max isFall=$isFall diff=$diff")
 
-                        if (measurementSettings.fallSettings.stepDetector && !stepDetector.isStepDetected()) {
-                            return@subscribe
-                        }
                         val notifyHealthEventUnit = {
                             notifyHealthEvent(max, diff, events, Gson().toJson("$min $max"))
                         }
@@ -110,8 +100,6 @@ class FallEngine : HealthGuardEngineBase() {
     }
 
     override fun stopEngine() {
-        stepDetector.stopDetector()
-
         compositeDisposable.clear()
     }
 

@@ -42,15 +42,13 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity)
             //fall
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_THRESHOLD, defaultMeasurementSettings.fallSettings.threshold)
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_SAMPLE_COUNT, defaultMeasurementSettings.fallSettings.sampleCount)
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_STEP_DETECTOR, defaultMeasurementSettings.fallSettings.stepDetector)
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_STEP_DETECTOR_TIMEOUT_S, defaultMeasurementSettings.fallSettings.stepDetectorTimeoutS)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_SAMPLING_TIME_S, defaultMeasurementSettings.fallSettings.samplingTimeS)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_INACTIVITY_DETECTOR, defaultMeasurementSettings.fallSettings.inactivityDetector)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_INACTIVITY_DETECTOR_TIMEOUT_S, defaultMeasurementSettings.fallSettings.inactivityDetectorTimeoutS)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.FALL_INACTIVITY_DETECTOR_THRESHOLD, defaultMeasurementSettings.fallSettings.inactivityDetectorThreshold)
             //epilepsy
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.EPILEPSY_THRESHOLD, defaultMeasurementSettings.epilepsySettings.threshold)
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.EPILEPSY_TIME, defaultMeasurementSettings.epilepsySettings.timeS)
+            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.EPILEPSY_SAMPLING_TIME_S, defaultMeasurementSettings.epilepsySettings.samplingTimeS)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.EPILEPSY_PERCENT_OF_POSITIVE_EVENTS, defaultMeasurementSettings.epilepsySettings.percentOfPositiveSignals)
 
             apply()
@@ -85,15 +83,13 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val heartRateMaxThresholdDuringActivity = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity)
         //fall
         val fallThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_THRESHOLD, defaultMeasurementSettings.fallSettings.threshold)
-        val fallSampleCount = sharedPreferences.getInt(SettingsSharedPreferences.FALL_SAMPLE_COUNT, defaultMeasurementSettings.fallSettings.sampleCount)
-        val fallStepDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_STEP_DETECTOR, defaultMeasurementSettings.fallSettings.stepDetector)
-        val fallStepDetectorTimeoutS = sharedPreferences.getInt(SettingsSharedPreferences.FALL_STEP_DETECTOR_TIMEOUT_S, defaultMeasurementSettings.fallSettings.stepDetectorTimeoutS)
+        val fallSamplingTimeS = sharedPreferences.getInt(SettingsSharedPreferences.FALL_SAMPLING_TIME_S, defaultMeasurementSettings.fallSettings.samplingTimeS)
         val fallActivityDetector = sharedPreferences.getBoolean(SettingsSharedPreferences.FALL_INACTIVITY_DETECTOR, defaultMeasurementSettings.fallSettings.inactivityDetector)
         val fallActivityDetectorTimeoutS = sharedPreferences.getInt(SettingsSharedPreferences.FALL_INACTIVITY_DETECTOR_TIMEOUT_S, defaultMeasurementSettings.fallSettings.inactivityDetectorTimeoutS)
         val fallActivityDetectorThreshold = sharedPreferences.getInt(SettingsSharedPreferences.FALL_INACTIVITY_DETECTOR_THRESHOLD, defaultMeasurementSettings.fallSettings.inactivityDetectorThreshold)
         //epilepsy
         val epilepsyThreshold = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_THRESHOLD, defaultMeasurementSettings.epilepsySettings.threshold)
-        val epilepsyTime = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_TIME, defaultMeasurementSettings.epilepsySettings.timeS)
+        val epilepsySamplingTimeS = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_SAMPLING_TIME_S, defaultMeasurementSettings.epilepsySettings.samplingTimeS)
         val epilepsyPercentOfPositiveEvents = sharedPreferences.getInt(SettingsSharedPreferences.EPILEPSY_PERCENT_OF_POSITIVE_EVENTS, defaultMeasurementSettings.epilepsySettings.percentOfPositiveSignals)
 
 
@@ -102,10 +98,9 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val heartRateAnomalySettings = HeartRateAnomalySettings(heartRateActivityDetectorTimeoutInMin, heartRateActivityDetectorThreshold,
                 heartRateMinThreshold,
                 heartRateMaxThresholdDuringInactivity, heartRateMaxThresholdDuringActivity)
-        val fallSettings = FallSettings(fallThreshold, fallSampleCount,
-                fallStepDetector, fallStepDetectorTimeoutS,
+        val fallSettings = FallSettings(fallThreshold, fallSamplingTimeS,
                 fallActivityDetector, fallActivityDetectorTimeoutS, fallActivityDetectorThreshold)
-        val epilepsySettings = EpilepsySettings(epilepsyThreshold, epilepsyTime, epilepsyPercentOfPositiveEvents)
+        val epilepsySettings = EpilepsySettings(epilepsyThreshold, epilepsySamplingTimeS, epilepsyPercentOfPositiveEvents)
 
         return MeasurementSettings(samplingMs, healthEvents, batterySaver, testMode,
                 heartRateAnomalySettings,

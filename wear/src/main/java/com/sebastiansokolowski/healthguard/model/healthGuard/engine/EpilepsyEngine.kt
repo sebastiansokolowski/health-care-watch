@@ -4,7 +4,6 @@ import android.hardware.Sensor
 import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBase
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -19,7 +18,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
     override fun startEngine() {
         sensorsObservable.linearAccelerationObservable
                 .subscribeOn(scheduler)
-                .buffer(measurementSettings.epilepsySettings.timeS.toLong(),
+                .buffer(measurementSettings.epilepsySettings.samplingTimeS.toLong(),
                         1,
                         TimeUnit.SECONDS,
                         scheduler)

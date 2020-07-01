@@ -43,7 +43,7 @@
     <string name="settings_sms_user_location">User\'s location in an SMS</string>
     <string name="settings_sampling_time_title">Sampling time (ms)</string>
     <string name="settings_fall_upper_threshold_title">Upper threshold value</string>
-    <string name="settings_fall_sample_count_title">Sample size</string>
+    <string name="settings_fall_sampling_time_title">Sampling time (s)</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_title">Activity detection timeout (min)</string>
     <string name="settings_heart_beat_anomaly_min_threshold_title">Min threshold value</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold_title">Max threshold value during activity</string>
@@ -73,7 +73,7 @@
     <string name="settings_heart_beat_anomaly_inactivity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during inactivity</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during activity</string>
     <string name="settings_epilepsy_threshold_title">Threshold value</string>
-    <string name="settings_fall_sample_count_summary">Sample size for analysis</string>
+    <string name="settings_fall_sampling_time_summary">Data collection time for analysis</string>
     <string name="settings_fall_step_detector_summary">The event will only be detected in motion</string>
     <string name="settings_fall_step_detector_timeout_summary">Step detection timeout after which the event will be recognized as a motionless</string>
     <string name="settings_fall_inactivity_detector_threshold_title">Inactivity threshold</string>

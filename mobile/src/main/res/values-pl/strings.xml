@@ -47,7 +47,7 @@
     <string name="health_event_fall_message">Wartość upadku</string>
     <string name="health_event_fall_title">Upadek</string>
     <string name="settings_fall_upper_threshold_title">Górna wartość progowa</string>
-    <string name="settings_fall_sample_count_title">Wielkość próbki</string>
+    <string name="settings_fall_sampling_time_title">Czas próbkowania (s)</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_title">Limit czasu wykrycia aktywności (min)</string>
     <string name="settings_heart_beat_anomaly_min_threshold_title">Min wartość progowa</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold_title">Max wartość progowa podczas aktywności</string>
@@ -67,7 +67,7 @@
     <string name="settings_heart_beat_anomaly_inactivity_max_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako anomalia bicia serca podczas bezczynności</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako anomalia bicia serca podczas aktywności</string>
     <string name="settings_fall_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako upadek</string>
-    <string name="settings_fall_sample_count_summary">Wielkość próbki do analizy</string>
+    <string name="settings_fall_sampling_time_summary">Czas zbierania danych do analizy</string>
     <string name="settings_fall_step_detector_summary">Zdarzenie zostanie wykryte wyłącznie w ruchu</string>
     <string name="settings_fall_step_detector_timeout_summary">Limit czasu wykrycia ruchu po którym zdarzenie zostanie rozpoznane jako w bezruchu</string>
     <string name="settings_fall_inactivity_detector_timeout_title">Limit czasu bezczynności (s)</string>
