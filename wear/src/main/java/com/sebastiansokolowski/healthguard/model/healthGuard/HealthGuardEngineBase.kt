@@ -5,12 +5,15 @@ import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
 abstract class HealthGuardEngineBase {
+
+    var scheduler = Schedulers.computation()
 
     lateinit var healthEventObservable: PublishSubject<HealthEvent>
     lateinit var sensorsObservable: SensorsObservable

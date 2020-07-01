@@ -1,14 +1,18 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
 import android.hardware.Sensor
+import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.ReplaySubject
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -21,17 +25,21 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 class ActivityDetectorTest {
 
-    private val healthSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
+    private val linearAccelerationObservable: PublishSubject<SensorEvent> = PublishSubject.create()
 
     private val activityThreshold: Int = 3
-    private val bufferTime: Long = 1
+    private val bufferTime: Long = 10
 
     @SpyK
     var testObj = ActivityDetector(activityThreshold, bufferTime)
 
+    @MockK
+    lateinit var sensorsObservable: SensorsObservable
+
     @BeforeEach
     fun setup() {
-        testObj.setupDetector(healthSensorObservable)
+        every { sensorsObservable.linearAccelerationObservable } returns linearAccelerationObservable
+        testObj.setupDetector(sensorsObservable)
         testObj.startDetector()
 
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
@@ -39,38 +47,22 @@ class ActivityDetectorTest {
 
     @Test
     fun isActivityDetected_WhenActivityIsLowerThanThreshold_shouldReturnFalse() {
-        val values = floatArrayOf(1.7f, 1.7f, 1.7f)
-        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, values = values)
+        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, value = 1.7f)
         for (i in 0..10) {
-            healthSensorObservable.onNext(sensorEvent)
+            linearAccelerationObservable.onNext(sensorEvent)
         }
 
-        assertFalse(testObj.activityDetectedObservable.blockingFirst())
+        assertFalse(testObj.isActivityDetected())
     }
 
     @Test
     fun isActivityDetected_WhenActivityIsHigherThanThreshold_shouldReturnTrue() {
-        val values = floatArrayOf(1.8f, 1.8f, 1.8f)
-        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, values = values)
+        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, value = 4f)
         for (i in 0..10) {
-            healthSensorObservable.onNext(sensorEvent)
+            linearAccelerationObservable.onNext(sensorEvent)
         }
 
-        assertTrue(testObj.activityDetectedObservable.blockingFirst())
+        assertTrue(testObj.isActivityDetected())
     }
 
-    @Test
-    fun activityStateObservable_shouldReturnOnlyOneItem() {
-        val values = floatArrayOf(1.7f, 1.7f, 1.7f)
-        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, values = values)
-        for (i in 0..100) {
-            healthSensorObservable.onNext(sensorEvent)
-        }
-        testObj.activityDetectedObservable.blockingFirst()
-        for (i in 0..100) {
-            healthSensorObservable.onNext(sensorEvent)
-        }
-
-        verify(exactly = 1) { testObj.notifyActivityState(any()) }
-    }
 }

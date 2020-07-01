@@ -18,7 +18,7 @@ class StepDetector(private val timeoutMillis: Long) : DetectorBase() {
 
     override fun startDetector() {
         disposable = sensorsObservable.stepDetectorObservable
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(scheduler)
                 .subscribe {
                     Timber.d("isStepDetected=$it")
                     lastEventTimestamp.set(getCurrentTimestamp())

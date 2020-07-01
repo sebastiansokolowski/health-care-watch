@@ -21,7 +21,7 @@ class ActivityDetector(private var activityThreshold: Int, private val timeout: 
 
     override fun startDetector() {
         disposable = sensorsObservable.linearAccelerationObservable
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(scheduler)
                 .subscribe {
                     val activityDetected = it.value >= activityThreshold
                     if (BuildConfig.EXTRA_LOGGING) {

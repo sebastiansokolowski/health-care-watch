@@ -9,11 +9,11 @@ import io.mockk.mockk
  */
 class SensorEventMock {
     companion object {
-        fun getMockedSensorEventWrapper(type: Int, timestamp: Long = 0, values: FloatArray = FloatArray(0)): SensorEvent {
+        fun getMockedSensorEventWrapper(type: Int, timestamp: Long = 0, value: Float = 0f): SensorEvent {
             val sensorEvent = mockk<SensorEvent>()
 
             every { sensorEvent.type } returns type
-            every { sensorEvent.values } returns values
+            every { sensorEvent.value } returns value
             every { sensorEvent.timestamp } returns timestamp
 
             return sensorEvent

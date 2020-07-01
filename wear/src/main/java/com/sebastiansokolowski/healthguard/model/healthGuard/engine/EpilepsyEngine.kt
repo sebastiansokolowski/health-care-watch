@@ -18,10 +18,11 @@ class EpilepsyEngine : HealthGuardEngineBase() {
 
     override fun startEngine() {
         sensorsObservable.linearAccelerationObservable
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(scheduler)
                 .buffer(measurementSettings.epilepsySettings.timeS.toLong(),
                         1,
-                        TimeUnit.SECONDS)
+                        TimeUnit.SECONDS,
+                        scheduler)
                 .subscribe { events ->
                     var positiveEvents = 0
                     events.forEach { event ->

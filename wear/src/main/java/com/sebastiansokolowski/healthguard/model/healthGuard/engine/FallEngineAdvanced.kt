@@ -32,8 +32,8 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
     override fun startEngine() {
         stepDetector.startDetector()
         sensorsObservable.linearAccelerationObservable
-                .subscribeOn(Schedulers.computation())
-                .buffer(7000, 100, TimeUnit.MILLISECONDS)
+                .subscribeOn(scheduler)
+                .buffer(7000, 100, TimeUnit.MILLISECONDS, scheduler)
                 .subscribe { events ->
                     if (events.isNullOrEmpty()) {
                         return@subscribe

@@ -16,7 +16,7 @@ class NotificationTestEngine : HealthGuardEngineBase() {
 
     override fun startEngine() {
         sensorsObservable.linearAccelerationObservable
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(scheduler)
                 .take(1)
                 .subscribe {
                     notifyHealthEvent(it, 99f, details = Gson().toJson(it))

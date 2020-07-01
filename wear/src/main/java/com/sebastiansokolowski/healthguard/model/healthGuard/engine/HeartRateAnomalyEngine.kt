@@ -43,8 +43,8 @@ class HeartRateAnomalyEngine : HealthGuardEngineBase() {
     override fun startEngine() {
         stepDetector.startDetector()
         sensorsObservable.heartRateObservable
-                .subscribeOn(Schedulers.computation())
-                .skip(1, TimeUnit.MINUTES)
+                .subscribeOn(scheduler)
+                .skip(1, TimeUnit.MINUTES, scheduler)
                 .subscribe { sensorEventData ->
                     val heartRate = sensorEventData.value.toInt()
 

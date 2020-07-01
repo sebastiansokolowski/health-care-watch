@@ -10,6 +10,7 @@ import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
@@ -33,7 +34,7 @@ class FallEngine : HealthGuardEngineBase() {
     override fun startEngine() {
         stepDetector.startDetector()
         sensorsObservable.linearAccelerationObservable
-                .subscribeOn(scheduler())
+                .subscribeOn(scheduler)
                 .buffer(measurementSettings.fallSettings.sampleCount, 1)
                 .subscribe { events ->
                     val min = events.minBy { it.value }
@@ -85,7 +86,7 @@ class FallEngine : HealthGuardEngineBase() {
         var activityDetected = false
         val activityDetector = createActivityDetector()
         activityDetector.activityDetectedObservable
-                .take(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong(), TimeUnit.SECONDS)
+                .take(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong(), TimeUnit.SECONDS, scheduler)
                 .doOnComplete {
                     Timber.d("checkPostFallActivity doOnComplete")
                     if (postFallStateDetected && !activityDetected) {

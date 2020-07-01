@@ -1,6 +1,7 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
+import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
@@ -25,7 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 class FallEngineTest {
 
-    private val healthSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
+    private val linearAccelerationSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
     private val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
 
     @SpyK
@@ -37,17 +38,22 @@ class FallEngineTest {
     @RelaxedMockK
     lateinit var stepDetector: StepDetector
 
+    @MockK
+    lateinit var sensorsObservable: SensorsObservable
+
     @BeforeEach
     fun setUp() {
+        every { sensorsObservable.linearAccelerationObservable } returns linearAccelerationSensorObservable
+
         every { stepDetector.isStepDetected() } returns true
-        every { measurementSettings.fallSettings.stepDetector } returns true
         every { measurementSettings.fallSettings.threshold } returns 2
-        every { measurementSettings.fallSettings.timeOfInactivity } returns 0
-        every { measurementSettings.fallSettings.stepDetectorTimeoutInS } returns 0
+        every { measurementSettings.fallSettings.stepDetector } returns true
+        every { measurementSettings.fallSettings.stepDetectorTimeoutS } returns 10
+        every { measurementSettings.fallSettings.inactivityDetector } returns false
         every { measurementSettings.fallSettings.sampleCount } returns 10
         every { measurementSettings.measurementId } returns 1
 
-        testObj.setupEngine(healthSensorObservable, notifyObservable, measurementSettings)
+        testObj.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         testObj.stepDetector = stepDetector
         testObj.startEngine()
 
@@ -58,7 +64,7 @@ class FallEngineTest {
     fun testFallDetect_shouldNotify() {
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any()) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any(), any()) }
     }
 
     @Test
@@ -76,41 +82,37 @@ class FallEngineTest {
 
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any()) }
+        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any(), any()) }
     }
 
     @Test
     fun testFallDetect_WhenPostFallDetectionIsEnabled_shouldNotNotify() {
-        every { measurementSettings.fallSettings.activityThreshold } returns 3
-        every { measurementSettings.fallSettings.timeOfInactivity } returns 5
+        every { measurementSettings.fallSettings.inactivityDetector } returns true
+        every { measurementSettings.fallSettings.inactivityDetectorTimeoutS } returns 1
+        every { measurementSettings.fallSettings.inactivityDetectorThreshold } returns 3
 
         triggerFall()
 
         verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
-        verify(exactly = 1) { testObj.checkPostFallActivity(any(), any(), any()) }
+        verify(exactly = 1) { testObj.checkPostFallActivity(any()) }
     }
 
     private fun triggerFall() {
-        val values = floatArrayOf(-7.8f, 2.8f, -14.8f)
-        val values2 = floatArrayOf(1.4f, 0.2f, -5.6f)
-        val values3 = floatArrayOf(0f, 0f, 0f)
-
-        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, values = values)
-        val sensorEvent2 = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, values = values2)
-        val sensorEvent3 = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, values = values3)
+        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, value = 7.8f)
+        val sensorEvent2 = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, value = 1.4f)
+        val sensorEvent3 = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, value = 0f)
         for (i in 0..7) {
-            healthSensorObservable.onNext(sensorEvent3)
+            linearAccelerationSensorObservable.onNext(sensorEvent3)
         }
-        healthSensorObservable.onNext(sensorEvent)
-        healthSensorObservable.onNext(sensorEvent2)
+        linearAccelerationSensorObservable.onNext(sensorEvent)
+        linearAccelerationSensorObservable.onNext(sensorEvent2)
     }
 
     @Test
     fun testFallDetect_shouldNotNotify() {
-        val values = floatArrayOf(0f, 0f, 0f)
-        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, values = values)
+        val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_LINEAR_ACCELERATION, value = 0f)
         for (i in 0..40) {
-            healthSensorObservable.onNext(sensorEvent)
+            linearAccelerationSensorObservable.onNext(sensorEvent)
         }
 
         verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
