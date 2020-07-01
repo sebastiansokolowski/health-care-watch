@@ -98,7 +98,7 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
     }
 
     private fun saveDataToFile(data: String): Uri {
-        val file = File(context.cacheDir, "measurement_data.json")
+        val file = File(context.cacheDir, "data.json")
         file.createNewFile()
         if (file.exists()) {
             val outputStream = FileOutputStream(file)
