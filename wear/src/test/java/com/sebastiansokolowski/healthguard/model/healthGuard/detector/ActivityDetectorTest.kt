@@ -1,28 +1,27 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
 import android.hardware.Sensor
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
 import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.SpyK
-import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.ReplaySubject
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 
 /**
  * Created by Sebastian Sokołowski on 23.09.19.
  */
-@ExtendWith(MockKExtension::class)
+@RunWith(MockitoJUnitRunner.Silent::class)
 class ActivityDetectorTest {
 
     private val linearAccelerationObservable: PublishSubject<SensorEvent> = PublishSubject.create()
@@ -30,15 +29,15 @@ class ActivityDetectorTest {
     private val activityThreshold: Int = 3
     private val bufferTime: Long = 10
 
-    @SpyK
+    @Spy
     var testObj = ActivityDetector(activityThreshold, bufferTime)
 
-    @MockK
+    @Mock
     lateinit var sensorsObservable: SensorsObservable
 
-    @BeforeEach
+    @Before
     fun setup() {
-        every { sensorsObservable.linearAccelerationObservable } returns linearAccelerationObservable
+        whenever(sensorsObservable.linearAccelerationObservable) doReturn (linearAccelerationObservable)
         testObj.setupDetector(sensorsObservable)
         testObj.startDetector()
 

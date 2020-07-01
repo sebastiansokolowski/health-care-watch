@@ -1,41 +1,41 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.detector
 
 import android.hardware.Sensor
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
 import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.SpyK
-import io.mockk.junit5.MockKExtension
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.ReplaySubject
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 
 /**
  * Created by Sebastian Sokołowski on 23.09.19.
  */
-@ExtendWith(MockKExtension::class)
+@RunWith(MockitoJUnitRunner.Silent::class)
 class StepDetectorTest {
     private val timeout: Long = 1000
 
-    @SpyK
+    @Spy
     var testObj = StepDetector(timeout)
 
     private val stepDetectorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
 
-    @MockK
+    @Mock
     lateinit var sensorsObservable: SensorsObservable
 
-    @BeforeEach
+    @Before
     fun setup() {
-        every { sensorsObservable.stepDetectorObservable } returns stepDetectorObservable
+        whenever(sensorsObservable.stepDetectorObservable) doReturn (stepDetectorObservable)
 
         testObj.setupDetector(sensorsObservable)
         testObj.startDetector()
@@ -57,9 +57,9 @@ class StepDetectorTest {
 
     @Test
     fun isStepDetected_WhenTimeout_shouldReturnFalse() {
-        every { testObj.getCurrentTimestamp() } returns 0
+        whenever(testObj.getCurrentTimestamp()).thenReturn(0)
         stepDetectorObservable.onNext(getMockedSensorEventWrapper(Sensor.TYPE_STEP_DETECTOR))
-        every { testObj.getCurrentTimestamp() } returns timeout
+        whenever(testObj.getCurrentTimestamp()).doReturn(timeout)
 
         assertFalse(testObj.isStepDetected())
     }

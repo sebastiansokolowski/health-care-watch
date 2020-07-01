@@ -1,57 +1,56 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
+import com.nhaarman.mockitokotlin2.*
 import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.impl.annotations.SpyK
-import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Answers
+import org.mockito.Mock
+import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 
 /**
  * Created by Sebastian Sokołowski on 04.11.19.
  */
-@ExtendWith(MockKExtension::class)
+@RunWith(MockitoJUnitRunner.Silent::class)
 class FallEngineTest {
 
     private val linearAccelerationSensorObservable: PublishSubject<SensorEvent> = PublishSubject.create()
     private val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
 
-    @SpyK
+    @Spy
     var testObj = FallEngine()
 
-    @MockK
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     lateinit var measurementSettings: MeasurementSettings
 
-    @RelaxedMockK
+    @Mock
     lateinit var stepDetector: StepDetector
 
-    @MockK
+    @Mock
     lateinit var sensorsObservable: SensorsObservable
 
-    @BeforeEach
+    @Before
     fun setUp() {
-        every { sensorsObservable.linearAccelerationObservable } returns linearAccelerationSensorObservable
+        whenever(sensorsObservable.linearAccelerationObservable).doReturn(linearAccelerationSensorObservable)
 
-        every { stepDetector.isStepDetected() } returns true
-        every { measurementSettings.fallSettings.threshold } returns 2
-        every { measurementSettings.fallSettings.stepDetector } returns true
-        every { measurementSettings.fallSettings.stepDetectorTimeoutS } returns 10
-        every { measurementSettings.fallSettings.inactivityDetector } returns false
-        every { measurementSettings.fallSettings.sampleCount } returns 10
-        every { measurementSettings.measurementId } returns 1
+        whenever(stepDetector.isStepDetected()).doReturn(true)
+        whenever(measurementSettings.fallSettings.threshold).doReturn(2)
+        whenever(measurementSettings.fallSettings.stepDetector).doReturn(true)
+        whenever(measurementSettings.fallSettings.stepDetectorTimeoutS).doReturn(10)
+        whenever(measurementSettings.fallSettings.inactivityDetector).doReturn(false)
+        whenever(measurementSettings.fallSettings.sampleCount).doReturn(10)
+        whenever(measurementSettings.measurementId).doReturn(1)
 
         testObj.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         testObj.stepDetector = stepDetector
@@ -64,37 +63,37 @@ class FallEngineTest {
     fun testFallDetect_shouldNotify() {
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any(), any()) }
+        verify(testObj, times(1)).notifyHealthEvent(any(), any(), any(), any())
     }
 
     @Test
     fun testFallDetect_WhenStepIsNotDetected_shouldNotNotify() {
-        every { stepDetector.isStepDetected() } returns false
+        whenever(stepDetector.isStepDetected()).doReturn(false)
         triggerFall()
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
+        verify(testObj, never()).notifyHealthEvent(any(), any(), any(), any())
     }
 
     @Test
     fun testFallDetect_WhenStepDetectIsDisabled_shouldNotify() {
-        every { stepDetector.isStepDetected() } returns false
-        every { measurementSettings.fallSettings.stepDetector } returns false
+        whenever(stepDetector.isStepDetected()).doReturn(false)
+        whenever(measurementSettings.fallSettings.stepDetector).doReturn(false)
 
         triggerFall()
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(any(), any(), any(), any()) }
+        verify(testObj, times(1)).notifyHealthEvent(any(), any(), any(), any())
     }
 
     @Test
     fun testFallDetect_WhenPostFallDetectionIsEnabled_shouldNotNotify() {
-        every { measurementSettings.fallSettings.inactivityDetector } returns true
-        every { measurementSettings.fallSettings.inactivityDetectorTimeoutS } returns 1
-        every { measurementSettings.fallSettings.inactivityDetectorThreshold } returns 3
+        whenever(measurementSettings.fallSettings.inactivityDetector).doReturn(true)
+        whenever(measurementSettings.fallSettings.inactivityDetectorTimeoutS).doReturn(1)
+        whenever(measurementSettings.fallSettings.inactivityDetectorThreshold).doReturn(3)
 
         triggerFall()
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
-        verify(exactly = 1) { testObj.checkPostFallActivity(any()) }
+        verify(testObj, never()).notifyHealthEvent(any(), any(), any(), any())
+        verify(testObj, times(1)).checkPostFallActivity(any())
     }
 
     private fun triggerFall() {
@@ -115,6 +114,6 @@ class FallEngineTest {
             linearAccelerationSensorObservable.onNext(sensorEvent)
         }
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
+        verify(testObj, never()).notifyHealthEvent(any(), any(), any(), any())
     }
 }

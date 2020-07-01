@@ -1,63 +1,62 @@
 package com.sebastiansokolowski.healthguard.model.healthGuard.engine
 
 import android.hardware.Sensor
+import com.nhaarman.mockitokotlin2.*
 import com.sebastiansokolowski.healthguard.dataModel.SensorsObservable
 import com.sebastiansokolowski.healthguard.model.healthGuard.SensorEventMock.Companion.getMockedSensorEventWrapper
 import com.sebastiansokolowski.healthguard.model.healthGuard.detector.StepDetector
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.SensorEvent
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
-import io.mockk.every
-import io.mockk.impl.annotations.MockK
-import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.impl.annotations.SpyK
-import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.ReplaySubject
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Answers
+import org.mockito.Mock
+import org.mockito.Spy
+import org.mockito.junit.MockitoJUnitRunner
 import java.util.concurrent.TimeUnit
 
 
 /**
  * Created by Sebastian Sokołowski on 17.09.19.
  */
-@ExtendWith(MockKExtension::class)
+@RunWith(MockitoJUnitRunner.Silent::class)
 class HeartRateAnomalyEngineTest {
 
     private val healthSensorObservable: ReplaySubject<SensorEvent> = ReplaySubject.create()
     private val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
 
-    @SpyK
+    @Spy
     var testObj: HeartRateAnomalyEngine = HeartRateAnomalyEngine()
 
-    @RelaxedMockK
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     lateinit var measurementSettings: MeasurementSettings
 
-    @RelaxedMockK
+    @Mock
     lateinit var stepDetector: StepDetector
 
-    @MockK
+    @Mock
     lateinit var sensorsObservable: SensorsObservable
 
     private val testScheduler = TestScheduler()
 
-    @BeforeEach
+    @Before
     fun setUp() {
-        every { sensorsObservable.heartRateObservable } returns healthSensorObservable
-        every { stepDetector.isStepDetected() } returns true
-        every { stepDetector.scheduler } returns testScheduler
-        every { measurementSettings.heartRateAnomalySettings.activityDetectorThreshold } returns 5
-        every { measurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin } returns 5
-        every { measurementSettings.heartRateAnomalySettings.minThreshold } returns 40
-        every { measurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity } returns 120
-        every { measurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity } returns 150
-        every { testObj.scheduler } returns testScheduler
+        whenever(sensorsObservable.heartRateObservable).doReturn(healthSensorObservable)
+        whenever(stepDetector.isStepDetected()).doReturn(true)
+        whenever(stepDetector.scheduler).doReturn(testScheduler)
+        whenever(measurementSettings.heartRateAnomalySettings.activityDetectorThreshold).doReturn(5)
+        whenever(measurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin).doReturn(5)
+        whenever(measurementSettings.heartRateAnomalySettings.minThreshold).doReturn(40)
+        whenever(measurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity).doReturn(120)
+        whenever(measurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity).doReturn(150)
+        whenever(testObj.scheduler).doReturn(testScheduler)
 
         testObj.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
         testObj.stepDetector = stepDetector
@@ -73,7 +72,7 @@ class HeartRateAnomalyEngineTest {
         val sensorEvent = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, value = 30f)
         healthSensorObservable.onNext(sensorEvent)
 
-        verify(exactly = 1) { testObj.notifyHealthEvent(sensorEvent, any(), any(), any()) }
+        verify(testObj, times(1)).notifyHealthEvent(eq(sensorEvent), any(), any(), any())
     }
 
     @Test
@@ -85,14 +84,14 @@ class HeartRateAnomalyEngineTest {
         val sensorEvent3 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, value = 120f)
         val sensorEvent4 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, value = 110f)
         val sensorEvent5 = getMockedSensorEventWrapper(Sensor.TYPE_HEART_RATE, value = 90f)
-        every { stepDetector.isStepDetected() } returns true
+        whenever(stepDetector.isStepDetected()).doReturn(true)
         healthSensorObservable.onNext(sensorEvent)
         healthSensorObservable.onNext(sensorEvent2)
         healthSensorObservable.onNext(sensorEvent3)
-        every { stepDetector.isStepDetected() } returns false
+        whenever(stepDetector.isStepDetected()).doReturn(false)
         healthSensorObservable.onNext(sensorEvent4)
         healthSensorObservable.onNext(sensorEvent5)
 
-        verify(exactly = 0) { testObj.notifyHealthEvent(any(), any(), any()) }
+        verify(testObj, never()).notifyHealthEvent(any(), any(), any(), any())
     }
 }
