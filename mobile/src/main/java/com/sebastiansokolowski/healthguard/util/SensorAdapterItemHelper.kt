@@ -14,7 +14,6 @@ class SensorAdapterItemHelper {
             context?.let {
                 return when (sensorAdapterItem) {
                     SensorAdapterItem.HEART_RATE -> context.getString(R.string.sensor_adapter_heart_rate_title)
-                    SensorAdapterItem.STEP_COUNTER -> context.getString(R.string.sensor_adapter_step_counter_title)
                     SensorAdapterItem.ACCELERATION_VECTOR -> context.getString(R.string.sensor_adapter_acceleration_vector)
                 }
             }
@@ -25,7 +24,6 @@ class SensorAdapterItemHelper {
             context?.let {
                 return when (sensorAdapterItem) {
                     SensorAdapterItem.HEART_RATE -> context.getString(R.string.unit_heart_rate)
-                    SensorAdapterItem.STEP_COUNTER -> ""
                     SensorAdapterItem.ACCELERATION_VECTOR -> context.getString(R.string.unit_linear_acceleration)
                 }
             }
