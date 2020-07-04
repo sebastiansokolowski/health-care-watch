@@ -21,7 +21,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.io.File
-import java.io.FileOutputStream
+import java.io.FileWriter
 
 
 /**
@@ -40,11 +40,11 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
         val disposable = Single.zip(getHealthEventsObservable(), getSensorEventsObservable(), BiFunction { healthEvents: MutableList<HealthEvent>, sensorEvents: MutableList<SensorEvent> ->
             val exportData = DataExport(healthEvents, sensorEvents)
 
-            val exportDataUri = saveDataToFile(Gson().toJson(exportData))
+            val exportDataUri = saveDataToFile(exportData)
             val databaseUri = getDatabaseUri()
             filesToShareObservable.onNext(SingleEvent(arrayListOf(exportDataUri, databaseUri)))
         })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe()
         disposables.add(disposable)
@@ -97,13 +97,12 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
         }
     }
 
-    private fun saveDataToFile(data: String): Uri {
+    private fun saveDataToFile(data: DataExport): Uri {
         val file = File(context.cacheDir, "data.json")
         file.createNewFile()
         if (file.exists()) {
-            val outputStream = FileOutputStream(file)
-            outputStream.write(data.toByteArray())
-            outputStream.close()
+            val writer = FileWriter(file)
+            Gson().toJson(data, writer)
         }
 
         return FileProvider.getUriForFile(
