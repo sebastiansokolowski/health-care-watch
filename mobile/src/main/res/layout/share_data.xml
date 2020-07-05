@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/share_data_test_mode" />
+
+    <RadioGroup
+        android:id="@+id/rg_test_mode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RadioButton
+            android:id="@+id/rb_test_mode_general"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_data_test_mode_general" />
+
+        <RadioButton
+            android:id="@+id/rb_test_mode_fall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_data_test_mode_fall" />
+
+        <RadioButton
+            android:id="@+id/rb_test_mode_epilepsy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_data_test_mode_epilepsy" />
+
+        <RadioButton
+            android:id="@+id/rb_test_mode_adl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/share_data_test_mode_adl" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/et_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/share_data_comment" />
+
+    <EditText
+        android:id="@+id/et_events_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/share_data_events_number"
+        android:inputType="number" />
+</LinearLayout>

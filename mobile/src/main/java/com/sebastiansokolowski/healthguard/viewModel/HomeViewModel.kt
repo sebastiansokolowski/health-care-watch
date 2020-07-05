@@ -13,6 +13,7 @@ import com.sebastiansokolowski.healthguard.model.SetupModel
 import com.sebastiansokolowski.healthguard.model.ShareDataModel
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import com.sebastiansokolowski.healthguard.viewModel.sensorData.SensorEventViewModel
+import com.sebastiansokolowski.shared.dataModel.DataExport
 import io.objectbox.BoxStore
 import io.objectbox.rx.RxQuery
 import io.reactivex.BackpressureStrategy
@@ -100,8 +101,8 @@ class HomeViewModel
         return LiveDataReactiveStreams.fromPublisher(filesToShareFlowable)
     }
 
-    fun shareDataForTesting() {
-        shareDataModel.shareDataForTesting()
+    fun shareDataForTesting(comment: String, testMode: DataExport.TestMode, counter: Int?) {
+        shareDataModel.shareDataForTesting(comment, testMode, counter)
     }
 
     fun toggleMeasurementState() {

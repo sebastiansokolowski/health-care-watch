@@ -7,6 +7,8 @@ import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.text.method.LinkMovementMethod
 import android.view.*
+import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -23,6 +25,7 @@ import com.sebastiansokolowski.healthguard.util.SafeCall
 import com.sebastiansokolowski.healthguard.util.SingleEvent
 import com.sebastiansokolowski.healthguard.view.CustomSnackbar
 import com.sebastiansokolowski.healthguard.viewModel.HomeViewModel
+import com.sebastiansokolowski.shared.dataModel.DataExport
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.home_fragment.*
 import javax.inject.Inject
@@ -145,11 +148,59 @@ class HomeFragment : DaggerFragment() {
                 return true
             }
             R.id.share_data_for_testing -> {
-                homeViewModel.shareDataForTesting()
+                showShareDataDialog()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showShareDataDialog() {
+        context?.let {
+            val builder = AlertDialog.Builder(it)
+            val view = requireActivity().layoutInflater.inflate(R.layout.share_data, null)
+
+            val rgTestModeView = view.findViewById<RadioGroup>(R.id.rg_test_mode)
+            val etCommentView = view.findViewById<EditText>(R.id.et_comment)
+            val etCounterView = view.findViewById<EditText>(R.id.et_events_number)
+            rgTestModeView.setOnCheckedChangeListener { _, checkedId ->
+                when (checkedId) {
+                    R.id.rb_test_mode_general -> {
+                        etCounterView.visibility = View.GONE
+                    }
+                    else -> {
+                        etCounterView.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            builder.setView(view)
+                    .setPositiveButton(R.string.action_ok) { _, _ ->
+                        val comment = etCommentView.text.toString()
+                        val counter = etCounterView.text.toString().toIntOrNull()
+                        val adlMode = when (rgTestModeView.checkedRadioButtonId) {
+                            R.id.rb_test_mode_general -> {
+                                DataExport.TestMode.GENERAL
+                            }
+                            R.id.rb_test_mode_fall -> {
+                                DataExport.TestMode.FALL
+                            }
+                            R.id.rb_test_mode_epilepsy -> {
+                                DataExport.TestMode.EPILEPSY
+                            }
+                            R.id.rb_test_mode_adl -> {
+                                DataExport.TestMode.ADL
+                            }
+                            else -> {
+                                DataExport.TestMode.GENERAL
+                            }
+                        }
+                        homeViewModel.shareDataForTesting(comment, adlMode, counter)
+                    }
+                    .setNegativeButton(R.string.action_cancel) { _, _ ->
+                    }
+            builder.create().show()
+        }
     }
 
     private fun showShareScreen(uris: ArrayList<Uri>) {

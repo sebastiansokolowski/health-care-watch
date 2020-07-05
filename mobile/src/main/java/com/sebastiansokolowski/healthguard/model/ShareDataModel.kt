@@ -36,9 +36,9 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
 
     private val disposables = CompositeDisposable()
 
-    fun shareDataForTesting() {
+    fun shareDataForTesting(comment: String, testMode: DataExport.TestMode, counter: Int?) {
         val disposable = Single.zip(getHealthEventsObservable(), getSensorEventsObservable(), BiFunction { healthEvents: MutableList<HealthEvent>, sensorEvents: MutableList<SensorEvent> ->
-            val exportData = DataExport(healthEvents, sensorEvents)
+            val exportData = DataExport(comment, testMode, counter, healthEvents, sensorEvents)
 
             val exportDataUri = saveDataToFile(exportData)
             val databaseUri = getDatabaseUri()
@@ -99,11 +99,9 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
 
     private fun saveDataToFile(data: DataExport): Uri {
         val file = File(context.cacheDir, "data.json")
-        file.createNewFile()
-        if (file.exists()) {
-            val writer = FileWriter(file)
-            Gson().toJson(data, writer)
-        }
+        val writer = FileWriter(file)
+        Gson().toJson(data, writer)
+        writer.close()
 
         return FileProvider.getUriForFile(
                 context,

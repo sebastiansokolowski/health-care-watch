@@ -1,3 +1,10 @@
 package com.sebastiansokolowski.shared.dataModel
 
-data class DataExport(val healthEvents: MutableList<HealthEvent>, val sensorEvents: MutableList<SensorEvent>)
+data class DataExport(val comment: String, val testMode: TestMode, val counter: Int?, val healthEvents: MutableList<HealthEvent>, val sensorEvents: MutableList<SensorEvent>) {
+    enum class TestMode {
+        FALL,
+        EPILEPSY,
+        ADL,
+        GENERAL
+    }
+}

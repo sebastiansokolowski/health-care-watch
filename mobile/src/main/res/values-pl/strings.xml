@@ -91,4 +91,11 @@
     <string name="battery_saver_summary">Upadek zostanie wykryty wyłącznie w ruchu.</string>
     <string name="settings_heart_beat_anomaly_activity_detector_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako aktywność</string>
     <string name="settings_heart_beat_anomaly_activity_detector_threshold_title">Wartośc progowa aktywności</string>
+    <string name="share_data_test_mode">Tryb testowy:</string>
+    <string name="share_data_test_mode_general">Ogólny</string>
+    <string name="share_data_test_mode_fall">Upadek</string>
+    <string name="share_data_test_mode_epilepsy">Atak drgawek</string>
+    <string name="share_data_test_mode_adl">ADL</string>
+    <string name="share_data_comment">komentarz</string>
+    <string name="share_data_events_number">ilość zdarzeń</string>
 </resources>
