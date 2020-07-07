@@ -30,11 +30,11 @@ class HealthGuardModel(private val sensorDataModel: SensorDataModel, private val
 
     private fun registerHealthEngines() {
         healthEnginesRegistered.add(EpilepsyEngine())
-        healthEnginesRegistered.add(FallEngine())
+//        healthEnginesRegistered.add(FallEngine())
         healthEnginesRegistered.add(FallEngineAdvanced())
         healthEnginesRegistered.add(HeartRateAnomalyEngine())
-        healthEnginesRegistered.add(AllSensorsEngine())
-        healthEnginesRegistered.add(NotificationTestEngine())
+//        healthEnginesRegistered.add(AllSensorsEngine())
+//        healthEnginesRegistered.add(NotificationTestEngine())
     }
 
     fun getHealthEngines(healthEvents: Set<HealthEventType>): Set<HealthGuardEngineBase> {
