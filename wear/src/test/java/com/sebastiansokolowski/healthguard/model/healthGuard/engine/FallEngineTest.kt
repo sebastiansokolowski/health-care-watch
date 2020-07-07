@@ -46,14 +46,11 @@ class FallEngineTest {
 
         whenever(stepDetector.isStepDetected()).doReturn(true)
         whenever(measurementSettings.fallSettings.threshold).doReturn(2)
-        whenever(measurementSettings.fallSettings.stepDetector).doReturn(true)
-        whenever(measurementSettings.fallSettings.stepDetectorTimeoutS).doReturn(10)
         whenever(measurementSettings.fallSettings.inactivityDetector).doReturn(false)
         whenever(measurementSettings.fallSettings.samplingTimeS).doReturn(10)
         whenever(measurementSettings.measurementId).doReturn(1)
 
         testObj.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
-        testObj.stepDetector = stepDetector
         testObj.startEngine()
 
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
@@ -77,7 +74,6 @@ class FallEngineTest {
     @Test
     fun testFallDetect_WhenStepDetectIsDisabled_shouldNotify() {
         whenever(stepDetector.isStepDetected()).doReturn(false)
-        whenever(measurementSettings.fallSettings.stepDetector).doReturn(false)
 
         triggerFall()
 
