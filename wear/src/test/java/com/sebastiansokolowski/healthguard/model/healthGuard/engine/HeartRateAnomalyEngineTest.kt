@@ -51,7 +51,6 @@ class HeartRateAnomalyEngineTest {
         whenever(sensorsObservable.heartRateObservable).doReturn(healthSensorObservable)
         whenever(stepDetector.isStepDetected()).doReturn(true)
         whenever(stepDetector.scheduler).doReturn(testScheduler)
-        whenever(measurementSettings.heartRateAnomalySettings.activityDetectorThreshold).doReturn(5)
         whenever(measurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin).doReturn(5)
         whenever(measurementSettings.heartRateAnomalySettings.minThreshold).doReturn(40)
         whenever(measurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity).doReturn(120)

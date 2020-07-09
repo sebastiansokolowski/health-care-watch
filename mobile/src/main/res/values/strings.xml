@@ -93,8 +93,6 @@
     <string name="battery_saver_title">Battery saver</string>
     <string name="battery_saver_summary">Fall will only be detected in motion.</string>
     <string name="settings_epilepsy_percent_of_positive_events_title">Percentage of positive events</string>
-    <string name="settings_heart_beat_anomaly_activity_detector_threshold_summary">The value above which the event will be recognized as an activity</string>
-    <string name="settings_heart_beat_anomaly_activity_detector_threshold_title">Activity threshold value</string>
     <string name="share_data_test_mode">Test mode:</string>
     <string name="share_data_test_mode_general">General</string>
     <string name="share_data_test_mode_fall">Fall</string>

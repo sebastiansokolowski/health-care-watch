@@ -18,7 +18,6 @@ class SettingsSharedPreferences {
         const val BATTERY_SAVER = "battery_saver"
         const val TEST_MODE = "test_mode"
         const val HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_TIMEOUT_MIN = "heart_rate_anomaly_activity_detector_timeout_min"
-        const val HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_THRESHOLD = "heart_rate_anomaly_activity_detector_threshold"
         const val HEART_RATE_ANOMALY_MIN_THRESHOLD = "heart_rate_anomaly_min_threshold"
         const val HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_INACTIVITY = "heart_rate_anomaly_max_threshold_during_inactivity"
         const val HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY = "heart_rate_anomaly_max_threshold_during_activity"

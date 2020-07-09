@@ -89,8 +89,6 @@
     <string name="test_mode_summary">W trybie testowym każdy odczyt jest synchronizowany.</string>
     <string name="battery_saver_title">Tryb oszczędzania baterii</string>
     <string name="battery_saver_summary">Upadek zostanie wykryty wyłącznie w ruchu.</string>
-    <string name="settings_heart_beat_anomaly_activity_detector_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako aktywność</string>
-    <string name="settings_heart_beat_anomaly_activity_detector_threshold_title">Wartośc progowa aktywności</string>
     <string name="share_data_test_mode">Tryb testowy:</string>
     <string name="share_data_test_mode_general">Ogólny</string>
     <string name="share_data_test_mode_fall">Upadek</string>

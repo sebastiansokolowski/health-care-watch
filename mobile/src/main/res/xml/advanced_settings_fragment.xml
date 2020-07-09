@@ -34,14 +34,6 @@
             app:min="1"
             app:showSeekBarValue="true" />
         <SeekBarPreference
-            android:key="heart_rate_anomaly_activity_detector_threshold"
-            android:max="20"
-            android:summary="@string/settings_heart_beat_anomaly_activity_detector_threshold_summary"
-            android:title="@string/settings_heart_beat_anomaly_activity_detector_threshold_title"
-            app:iconSpaceReserved="false"
-            app:min="1"
-            app:showSeekBarValue="true" />
-        <SeekBarPreference
             android:key="heart_rate_anomaly_min_threshold"
             android:max="60"
             android:summary="@string/settings_heart_beat_anomaly_min_threshold_summary"

@@ -36,7 +36,6 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.TEST_MODE, defaultMeasurementSettings.testMode)
             //heart rate anomaly
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_TIMEOUT_MIN, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin)
-            putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorThreshold)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_MIN_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.minThreshold)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_INACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity)
             putSettingsWhenDoesNotExist(this, SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity)
@@ -77,7 +76,6 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
         val testMode = sharedPreferences.getBoolean(SettingsSharedPreferences.TEST_MODE, defaultMeasurementSettings.testMode)
         //heart rate anomaly
         val heartRateActivityDetectorTimeoutInMin = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_TIMEOUT_MIN, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorTimeoutMin)
-        val heartRateActivityDetectorThreshold = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_ACTIVITY_DETECTOR_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.activityDetectorThreshold)
         val heartRateMinThreshold = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_MIN_THRESHOLD, defaultMeasurementSettings.heartRateAnomalySettings.minThreshold)
         val heartRateMaxThresholdDuringInactivity = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_INACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringInactivity)
         val heartRateMaxThresholdDuringActivity = sharedPreferences.getInt(SettingsSharedPreferences.HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY, defaultMeasurementSettings.heartRateAnomalySettings.maxThresholdDuringActivity)
@@ -95,7 +93,7 @@ class SettingsModel(private val sharedPreferences: SharedPreferences) {
 
         val healthEvents = getHealthEvents()
 
-        val heartRateAnomalySettings = HeartRateAnomalySettings(heartRateActivityDetectorTimeoutInMin, heartRateActivityDetectorThreshold,
+        val heartRateAnomalySettings = HeartRateAnomalySettings(heartRateActivityDetectorTimeoutInMin,
                 heartRateMinThreshold,
                 heartRateMaxThresholdDuringInactivity, heartRateMaxThresholdDuringActivity)
         val fallSettings = FallSettings(fallThreshold, fallSamplingTimeS,
