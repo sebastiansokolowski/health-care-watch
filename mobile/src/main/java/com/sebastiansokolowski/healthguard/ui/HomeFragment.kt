@@ -10,6 +10,7 @@ import android.view.*
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -173,33 +174,43 @@ class HomeFragment : DaggerFragment() {
                     }
                 }
             }
+            val dialog = builder.setView(view)
+                    .setPositiveButton(R.string.action_ok) { _, _ -> }
+                    .setNegativeButton(R.string.action_cancel) { _, _ -> }.create()
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val comment = etCommentView.text.toString()
+                val counter = etCounterView.text.toString().toIntOrNull()
+                val adlMode = when (rgTestModeView.checkedRadioButtonId) {
+                    R.id.rb_test_mode_general -> {
+                        DataExport.TestMode.GENERAL
+                    }
+                    R.id.rb_test_mode_fall -> {
+                        DataExport.TestMode.FALL
+                    }
+                    R.id.rb_test_mode_epilepsy -> {
+                        DataExport.TestMode.EPILEPSY
+                    }
+                    R.id.rb_test_mode_adl -> {
+                        DataExport.TestMode.ADL
+                    }
+                    else -> {
+                        null
+                    }
+                }
 
-            builder.setView(view)
-                    .setPositiveButton(R.string.action_ok) { _, _ ->
-                        val comment = etCommentView.text.toString()
-                        val counter = etCounterView.text.toString().toIntOrNull()
-                        val adlMode = when (rgTestModeView.checkedRadioButtonId) {
-                            R.id.rb_test_mode_general -> {
-                                DataExport.TestMode.GENERAL
-                            }
-                            R.id.rb_test_mode_fall -> {
-                                DataExport.TestMode.FALL
-                            }
-                            R.id.rb_test_mode_epilepsy -> {
-                                DataExport.TestMode.EPILEPSY
-                            }
-                            R.id.rb_test_mode_adl -> {
-                                DataExport.TestMode.ADL
-                            }
-                            else -> {
-                                DataExport.TestMode.GENERAL
-                            }
-                        }
-                        homeViewModel.shareDataForTesting(comment, adlMode, counter)
-                    }
-                    .setNegativeButton(R.string.action_cancel) { _, _ ->
-                    }
-            builder.create().show()
+                if (adlMode == null) {
+                    Toast.makeText(context, "Please select test mode", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                if (adlMode != DataExport.TestMode.GENERAL && counter == null) {
+                    Toast.makeText(context, "Please fill in the counter field", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                homeViewModel.shareDataForTesting(comment, adlMode, counter)
+                dialog.dismiss()
+            }
         }
     }
 
