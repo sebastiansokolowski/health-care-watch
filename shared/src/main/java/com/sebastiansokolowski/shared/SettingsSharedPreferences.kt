@@ -22,7 +22,7 @@ class SettingsSharedPreferences {
         const val HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_INACTIVITY = "heart_rate_anomaly_max_threshold_during_inactivity"
         const val HEART_RATE_ANOMALY_MAX_THRESHOLD_DURING_ACTIVITY = "heart_rate_anomaly_max_threshold_during_activity"
         const val FALL_THRESHOLD = "fall_threshold"
-        const val FALL_SAMPLING_TIME_S = "fall_time_frame_s"
+        const val FALL_SAMPLING_TIME_S = "fall_sampling_time_s"
         const val FALL_INACTIVITY_DETECTOR = "fall_inactivity_detector"
         const val FALL_INACTIVITY_DETECTOR_TIMEOUT_S = "fall_inactivity_detector_timeout_s"
         const val FALL_INACTIVITY_DETECTOR_THRESHOLD = "fall_inactivity_detector_threshold"
