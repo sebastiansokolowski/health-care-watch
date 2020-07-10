@@ -67,11 +67,16 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
         val lastPeek = events.findLast { it.value >= measurementSettings.fallSettings.threshold }
         val lastPeekIndex = events.indexOf(lastPeek)
         val postFallEvents = events.subList(lastPeekIndex, events.lastIndex)
-        val size = TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong()).toInt() / measurementSettings.samplingMs
-        postFallEvents.windowed(size, 1).forEach {
-            val activity = it.find { it.value >= measurementSettings.fallSettings.inactivityDetectorThreshold }
-            if (activity == null) {
-                return true
+        val inactivitySize = TimeUnit.SECONDS.toMillis(measurementSettings.fallSettings.inactivityDetectorTimeoutS.toLong()).toInt() / measurementSettings.samplingMs
+        var size = 0
+        postFallEvents.forEach { sensorEvent ->
+            if (sensorEvent.value >= measurementSettings.fallSettings.inactivityDetectorThreshold) {
+                size = 0
+            } else {
+                size++
+                if (size >= inactivitySize) {
+                    return true
+                }
             }
         }
         return false
