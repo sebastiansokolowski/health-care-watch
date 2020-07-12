@@ -45,7 +45,7 @@
     <string name="sensor_adapter_acceleration_vector">WEKTOR PRZYŚPIESZENIA</string>
     <string name="health_event_fall_message">Wartość upadku</string>
     <string name="health_event_fall_title">Upadek</string>
-    <string name="settings_fall_upper_threshold_title">Górna wartość progowa</string>
+    <string name="settings_fall_threshold_title">Wartość progowa</string>
     <string name="settings_fall_sampling_time_title">Czas próbkowania (s)</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_title">Limit czasu wykrycia aktywności (min)</string>
     <string name="settings_heart_beat_anomaly_min_threshold_title">Min wartość progowa</string>
@@ -73,12 +73,12 @@
     <string name="settings_fall_inactivity_detector_timeout_summary">Limit czasu bezczynności powyzej którego zdarzenie zostanie rozpoznane jako upadek</string>
     <string name="settings_fall_inactivity_detector_threshold_title">Wartość progowa bezczynności</string>
     <string name="settings_fall_inactivity_detector_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako aktywność</string>
-    <string name="settings_epilepsy_threshold_title">Wartość progowa</string>
-    <string name="settings_epilepsy_threshold_summary">Wartość powyzej której zdarzenie zostanie rozpoznane jako pozytywne</string>
+    <string name="settings_epilepsy_motion_threshold_title">Wartość progowa ruchu</string>
+    <string name="settings_epilepsy_motion_threshold_summary">Wartość powyzej której zdarzenie zostanie rozpoznane jako ruch</string>
     <string name="settings_epilepsy_time_title">Czas próbkowania (s)</string>
     <string name="settings_epilepsy_time_summary">Czas zbierania danych do analizy</string>
-    <string name="settings_epilepsy_percent_of_positive_events_title">Procent pozytywnych zdarzeń</string>
-    <string name="settings_epilepsy_percent_of_positive_events_summary">Procent pozytywnych zdarzeń powyżej którego atak zostanie wykryty</string>
+    <string name="settings_epilepsy_motions_title">Ilość ruchów</string>
+    <string name="settings_epilepsy_motions_summary">Wartość powyżej której atak zostanie wykryty</string>
     <string name="settings_sampling_time_summary">Częstotliwość odświeżania danych z czujników</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_summary">Limit czasu wykrycia aktywności po którym zdarzenie zostanie rozpoznane jako bezczynność</string>
     <string name="settings_fall_inactivity_detector_title">Wykrywanie bezczynności</string>

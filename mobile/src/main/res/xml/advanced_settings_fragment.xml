@@ -65,21 +65,21 @@
         app:iconSpaceReserved="false">
 
         <SeekBarPreference
-            android:key="fall_threshold"
-            android:max="40"
-            android:summary="@string/settings_fall_threshold_summary"
-            android:title="@string/settings_fall_upper_threshold_title"
-            app:iconSpaceReserved="false"
-            app:min="10"
-            app:showSeekBarValue="true" />
-
-        <SeekBarPreference
             android:key="fall_sampling_time_s"
             android:max="10"
             android:summary="@string/settings_fall_sampling_time_summary"
             android:title="@string/settings_fall_sampling_time_title"
             app:iconSpaceReserved="false"
             app:min="3"
+            app:showSeekBarValue="true" />
+
+        <SeekBarPreference
+            android:key="fall_threshold"
+            android:max="40"
+            android:summary="@string/settings_fall_threshold_summary"
+            android:title="@string/settings_fall_threshold_title"
+            app:iconSpaceReserved="false"
+            app:min="10"
             app:showSeekBarValue="true" />
 
         <SwitchPreference
@@ -114,17 +114,8 @@
         app:iconSpaceReserved="false">
 
         <SeekBarPreference
-            android:key="epilepsy_threshold"
-            android:max="10"
-            android:summary="@string/settings_epilepsy_threshold_summary"
-            android:title="@string/settings_epilepsy_threshold_title"
-            app:iconSpaceReserved="false"
-            app:min="1"
-            app:showSeekBarValue="true" />
-
-        <SeekBarPreference
             android:key="epilepsy_sampling_time_s"
-            android:max="60"
+            android:max="30"
             android:summary="@string/settings_epilepsy_time_summary"
             android:title="@string/settings_epilepsy_time_title"
             app:iconSpaceReserved="false"
@@ -132,12 +123,21 @@
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            android:key="epilepsy_percent_of_positive_events"
-            android:max="100"
-            android:summary="@string/settings_epilepsy_percent_of_positive_events_summary"
-            android:title="@string/settings_epilepsy_percent_of_positive_events_title"
+            android:key="epilepsy_motion_threshold"
+            android:max="20"
+            android:summary="@string/settings_epilepsy_motion_threshold_summary"
+            android:title="@string/settings_epilepsy_motion_threshold_title"
             app:iconSpaceReserved="false"
-            app:min="0"
+            app:min="1"
+            app:showSeekBarValue="true" />
+
+        <SeekBarPreference
+            android:key="epilepsy_motions"
+            android:max="200"
+            android:summary="@string/settings_epilepsy_motions_summary"
+            android:title="@string/settings_epilepsy_motions_title"
+            app:iconSpaceReserved="false"
+            app:min="20"
             app:showSeekBarValue="true" />
 
     </PreferenceCategory>

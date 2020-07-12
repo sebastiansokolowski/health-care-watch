@@ -5,6 +5,7 @@ import com.sebastiansokolowski.healthguard.model.healthGuard.HealthGuardEngineBa
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
+import java.lang.Math.abs
 import java.util.concurrent.TimeUnit
 
 /**
@@ -23,18 +24,29 @@ class EpilepsyEngine : HealthGuardEngineBase() {
                         TimeUnit.SECONDS,
                         scheduler)
                 .subscribe { events ->
-                    var positiveEvents = 0
-                    events.forEach { event ->
-                        if (event.value >= measurementSettings.epilepsySettings.threshold) {
-                            positiveEvents++
-                        }
+                    if (events.isNullOrEmpty()) {
+                        return@subscribe
                     }
-                    val percentOfPositiveSignals = positiveEvents / events.size.toDouble()
-                    val targetPercentOfPositiveSignals = measurementSettings.epilepsySettings.percentOfPositiveSignals / 100.toDouble()
+                    var motions = 0
+                    var lastEvent = events.first()
+                    var decreasing = false
+                    var diff = 0f
+                    events.forEach { event ->
+                        if (event.value > lastEvent.value && decreasing ||
+                                event.value < lastEvent.value && !decreasing) {
+                            decreasing = !decreasing
+                            if (diff >= measurementSettings.epilepsySettings.threshold) {
+                                motions++
+                            }
+                            diff = 0f
+                        }
 
-                    if (percentOfPositiveSignals >= targetPercentOfPositiveSignals) {
+                        diff += abs(lastEvent.value - event.value)
+                        lastEvent = event
+                    }
+                    if (motions >= measurementSettings.epilepsySettings.motions) {
                         Timber.d("epilepsy detected!!")
-                        notifyHealthEvent(events.last(), percentOfPositiveSignals.toFloat(), events)
+                        notifyHealthEvent(events.last(), motions.toFloat(), events)
                     }
                 }
                 .let {
