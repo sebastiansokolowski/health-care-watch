@@ -14,7 +14,17 @@ class SensorAdapterItemHelper {
             context?.let {
                 return when (sensorAdapterItem) {
                     SensorAdapterItem.HEART_RATE -> context.getString(R.string.sensor_adapter_heart_rate_title)
-                    SensorAdapterItem.ACCELERATION_VECTOR -> context.getString(R.string.sensor_adapter_acceleration_vector)
+                    SensorAdapterItem.ACCELERATION -> context.getString(R.string.sensor_adapter_acceleration)
+                }
+            }
+            return "null"
+        }
+
+        fun getChartLabel(context: Context?, sensorAdapterItem: SensorAdapterItem): String {
+            context?.let {
+                return when (sensorAdapterItem) {
+                    SensorAdapterItem.HEART_RATE -> context.getString(R.string.sensor_adapter_heart_beat_chart_label)
+                    SensorAdapterItem.ACCELERATION -> context.getString(R.string.sensor_adapter_linear_acceleration_chart_label)
                 }
             }
             return "null"
@@ -24,7 +34,7 @@ class SensorAdapterItemHelper {
             context?.let {
                 return when (sensorAdapterItem) {
                     SensorAdapterItem.HEART_RATE -> context.getString(R.string.unit_heart_rate)
-                    SensorAdapterItem.ACCELERATION_VECTOR -> context.getString(R.string.unit_linear_acceleration)
+                    SensorAdapterItem.ACCELERATION -> context.getString(R.string.unit_linear_acceleration)
                 }
             }
             return "null"

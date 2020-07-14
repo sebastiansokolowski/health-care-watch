@@ -51,7 +51,9 @@
     <string name="sensor_data_chart_history_no_data">No chart data available</string>
     <string name="sensor_data_chart_live_no_data">Start measurement to see a data</string>
     <string name="sensor_adapter_heart_rate_title">HEART RATE</string>
-    <string name="sensor_adapter_acceleration_vector">ACCELERATION VECTOR</string>
+    <string name="sensor_adapter_acceleration">ACCELERATION</string>
+    <string name="sensor_adapter_heart_beat_chart_label">THE NUMBER OF HEART BEATS PER MINUTE</string>
+    <string name="sensor_adapter_linear_acceleration_chart_label">LINEAR ACCELERATION VECTOR LENGTH</string>
     <string name="health_event_fall_message">Value of fall</string>
     <string name="health_event_fall_title">Fall</string>
     <string name="health_event_fall_advanced_title">Fall - advanced algorithm</string>

@@ -159,7 +159,7 @@ open class SensorDataFragment : DaggerFragment() {
 
         val legendEntries = mutableListOf<LegendEntry>()
 
-        val labelX = SensorAdapterItemHelper.getTitle(context, sensorAdapterItem) + unit
+        val labelX = SensorAdapterItemHelper.getChartLabel(context, sensorAdapterItem) + unit
         setupLineDataSet(chartData.xData, colorLineDataX)
         legendEntries.add(createLegendEntry(labelX, colorLineDataX))
         lineDataSetList.addAll(chartData.xData)
