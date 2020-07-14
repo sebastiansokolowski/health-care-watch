@@ -43,6 +43,7 @@
     <string name="settings_sms_user_location">User\'s location in an SMS</string>
     <string name="settings_sampling_time_title">Sampling time (ms)</string>
     <string name="settings_fall_threshold_title">Threshold value</string>
+    <string name="settings_fall_min_number_of_threshold_title">Min number of threshold</string>
     <string name="settings_fall_sampling_time_title">Sampling time (s)</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_title">Activity detection timeout (min)</string>
     <string name="settings_heart_beat_anomaly_min_threshold_title">Min threshold value</string>
@@ -86,6 +87,7 @@
     <string name="settings_sampling_time_summary">Frequency of refreshing data from sensors</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_summary">Activity detection timeout after which the event will be recognized as inactivity.</string>
     <string name="settings_fall_threshold_summary">The value above which the event will be recognized as a fall</string>
+    <string name="settings_fall_min_number_of_threshold_summary">The value above which the event will be recognized as a fall</string>
     <string name="settings_fall_inactivity_detector_title">Inactivity detector</string>
     <string name="settings_fall_inactivity_detector_summary">Detection of inactivity after a fall</string>
     <string name="settings_history_data_expire_title">Data history</string>

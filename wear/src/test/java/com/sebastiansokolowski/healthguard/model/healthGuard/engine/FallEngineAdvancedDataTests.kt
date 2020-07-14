@@ -29,10 +29,12 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
         val samplingTimeSValues = IntRange(6, 10).step(1).toList()
         val inactivityDetectorTimeoutSValues = IntRange(1, 5).step(1).toList()
         val inactivityDetectorThresholdValues = IntRange(1, 5).step(1).toList()
+        val minNumberOfThresholdValues = IntRange(1, 4).step(1).toList()
 
         val executorService = Executors.newScheduledThreadPool(10)
         val numberOfOptions = thresholdValues.size * samplingTimeSValues.size *
-                inactivityDetectorTimeoutSValues.size * inactivityDetectorThresholdValues.size
+                inactivityDetectorTimeoutSValues.size * inactivityDetectorThresholdValues.size *
+                minNumberOfThresholdValues.size
         val countDownLatch = CountDownLatch(numberOfOptions)
 
         var theBestSummaryTestResult: TestResultSummary? = null
@@ -41,8 +43,9 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
             samplingTimeSValues.forEach { samplingTimeS ->
                 inactivityDetectorTimeoutSValues.forEach { inactivityDetectorTimeoutS ->
                     inactivityDetectorThresholdValues.forEach { inactivityDetectorThreshold ->
+                        minNumberOfThresholdValues.forEach { minNumberOfThreshold ->
                             executorService.submit {
-                                val fallSettings = FallSettings(threshold, samplingTimeS,
+                                val fallSettings = FallSettings(threshold, samplingTimeS, minNumberOfThreshold,
                                         true, inactivityDetectorTimeoutS, inactivityDetectorThreshold)
                                 println("testing $fallSettings")
 
@@ -58,6 +61,7 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
                                     }
                                 }
                                 countDownLatch.countDown()
+                            }
                         }
                     }
                 }

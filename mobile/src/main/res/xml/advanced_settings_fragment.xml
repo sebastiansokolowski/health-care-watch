@@ -82,6 +82,15 @@
             app:min="10"
             app:showSeekBarValue="true" />
 
+        <SeekBarPreference
+            android:key="fall_min_number_of_threshold"
+            android:max="5"
+            android:summary="@string/settings_fall_min_number_of_threshold_summary"
+            android:title="@string/settings_fall_min_number_of_threshold_title"
+            app:iconSpaceReserved="false"
+            app:min="1"
+            app:showSeekBarValue="true" />
+
         <SwitchPreference
             android:key="fall_inactivity_detector"
             android:summary="@string/settings_fall_inactivity_detector_summary"

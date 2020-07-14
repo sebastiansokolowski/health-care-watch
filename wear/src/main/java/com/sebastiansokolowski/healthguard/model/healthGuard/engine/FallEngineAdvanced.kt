@@ -46,7 +46,7 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
                     }
                     // Step 2
                     val fallCounter = events.count { it.value >= measurementSettings.fallSettings.threshold }
-                    if (fallCounter !in 1..50) {
+                    if (fallCounter < measurementSettings.fallSettings.minNumberOfThreshold) {
                         return@subscribe
                     }
                     // Step 3
