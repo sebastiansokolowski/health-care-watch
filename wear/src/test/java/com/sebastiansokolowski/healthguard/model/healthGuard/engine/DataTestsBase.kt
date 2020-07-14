@@ -8,10 +8,13 @@ import com.sebastiansokolowski.shared.dataModel.DataExport
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.PublishSubject
 import java.io.File
 import java.io.FileReader
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 abstract class DataTestsBase {
@@ -20,12 +23,7 @@ abstract class DataTestsBase {
 
     private val adlTimeS = 60
 
-    private val cache = hashMapOf<File, DataExport>()
-
-    lateinit var testObj: HealthGuardEngineBase
-    lateinit var testScheduler: TestScheduler
-    lateinit var notifyObservable: PublishSubject<HealthEvent>
-    lateinit var sensorsObservable: SensorsObservable
+    private val cache = ConcurrentHashMap<File, DataExport>()
 
     abstract fun getEventPath(): String
 
@@ -43,22 +41,10 @@ abstract class DataTestsBase {
         val testResults = mutableListOf<TestResult>()
         val files = getTestFiles(path)
         files.forEach {
-            setupEngine(measurementSettings)
-            testResults.add(testFile(it, adlTest))
+            testResults.add(testFile(it, measurementSettings, adlTest))
         }
 
         return testResults
-    }
-
-    private fun setupEngine(measurementSettings: MeasurementSettings) {
-        testObj = createEngine()
-        testScheduler = TestScheduler()
-        notifyObservable = PublishSubject.create()
-        sensorsObservable = SensorsObservable()
-
-        testObj.scheduler = testScheduler
-        testObj.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
-        testObj.startEngine()
     }
 
     private fun getTestFiles(file: File): MutableList<File> {
@@ -74,9 +60,19 @@ abstract class DataTestsBase {
         return results
     }
 
-    private fun testFile(file: File, adlTest: Boolean): TestResult {
+    private fun testFile(file: File, measurementSettings: MeasurementSettings, adlTest: Boolean): TestResult {
+        //setup
+        val testObj = createEngine()
+        val testScheduler = TestScheduler()
+        val notifyObservable: PublishSubject<HealthEvent> = PublishSubject.create()
+        val sensorsObservable = SensorsObservable()
+
+        testObj.scheduler = testScheduler
+        testObj.setupEngine(sensorsObservable, notifyObservable, measurementSettings)
+        testObj.startEngine()
         val dataExport: DataExport = cache.getOrPut(file, { Gson().fromJson(FileReader(file), DataExport::class.java) })
 
+        //test
         val notifiedHealthEvents = mutableSetOf<HealthEvent>()
         notifyObservable
                 .subscribeOn(testScheduler)
@@ -145,23 +141,27 @@ abstract class DataTestsBase {
 
     fun createSummary(fallTestsResults: MutableList<TestResult>, adlTestsResults: MutableList<TestResult>): TestResultSummary {
         val testResultsSummary = TestResultSummary(
-                1f, 0, 0,
-                1f, 0, 0)
+                0f, 0, 0,
+                0f, 0, 0)
 
-        fallTestsResults.forEach {
+        fallTestsResults.forEach { fallTestsResult ->
+//            println(fallTestsResult)
             testResultsSummary.apply {
-                eventsDetectionAccuracy *= it.detectionAccuracy
-                eventsDetected += it.eventsDetected
-                eventsExpected += it.eventsExpected
+                eventsDetectionAccuracy += fallTestsResult.detectionAccuracy
+                eventsDetected += fallTestsResult.eventsDetected
+                eventsExpected += fallTestsResult.eventsExpected
             }
         }
-        adlTestsResults.forEach {
+        adlTestsResults.forEach { adlTestsResult ->
+//            println(adlTestsResult)
             testResultsSummary.apply {
-                adlDetectionAccuracy *= it.detectionAccuracy
-                adlEventsDetected += it.eventsDetected
-                adlEventsExpected += it.eventsExpected
+                adlDetectionAccuracy += adlTestsResult.detectionAccuracy
+                adlEventsDetected += adlTestsResult.eventsDetected
+                adlEventsExpected += adlTestsResult.eventsExpected
             }
         }
+        testResultsSummary.eventsDetectionAccuracy /= fallTestsResults.size
+        testResultsSummary.adlDetectionAccuracy /= adlTestsResults.size
         return testResultsSummary
     }
 
@@ -178,9 +178,10 @@ abstract class DataTestsBase {
             text += if (adlTest) {
                 "adl"
             } else {
-                "fall"
+                "event"
             }
-            text += "\n detectionAccuracy=${detectionAccuracy * 100}%" +
+            text += "\n file=$file" +
+                    "\n detectionAccuracy=${detectionAccuracy * 100}%" +
                     "\n {$eventsDetected/$eventsExpected}" +
                     "\n measurementTime=$measurementTime"
 
@@ -198,7 +199,7 @@ abstract class DataTestsBase {
     ) {
 
         fun getDetectionAccuracy(): Float {
-            return eventsDetectionAccuracy * adlDetectionAccuracy
+            return (eventsDetectionAccuracy + adlDetectionAccuracy) / 2
         }
 
         override fun toString(): String {
