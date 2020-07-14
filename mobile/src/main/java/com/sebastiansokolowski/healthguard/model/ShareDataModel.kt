@@ -86,8 +86,12 @@ class ShareDataModel(val context: Context, val boxStore: BoxStore) {
 
     private fun createHealthEvent(healthEventEntity: HealthEventEntity): HealthEvent {
         healthEventEntity.apply {
-            val sensorEntity = createSensorEvent(sensorEventEntity.target)
-            return HealthEvent(event, sensorEntity, value, emptyList(), details, measurementEventEntity.targetId)
+            val sensorEvent = if (sensorEventEntity.isNull) {
+                SensorEvent(0, 0f, 0, 0, 0)
+            } else {
+                createSensorEvent(sensorEventEntity.target)
+            }
+            return HealthEvent(event, sensorEvent, value, emptyList(), details, measurementEventEntity.targetId)
         }
     }
 

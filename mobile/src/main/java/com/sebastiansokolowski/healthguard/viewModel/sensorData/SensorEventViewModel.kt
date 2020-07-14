@@ -121,7 +121,10 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
     private fun parseData(dataToParse: MutableList<SensorEventEntity>, startDayTimestamp: Long, chartData: MutableList<LineDataSet>, statisticData: StatisticData, index: Int) {
         val measurementDataSet = HashMap<Long, LineDataSet>()
 
-        dataToParse.forEach { sensorEventData ->
+        for (sensorEventData in dataToParse) {
+            if (sensorEventData.measurementEventEntity.target == null) {
+                continue
+            }
             val lineDataSet = measurementDataSet.getOrPut(sensorEventData.measurementEventEntity.target.id) {
                 LineDataSet(mutableListOf(), "")
             }
