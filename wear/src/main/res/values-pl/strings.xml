@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Podręczny strażnik zdrowia</string>
+    <string name="notification_measurement_title">Opieka zdrowotna uruchomiona</string>
+    <string name="notification_measurement_message">Pomiary w trakcie</string>
 </resources>

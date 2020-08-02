@@ -1,6 +1,8 @@
 package com.sebastiansokolowski.healthguard.model
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.PowerManager
@@ -8,6 +10,7 @@ import com.google.android.gms.wearable.DataItem
 import com.google.android.gms.wearable.DataMapItem
 import com.google.gson.Gson
 import com.sebastiansokolowski.healthguard.client.WearableClient
+import com.sebastiansokolowski.healthguard.service.MeasurementService
 import com.sebastiansokolowski.shared.DataClientPaths
 import com.sebastiansokolowski.shared.dataModel.SupportedHealthEventTypes
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
@@ -22,7 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Created by Sebastian Sokołowski on 06.07.19.
  */
-class MeasurementModel(private val sensorDataModel: SensorDataModel, private val healthGuardModel: HealthGuardModel, private val sensorManager: SensorManager, powerManager: PowerManager, private val wearableClient: WearableClient) {
+class MeasurementModel(val context: Context, private val sensorDataModel: SensorDataModel, private val healthGuardModel: HealthGuardModel, private val sensorManager: SensorManager, powerManager: PowerManager, private val wearableClient: WearableClient) {
 
     private val disposables = CompositeDisposable()
     private var measurementRunning = AtomicBoolean(false)
@@ -41,9 +44,12 @@ class MeasurementModel(private val sensorDataModel: SensorDataModel, private val
             return
         }
         measurementRunning.set(state)
+        val serviceIntent = Intent(context, MeasurementService::class.java)
         if (state) {
+            context.startService(serviceIntent)
             sensorDataModel.sensorsObservable.heartRateObservable = ReplaySubject.createWithSize(10)
         } else {
+            context.stopService(serviceIntent)
             sensorDataModel.sensorsObservable.heartRateObservable.onComplete()
         }
         measurementStateObservable.onNext(measurementRunning.get())

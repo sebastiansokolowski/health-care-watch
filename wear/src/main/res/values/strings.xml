@@ -3,4 +3,6 @@
     <string name="measurement_button_start_label" translatable="false">START</string>
     <string name="measurement_button_stop_label" translatable="false">STOP</string>
     <string name="unit_heart_rate" translatable="false">bpm</string>
+    <string name="notification_measurement_title">mHealth Guard running</string>
+    <string name="notification_measurement_message">Measurement running</string>
 </resources>

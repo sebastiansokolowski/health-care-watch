@@ -5,6 +5,7 @@ import android.content.Context
 import android.hardware.SensorManager
 import android.os.PowerManager
 import com.sebastiansokolowski.healthguard.client.WearableClient
+import com.sebastiansokolowski.healthguard.model.AndroidNotificationModel
 import com.sebastiansokolowski.healthguard.model.HealthGuardModel
 import com.sebastiansokolowski.healthguard.model.MeasurementModel
 import com.sebastiansokolowski.healthguard.model.SensorDataModel
@@ -39,6 +40,11 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideAndroidNotificationModel(context: Context): AndroidNotificationModel =
+            AndroidNotificationModel(context)
+
+    @Provides
+    @Singleton
     fun provideSensorDataModel(sensorManager: SensorManager, wearableClient: WearableClient): SensorDataModel {
         return SensorDataModel(sensorManager, wearableClient)
     }
@@ -50,8 +56,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideMeasurementModel(sensorDataModel: SensorDataModel, healthGuardModel: HealthGuardModel, sensorManager: SensorManager, powerManager: PowerManager, wearableClient: WearableClient): MeasurementModel {
-        return MeasurementModel(sensorDataModel, healthGuardModel, sensorManager, powerManager, wearableClient)
+    fun provideMeasurementModel(context: Context, sensorDataModel: SensorDataModel, healthGuardModel: HealthGuardModel, sensorManager: SensorManager, powerManager: PowerManager, wearableClient: WearableClient): MeasurementModel {
+        return MeasurementModel(context, sensorDataModel, healthGuardModel, sensorManager, powerManager, wearableClient)
     }
 
 }
