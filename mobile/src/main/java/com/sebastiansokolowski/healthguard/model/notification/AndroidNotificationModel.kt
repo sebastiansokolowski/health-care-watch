@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Created by Sebastian Sokołowski on 05.06.19.
  */
-class AndroidNotification(val context: Context) {
+class AndroidNotificationModel(val context: Context) {
 
     val CHANNEL_ID: String = context.packageName
     var NOTIFICATION_ID: Int = 10

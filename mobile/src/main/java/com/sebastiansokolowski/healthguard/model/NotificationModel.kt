@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
 import com.sebastiansokolowski.healthguard.db.entity.HealthEventEntity
-import com.sebastiansokolowski.healthguard.model.notification.AndroidNotification
-import com.sebastiansokolowski.healthguard.model.notification.SmsNotification
+import com.sebastiansokolowski.healthguard.model.notification.AndroidNotificationModel
+import com.sebastiansokolowski.healthguard.model.notification.SmsNotificationModel
 import com.sebastiansokolowski.healthguard.util.HealthEventHelper
 import io.reactivex.Maybe
 import io.reactivex.functions.BiFunction
@@ -17,8 +17,8 @@ class NotificationModel(val context: Context, private val settingsModel: Setting
     private val SMS_NOTIFICATION_TIMEOUT = 30
     private val LOCATION_UPDATE_TIMEOUT = 30
 
-    val androidNotificationModel = AndroidNotification(context)
-    val smsNotificationModel = SmsNotification(settingsModel)
+    val androidNotificationModel = AndroidNotificationModel(context)
+    val smsNotificationModel = SmsNotificationModel(settingsModel)
 
     private val healthEventHelper = HealthEventHelper(context)
 

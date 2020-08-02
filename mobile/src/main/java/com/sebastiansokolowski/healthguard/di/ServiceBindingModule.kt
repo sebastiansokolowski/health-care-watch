@@ -11,6 +11,7 @@ import dagger.android.ContributesAndroidInjector
 @Suppress("unused")
 @Module
 abstract class ServiceBindingModule {
+
     @ContributesAndroidInjector
     abstract fun messageReceiverService(): WearableService
 
