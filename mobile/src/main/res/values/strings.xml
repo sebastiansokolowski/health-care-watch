@@ -70,7 +70,7 @@
     <string name="sms_message_unknow_location">unknown</string>
     <string name="sms_message_user_location">User\'s location</string>
     <string name="settings_fall_inactivity_detector_timeout_title">Inactivity timeout (s)</string>
-    <string name="settings_fall_inactivity_detector_timeout_summary">Inactivity timeout above which the event will be recognized as a fall</string>
+    <string name="settings_fall_inactivity_detector_timeout_summary">Inactivity timeout after a fall</string>
     <string name="settings_heart_beat_anomaly_min_threshold_summary">The value below which the event will be recognized as a heartbeat anomaly</string>
     <string name="settings_heart_beat_anomaly_inactivity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during inactivity</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during activity</string>

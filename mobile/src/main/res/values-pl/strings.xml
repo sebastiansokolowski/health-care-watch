@@ -74,11 +74,11 @@
     <string name="settings_fall_step_detector_summary">Zdarzenie zostanie wykryte wyłącznie w ruchu</string>
     <string name="settings_fall_step_detector_timeout_summary">Limit czasu wykrycia ruchu po którym zdarzenie zostanie rozpoznane jako w bezruchu</string>
     <string name="settings_fall_inactivity_detector_timeout_title">Limit czasu bezczynności (s)</string>
-    <string name="settings_fall_inactivity_detector_timeout_summary">Limit czasu bezczynności powyzej którego zdarzenie zostanie rozpoznane jako upadek</string>
+    <string name="settings_fall_inactivity_detector_timeout_summary">Limit czasu bezczynności po upadku</string>
     <string name="settings_fall_inactivity_detector_threshold_title">Wartość progowa bezczynności</string>
     <string name="settings_fall_inactivity_detector_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako aktywność</string>
     <string name="settings_epilepsy_motion_threshold_title">Wartość progowa ruchu</string>
-    <string name="settings_epilepsy_motion_threshold_summary">Wartość powyzej której zdarzenie zostanie rozpoznane jako ruch</string>
+    <string name="settings_epilepsy_motion_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako ruch</string>
     <string name="settings_epilepsy_time_title">Czas próbkowania (s)</string>
     <string name="settings_epilepsy_time_summary">Czas zbierania danych do analizy</string>
     <string name="settings_epilepsy_motions_title">Ilość ruchów</string>
