@@ -99,7 +99,7 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
                     it.sortBy { it.timestamp }
 
                     val chartData = ChartData()
-                    parseData(it, startDayTimestamp, chartData.xData, chartData.xStatisticData, 0)
+                    parseData(it, startDayTimestamp, chartData.xData, chartData.xStatisticData)
                     return@map chartData
                 }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -118,14 +118,14 @@ abstract class SensorEventViewModel(val boxStore: BoxStore) : ViewModel(), Healt
                 }
     }
 
-    private fun parseData(dataToParse: MutableList<SensorEventEntity>, startDayTimestamp: Long, chartData: MutableList<LineDataSet>, statisticData: StatisticData, index: Int) {
+    private fun parseData(dataToParse: MutableList<SensorEventEntity>, startDayTimestamp: Long, chartData: MutableList<LineDataSet>, statisticData: StatisticData) {
         val measurementDataSet = HashMap<Long, LineDataSet>()
 
         for (sensorEventData in dataToParse) {
-            if (sensorEventData.measurementEventEntity.target == null) {
+            if (sensorEventData.measurementEventEntity.targetId == 0L) {
                 continue
             }
-            val lineDataSet = measurementDataSet.getOrPut(sensorEventData.measurementEventEntity.target.id) {
+            val lineDataSet = measurementDataSet.getOrPut(sensorEventData.measurementEventEntity.targetId) {
                 LineDataSet(mutableListOf(), "")
             }
             createEntry(sensorEventData, startDayTimestamp)?.let { entry ->
