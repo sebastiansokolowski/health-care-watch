@@ -5,7 +5,7 @@
     <string name="dialog_licences_title">O aplikacji</string>
     <string name="share_data_for_testing">Udostępnij dane do testowania</string>
     <string name="event_list_empty">Brak zdarzeń</string>
-    <string name="health_event_epilepsy_message">Procent pozytywnych zdarzeń </string>
+    <string name="health_event_epilepsy_message">Ilość wykrytych ruchów</string>
     <string name="health_event_epilepsy_title">Epilepsja</string>
     <string name="health_event_heart_rate_anomaly_title">Anomalia bicia serca</string>
     <string name="measurement_start_btn">Zacznij pomiary</string>

@@ -63,9 +63,9 @@ class HealthEventHelper(val context: Context) {
     fun getMessage(healthEventEntity: HealthEventEntity): String {
         val value = Utils.formatValue(healthEventEntity.value)
         return when (healthEventEntity.event) {
-            HealthEventType.EPILEPSY -> context.getString(R.string.health_event_epilepsy_message) + " $value " + context.getString(R.string.unit_percentage)
+            HealthEventType.EPILEPSY -> context.getString(R.string.health_event_epilepsy_message) + " $value "
             HealthEventType.HEART_RATE_ANOMALY -> context.getString(R.string.health_event_heart_rate_anomaly_message) + " $value " + context.getString(R.string.unit_heart_rate)
-            HealthEventType.FALL, HealthEventType.FALL_ADVANCED -> context.getString(R.string.health_event_fall_message) + " $value"
+            HealthEventType.FALL, HealthEventType.FALL_ADVANCED -> context.getString(R.string.health_event_fall_message) + " $value " + context.getString(R.string.unit_linear_acceleration)
             else -> "null"
         }
     }

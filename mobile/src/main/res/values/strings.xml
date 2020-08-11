@@ -17,7 +17,7 @@
     <string name="settings_health_events_not_synced">Please connect to watch earlier.</string>
     <string name="health_event_epilepsy_title">Epilepsy</string>
     <string name="health_event_heart_rate_anomaly_title">Heart rate anomaly</string>
-    <string name="health_event_epilepsy_message">Percentage of positive events</string>
+    <string name="health_event_epilepsy_message">The number of motions detected</string>
     <string name="health_event_heart_rate_anomaly_message">Heart rate</string>
     <string name="unit_heart_rate" translatable="false">bpm</string>
     <string name="unit_percentage" translatable="false">%</string>

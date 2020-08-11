@@ -45,8 +45,8 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
                         return@subscribe
                     }
                     // Step 2
-                    val fallCounter = events.count { it.value >= measurementSettings.fallSettings.threshold }
-                    if (fallCounter < measurementSettings.fallSettings.minNumberOfThreshold) {
+                    val thresholdCounter = events.count { it.value >= measurementSettings.fallSettings.threshold }
+                    if (thresholdCounter < measurementSettings.fallSettings.minNumberOfThreshold) {
                         return@subscribe
                     }
                     // Step 3
@@ -54,9 +54,9 @@ class FallEngineAdvanced : HealthGuardEngineBase() {
                         return@subscribe
                     }
 
-                    Timber.d("fall detected fallCounter=$fallCounter")
+                    Timber.d("fall detected thresholdCounter=$thresholdCounter")
                     val max = events.maxBy { it.value }!!
-                    notifyHealthEvent(max, max.value, events, "fallCounter=$fallCounter")
+                    notifyHealthEvent(max, max.value, events, "thresholdCounter=$thresholdCounter")
                 }
                 .let {
                     compositeDisposable.add(it)
