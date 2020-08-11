@@ -13,6 +13,7 @@ import io.objectbox.relation.ToOne
  */
 @Entity
 class HealthEventEntity {
+
     @Id
     var id: Long = 0
 
@@ -29,6 +30,16 @@ class HealthEventEntity {
     lateinit var details: String
 
     lateinit var measurementEventEntity: ToOne<MeasurementEventEntity>
+
+    constructor()
+    constructor(id: Long, value: Float, sensorEventEntityId: Long, event: HealthEventType, details: String, measurementEventEntityId: Long) {
+        this.id = id
+        this.value = value
+        this.sensorEventEntity.targetId = sensorEventEntityId
+        this.event = event
+        this.details = details
+        this.measurementEventEntity.targetId = measurementEventEntityId
+    }
 
     override fun toString(): String {
         return "HealthEventEntity(id=$id, value=$value, sensorEventEntity=$sensorEventEntity, event=$event, details='$details', measurementEventEntity=$measurementEventEntity)"

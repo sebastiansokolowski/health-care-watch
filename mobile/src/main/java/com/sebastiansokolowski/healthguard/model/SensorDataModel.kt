@@ -83,7 +83,7 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
                         }
                     }
 
-                    if(highFrequencyData){
+                    if (highFrequencyData) {
                         removeDuplicatedSensorEvents(sensorEvents)
                     }
 
@@ -155,8 +155,7 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
     }
 
     private fun linkMeasurementEventEntity(measurementId: Long, sensorEventEntity: SensorEventEntity) {
-        var measurementEventEntity = measurementEventEntity
-        if (measurementEventEntity == null || measurementEventEntity.id != measurementId) {
+        if (measurementEventEntity == null || measurementEventEntity?.id != measurementId) {
             measurementEventEntity = measurementEventEntityBox.get(measurementId)
         }
         measurementEventEntity?.sensorEventEntities?.add(sensorEventEntity)
@@ -164,8 +163,7 @@ class SensorDataModel(val context: Context, private val notificationModel: Notif
     }
 
     private fun linkMeasurementEventEntity(measurementId: Long, healthEventEntity: HealthEventEntity) {
-        var measurementEventEntity = measurementEventEntity
-        if (measurementEventEntity == null || measurementEventEntity.id != measurementId) {
+        if (measurementEventEntity == null || measurementEventEntity?.id != measurementId) {
             measurementEventEntity = measurementEventEntityBox.get(measurementId)
         }
         measurementEventEntity?.healthEventEntities?.add(healthEventEntity)

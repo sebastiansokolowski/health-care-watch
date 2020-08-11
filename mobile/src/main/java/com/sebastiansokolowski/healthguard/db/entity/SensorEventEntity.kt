@@ -9,6 +9,7 @@ import io.objectbox.relation.ToOne
  */
 @Entity
 class SensorEventEntity {
+
     @Id
     var id: Long = 0
     var type: Int = 0
@@ -17,6 +18,16 @@ class SensorEventEntity {
     var value: Float = 0f
 
     lateinit var measurementEventEntity: ToOne<MeasurementEventEntity>
+
+    constructor()
+    constructor(id: Long, type: Int, accuracy: Int, timestamp: Long, value: Float, measurementEventEntityId: Long) {
+        this.id = id
+        this.type = type
+        this.accuracy = accuracy
+        this.timestamp = timestamp
+        this.value = value
+        this.measurementEventEntity.targetId = measurementEventEntityId
+    }
 
     override fun toString(): String {
         return "SensorEventData(id=$id, type=$type, accuracy=$accuracy, timestamp=$timestamp, value=${value})"

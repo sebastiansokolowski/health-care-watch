@@ -124,12 +124,23 @@
           "type": 9
         }
       ],
-      "relations": []
+      "relations": [
+        {
+          "id": "1:4018318717254938353",
+          "name": "sensorEventEntities",
+          "targetId": "1:5945329733278448333"
+        },
+        {
+          "id": "2:6416851407485830428",
+          "name": "healthEventEntities",
+          "targetId": "6:1913776364706303030"
+        }
+      ]
     }
   ],
   "lastEntityId": "7:4479983254473488346",
   "lastIndexId": "6:1130056037093122062",
-  "lastRelationId": "0:0",
+  "lastRelationId": "2:6416851407485830428",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
