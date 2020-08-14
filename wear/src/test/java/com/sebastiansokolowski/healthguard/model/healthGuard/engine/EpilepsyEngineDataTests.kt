@@ -72,7 +72,7 @@ class EpilepsyEngineDataTests : DataTestsBase() {
     fun testFiles() {
         val epilepsySettings = EpilepsySettings()
         val measurementSettings = MeasurementSettings(epilepsySettings = epilepsySettings)
-        val summary = testFiles(measurementSettings)
+        val summary = testFiles(measurementSettings, true)
 
         println("\nEpilepsy test results summary$summary\n")
     }

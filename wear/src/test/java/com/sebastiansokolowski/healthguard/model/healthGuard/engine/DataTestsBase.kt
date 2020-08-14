@@ -8,20 +8,23 @@ import com.sebastiansokolowski.shared.dataModel.DataExport
 import com.sebastiansokolowski.shared.dataModel.HealthEvent
 import com.sebastiansokolowski.shared.dataModel.HealthEventType
 import com.sebastiansokolowski.shared.dataModel.settings.MeasurementSettings
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
 import io.reactivex.subjects.PublishSubject
 import java.io.File
 import java.io.FileReader
+import java.lang.Math.pow
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 abstract class DataTestsBase {
-    private val extension = "json"
-    private val adlPath = ""
 
-    private val adlTimeS = 60
+    companion object {
+        private val extension = "json"
+        private val adlPath = ""
+
+        private val adlTimeS = 60
+        private val adlEventWeight = 2
+    }
 
     private val cache = ConcurrentHashMap<File, DataExport>()
 
@@ -31,10 +34,10 @@ abstract class DataTestsBase {
 
     abstract fun getHealthEventType(): HealthEventType
 
-    fun testFiles(measurementSettings: MeasurementSettings): TestResultSummary {
+    fun testFiles(measurementSettings: MeasurementSettings, showFileStatistics: Boolean = false): TestResultSummary {
         val eventTestsResults = testFiles(measurementSettings, File(getEventPath()), false)
         val adlTestsResults = testFiles(measurementSettings, File(adlPath), true)
-        return createSummary(eventTestsResults, adlTestsResults)
+        return createSummary(eventTestsResults, adlTestsResults, showFileStatistics)
     }
 
     private fun testFiles(measurementSettings: MeasurementSettings, path: File, adlTest: Boolean): MutableList<TestResult> {
@@ -87,9 +90,10 @@ abstract class DataTestsBase {
         var measurementTime = 0L
         var lastTimestamp = dataExport.sensorEvents.first().timestamp
         linearAccelerationSensorEvents.forEach {
-            sensorsObservable.linearAccelerationObservable.onNext(it)
             val delayTime = it.timestamp - lastTimestamp
-            if (delayTime < 2000) {
+            // put only data from test mode
+            if (delayTime < 500) {
+                sensorsObservable.linearAccelerationObservable.onNext(it)
                 measurementTime += delayTime
             }
             testScheduler.advanceTimeBy(delayTime, TimeUnit.MILLISECONDS)
@@ -97,72 +101,83 @@ abstract class DataTestsBase {
         }
 
         //events
-        var events = 0
-        var eventsCount = 0
+        var eventsDetected = 0
+        var eventsExpected = 0
 
         if (adlTest) {
-            events = notifiedHealthEvents.size
-            eventsCount = dataExport.counter
+            eventsDetected = notifiedHealthEvents.size
+            eventsExpected = dataExport.counter
                     ?: TimeUnit.MILLISECONDS.toSeconds(measurementTime).toInt() / adlTimeS
         } else {
-            events = notifiedHealthEvents.map { it.sensorEvent }.toSet().size
-            eventsCount = dataExport.counter
+            eventsDetected = notifiedHealthEvents.map { it.sensorEvent }.toSet().size
+            eventsExpected = dataExport.counter
                     ?: dataExport.healthEvents.count { it.healthEventType == getHealthEventType() }
         }
 
-        var detectionAccuracy = if (adlTest) {
-            if (eventsCount == 0) {
+
+        val detectionAccuracy = if (adlTest) {
+            if (eventsExpected == 0) {
                 1f
             } else {
-                1 - (events / eventsCount.toFloat())
+                1 - (eventsDetected / eventsExpected.toFloat())
             }
         } else {
-            if (eventsCount == 0) {
+            if (eventsExpected == 0) {
                 1f
             } else {
-                events / eventsCount.toFloat()
+                eventsDetected / eventsExpected.toFloat()
             }
-        }
-        //
-        if (detectionAccuracy > 1) {
-            detectionAccuracy = 1 - (detectionAccuracy - 1)
-        }
-        if (detectionAccuracy < 0 || detectionAccuracy > 1) {
-            detectionAccuracy = 0f
         }
 
         return TestResult(file,
                 adlTest,
                 detectionAccuracy,
                 measurementTime,
-                events,
-                eventsCount)
+                eventsDetected,
+                eventsExpected)
     }
 
-    fun createSummary(fallTestsResults: MutableList<TestResult>, adlTestsResults: MutableList<TestResult>): TestResultSummary {
+    fun createSummary(fallTestsResults: MutableList<TestResult>, adlTestsResults: MutableList<TestResult>, showExtraLogs: Boolean): TestResultSummary {
         val testResultsSummary = TestResultSummary(
-                0f, 0, 0,
-                0f, 0, 0)
+                0, 0, 0,
+                0, 0, 0)
 
         fallTestsResults.forEach { fallTestsResult ->
-//            println(fallTestsResult)
+            if (showExtraLogs) {
+                println(fallTestsResult)
+            }
             testResultsSummary.apply {
-                eventsDetectionAccuracy += fallTestsResult.detectionAccuracy
-                eventsDetected += fallTestsResult.eventsDetected
+                eventsDetected += fixEventDetected(fallTestsResult)
+//                eventsDetected += fallTestsResult.eventsDetected
                 eventsExpected += fallTestsResult.eventsExpected
+                eventsMeasurementTime += fallTestsResult.measurementTime
             }
         }
         adlTestsResults.forEach { adlTestsResult ->
-//            println(adlTestsResult)
+            if (showExtraLogs) {
+                println(adlTestsResult)
+            }
             testResultsSummary.apply {
-                adlDetectionAccuracy += adlTestsResult.detectionAccuracy
-                adlEventsDetected += adlTestsResult.eventsDetected
+                adlEventsDetected += fixEventDetected(adlTestsResult)
                 adlEventsExpected += adlTestsResult.eventsExpected
+                adlMeasurementTime += adlTestsResult.measurementTime
             }
         }
-        testResultsSummary.eventsDetectionAccuracy /= fallTestsResults.size
-        testResultsSummary.adlDetectionAccuracy /= adlTestsResults.size
         return testResultsSummary
+    }
+
+    private fun fixEventDetected(testResult: TestResult): Int {
+        //handle the case when we detected more events than expected
+        testResult.apply {
+            var fixedEventsDetected = eventsDetected
+            if (fixedEventsDetected > eventsExpected) {
+                fixedEventsDetected -= (eventsExpected - fixedEventsDetected)
+            }
+            if (fixedEventsDetected > eventsExpected) {
+                fixedEventsDetected = 0
+            }
+            return fixedEventsDetected
+        }
     }
 
     data class TestResult(
@@ -190,24 +205,40 @@ abstract class DataTestsBase {
     }
 
     data class TestResultSummary(
-            var eventsDetectionAccuracy: Float,
             var eventsDetected: Int,
             var eventsExpected: Int,
-            var adlDetectionAccuracy: Float,
+            var eventsMeasurementTime: Long,
             var adlEventsDetected: Int,
-            var adlEventsExpected: Int
+            var adlEventsExpected: Int,
+            var adlMeasurementTime: Long
     ) {
 
+        fun getEventsDetectionAccuracy(): Float {
+            return eventsDetected / eventsExpected.toFloat()
+        }
+
+        fun getAdlDetectionAccuracy(): Float {
+            return (adlEventsExpected - adlEventsDetected) / adlEventsExpected.toFloat()
+        }
+
         fun getDetectionAccuracy(): Float {
-            return (eventsDetectionAccuracy + adlDetectionAccuracy) / 2
+            return (getEventsDetectionAccuracy() + getAdlDetectionAccuracy()) / 2
+        }
+
+        fun getWeightDetectionAccuracy(): Float {
+            return (getEventsDetectionAccuracy() + pow(getAdlDetectionAccuracy().toDouble(), adlEventWeight.toDouble()).toFloat()) / 2
         }
 
         override fun toString(): String {
             return "\n detectionAccuracy=${getDetectionAccuracy() * 100}%" +
-                    "\n eventsDetectionAccuracy=${eventsDetectionAccuracy * 100}%" +
+                    "\n weightDetectionAccuracy=${getWeightDetectionAccuracy() * 100}%" +
+                    "\n eventsDetectionAccuracy=${getEventsDetectionAccuracy() * 100}%" +
                     "\n $eventsDetected/$eventsExpected" +
-                    "\n adlDetectionAccuracy=${adlDetectionAccuracy * 100}%" +
-                    "\n $adlEventsDetected/$adlEventsExpected"
+                    "\n eventsMeasurementTime=${TimeUnit.MILLISECONDS.toMinutes(eventsMeasurementTime)}" +
+                    "\n adlDetectionAccuracy=${getAdlDetectionAccuracy() * 100}%" +
+                    "\n $adlEventsDetected/$adlEventsExpected" +
+                    "\n adlMeasurementTime=${TimeUnit.MILLISECONDS.toMinutes(adlMeasurementTime)}"
         }
+
     }
 }

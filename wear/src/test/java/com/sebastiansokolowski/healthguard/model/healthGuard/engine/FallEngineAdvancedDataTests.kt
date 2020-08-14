@@ -31,7 +31,7 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
         val inactivityDetectorThresholdValues = IntRange(1, 5).step(1).toList()
         val minNumberOfThresholdValues = IntRange(1, 4).step(1).toList()
 
-        val executorService = Executors.newScheduledThreadPool(10)
+        val executorService = Executors.newScheduledThreadPool(5)
         val numberOfOptions = thresholdValues.size * samplingTimeSValues.size *
                 inactivityDetectorTimeoutSValues.size * inactivityDetectorThresholdValues.size *
                 minNumberOfThresholdValues.size
@@ -53,7 +53,7 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
                                 val summary = testFiles(measurementSettings)
 
                                 synchronized(this) {
-                                    if (theBestSummaryTestResult == null || theBestSummaryTestResult!!.getDetectionAccuracy() <= summary.getDetectionAccuracy()) {
+                                    if (theBestSummaryTestResult == null || theBestSummaryTestResult!!.getWeightDetectionAccuracy() <= summary.getWeightDetectionAccuracy()) {
                                         theBestSummaryTestResult = summary
                                         theBestFallSettings = fallSettings
 
@@ -77,7 +77,7 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
     fun testFiles() {
         val fallSettings = FallSettings()
         val measurementSettings = MeasurementSettings(fallSettings = fallSettings)
-        val summary = testFiles(measurementSettings)
+        val summary = testFiles(measurementSettings, true)
 
         println("\nFall test results summary$summary\n")
     }
