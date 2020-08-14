@@ -81,8 +81,10 @@
     <string name="settings_epilepsy_motion_threshold_summary">Wartość powyżej której zdarzenie zostanie rozpoznane jako ruch</string>
     <string name="settings_epilepsy_time_title">Czas próbkowania (s)</string>
     <string name="settings_epilepsy_time_summary">Czas zbierania danych do analizy</string>
-    <string name="settings_epilepsy_motions_title">Ilość ruchów</string>
-    <string name="settings_epilepsy_motions_summary">Wartość powyżej której atak zostanie wykryty</string>
+    <string name="settings_epilepsy_motions_to_detect_title">Ilość ruchów do wykrycia</string>
+    <string name="settings_epilepsy_motions_to_cancel_title">Ilość ruchów do odwołania</string>
+    <string name="settings_epilepsy_motions_to_detect_summary">Wartość powyżej której atak zostanie wykryty</string>
+    <string name="settings_epilepsy_motions_to_cancel_summary">Wartość poniżej której atak zostanie odwołany</string>
     <string name="settings_sampling_time_summary">Częstotliwość odświeżania danych z czujników</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_summary">Limit czasu wykrycia aktywności po którym zdarzenie zostanie rozpoznane jako bezczynność</string>
     <string name="settings_fall_inactivity_detector_title">Wykrywanie bezczynności</string>

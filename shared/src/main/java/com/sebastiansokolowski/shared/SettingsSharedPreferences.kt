@@ -29,6 +29,7 @@ class SettingsSharedPreferences {
         const val FALL_INACTIVITY_DETECTOR_THRESHOLD = "fall_inactivity_detector_threshold"
         const val EPILEPSY_THRESHOLD = "epilepsy_motion_threshold"
         const val EPILEPSY_SAMPLING_TIME_S = "epilepsy_sampling_time_s"
-        const val EPILEPSY_MOTIONS = "epilepsy_motions"
+        const val EPILEPSY_MOTIONS_TO_DETECT = "epilepsy_motions_to_detect"
+        const val EPILEPSY_MOTIONS_TO_CANCEL = "epilepsy_motions_to_cancel"
     }
 }

@@ -25,14 +25,14 @@ class EpilepsyEngineDataTests : DataTestsBase() {
 
     @Test
     fun findTheBestEpilepsySettings() {
-
-        val thresholdValues = IntRange(3, 15).step(1).toList()
-        val samplingTimeSValues = IntRange(5, 30).step(1).toList()
+        val thresholdValues = IntRange(3, 10).step(1).toList()
+        val samplingTimeSValues = IntRange(5, 15).step(1).toList()
         val motionsValues = IntRange(30, 150).step(5).toList()
+        val motionsToCancelValues = IntRange(0, 50).step(5).toList()
 
-        val executorService = Executors.newScheduledThreadPool(10)
+        val executorService = Executors.newScheduledThreadPool(5)
         val numberOfOptions = thresholdValues.size * samplingTimeSValues.size *
-                motionsValues.size
+                motionsValues.size * motionsToCancelValues.size
         val countDownLatch = CountDownLatch(numberOfOptions)
 
         var theBestSummaryTestResult: TestResultSummary? = null
@@ -40,22 +40,24 @@ class EpilepsyEngineDataTests : DataTestsBase() {
         thresholdValues.forEach { threshold ->
             samplingTimeSValues.forEach { samplingTimeS ->
                 motionsValues.forEach { motions ->
-                    executorService.submit {
-                        val epilepsySettings = EpilepsySettings(threshold, samplingTimeS, motions)
-                        println("testing $epilepsySettings")
+                    motionsToCancelValues.forEach { motionsToCancel ->
+                        executorService.submit {
+                            val epilepsySettings = EpilepsySettings(threshold, samplingTimeS, motions, motionsToCancel)
+                            println("testing $epilepsySettings")
 
-                        val measurementSettings = MeasurementSettings(epilepsySettings = epilepsySettings)
-                        val summary = testFiles(measurementSettings)
+                            val measurementSettings = MeasurementSettings(epilepsySettings = epilepsySettings)
+                            val summary = testFiles(measurementSettings)
 
-                        synchronized(this) {
-                            if (theBestSummaryTestResult == null || theBestSummaryTestResult!!.getDetectionAccuracy() <= summary.getDetectionAccuracy()) {
-                                theBestSummaryTestResult = summary
-                                theBestSeizureSettings = epilepsySettings
+                            synchronized(this) {
+                                if (theBestSummaryTestResult == null || theBestSummaryTestResult!!.getWeightDetectionAccuracy() <= summary.getWeightDetectionAccuracy()) {
+                                    theBestSummaryTestResult = summary
+                                    theBestSeizureSettings = epilepsySettings
 
-                                println("found $theBestSeizureSettings$theBestSummaryTestResult")
+                                    println("found $theBestSeizureSettings$theBestSummaryTestResult")
+                                }
                             }
+                            countDownLatch.countDown()
                         }
-                        countDownLatch.countDown()
                     }
                 }
             }

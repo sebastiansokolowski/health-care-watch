@@ -7,6 +7,7 @@ import io.reactivex.disposables.CompositeDisposable
 import timber.log.Timber
 import java.lang.Math.abs
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
@@ -15,6 +16,8 @@ class EpilepsyEngine : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
+
+    private val lastDetected = AtomicBoolean(false)
 
     override fun startEngine() {
         sensorsObservable.linearAccelerationObservable
@@ -44,9 +47,12 @@ class EpilepsyEngine : HealthGuardEngineBase() {
                         diff += abs(lastEvent.value - event.value)
                         lastEvent = event
                     }
-                    if (motions >= measurementSettings.epilepsySettings.motions) {
+                    if (motions >= measurementSettings.epilepsySettings.motionsToDetect && !lastDetected.get()) {
                         Timber.d("epilepsy detected!!")
+                        lastDetected.set(true)
                         notifyHealthEvent(events.last(), motions.toFloat(), events)
+                    } else if (motions < measurementSettings.epilepsySettings.motionsToCancel) {
+                        lastDetected.set(false)
                     }
                 }
                 .let {

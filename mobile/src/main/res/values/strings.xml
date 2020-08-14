@@ -83,7 +83,8 @@
     <string name="settings_epilepsy_motion_threshold_summary">The value above which the event will be recognized as a motion</string>
     <string name="settings_epilepsy_time_title">Sampling time (s)</string>
     <string name="settings_epilepsy_time_summary">Data collection time for analysis</string>
-    <string name="settings_epilepsy_motions_summary">The value above which an attack will be detected</string>
+    <string name="settings_epilepsy_motions_to_detect_summary">The value above which an attack will be detected</string>
+    <string name="settings_epilepsy_motions_to_cancel_summary">The value below which the attack will be canceled</string>
     <string name="settings_sampling_time_summary">Frequency of refreshing data from sensors</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_summary">Activity detection timeout after which the event will be recognized as inactivity.</string>
     <string name="settings_fall_threshold_summary">The value above which the event will be recognized as a fall</string>
@@ -96,7 +97,8 @@
     <string name="test_mode_summary">In test mode, each reading is synchronized</string>
     <string name="battery_saver_title">Battery saver</string>
     <string name="battery_saver_summary">Fall will only be detected in motion.</string>
-    <string name="settings_epilepsy_motions_title">Number of motions</string>
+    <string name="settings_epilepsy_motions_to_detect_title">Number of motions to detect</string>
+    <string name="settings_epilepsy_motions_to_cancel_title">Number of motions to cancel</string>
     <string name="share_data_test_mode">Test mode:</string>
     <string name="share_data_test_mode_general">General</string>
     <string name="share_data_test_mode_fall">Fall</string>

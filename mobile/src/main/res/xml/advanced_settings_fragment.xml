@@ -128,7 +128,7 @@
             android:summary="@string/settings_epilepsy_time_summary"
             android:title="@string/settings_epilepsy_time_title"
             app:iconSpaceReserved="false"
-            app:min="10"
+            app:min="5"
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
@@ -141,12 +141,21 @@
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            android:key="epilepsy_motions"
+            android:key="epilepsy_motions_to_detect"
             android:max="200"
-            android:summary="@string/settings_epilepsy_motions_summary"
-            android:title="@string/settings_epilepsy_motions_title"
+            android:summary="@string/settings_epilepsy_motions_to_detect_summary"
+            android:title="@string/settings_epilepsy_motions_to_detect_title"
             app:iconSpaceReserved="false"
             app:min="20"
+            app:showSeekBarValue="true" />
+
+        <SeekBarPreference
+            android:key="epilepsy_motions_to_cancel"
+            android:max="50"
+            android:summary="@string/settings_epilepsy_motions_to_cancel_summary"
+            android:title="@string/settings_epilepsy_motions_to_cancel_title"
+            app:iconSpaceReserved="false"
+            app:min="1"
             app:showSeekBarValue="true" />
 
     </PreferenceCategory>
