@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /**
  * Created by Sebastian Sokołowski on 07.06.19.
  */
-class EpilepsyEngine : HealthGuardEngineBase() {
+class ConvulsionsEngine : HealthGuardEngineBase() {
     val TAG = this::class.java.simpleName
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
@@ -22,7 +22,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
     override fun startEngine() {
         sensorsObservable.linearAccelerationObservable
                 .subscribeOn(scheduler)
-                .buffer(measurementSettings.epilepsySettings.samplingTimeS.toLong(),
+                .buffer(measurementSettings.convulsionsSettings.samplingTimeS.toLong(),
                         1,
                         TimeUnit.SECONDS,
                         scheduler)
@@ -38,7 +38,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
                         if (event.value > lastEvent.value && decreasing ||
                                 event.value < lastEvent.value && !decreasing) {
                             decreasing = !decreasing
-                            if (diff >= measurementSettings.epilepsySettings.threshold) {
+                            if (diff >= measurementSettings.convulsionsSettings.threshold) {
                                 motions++
                             }
                             diff = 0f
@@ -47,11 +47,11 @@ class EpilepsyEngine : HealthGuardEngineBase() {
                         diff += abs(lastEvent.value - event.value)
                         lastEvent = event
                     }
-                    if (!detectedEvent.get() && motions >= measurementSettings.epilepsySettings.motionsToDetect) {
-                        Timber.d("epilepsy detected!!")
+                    if (!detectedEvent.get() && motions >= measurementSettings.convulsionsSettings.motionsToDetect) {
+                        Timber.d("convulsions detected!!")
                         detectedEvent.set(true)
                         notifyHealthEvent(events.last(), motions.toFloat(), events)
-                    } else if (detectedEvent.get() && motions < measurementSettings.epilepsySettings.motionsToCancel) {
+                    } else if (detectedEvent.get() && motions < measurementSettings.convulsionsSettings.motionsToCancel) {
                         detectedEvent.set(false)
                     }
                 }
@@ -65,7 +65,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
     }
 
     override fun getHealthEventType(): HealthEventType {
-        return HealthEventType.EPILEPSY
+        return HealthEventType.CONVULSIONS
     }
 
     override fun requiredSensors(): Set<Int> {

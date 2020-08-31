@@ -27,9 +27,9 @@ class SettingsSharedPreferences {
         const val FALL_INACTIVITY_DETECTOR = "fall_inactivity_detector"
         const val FALL_INACTIVITY_DETECTOR_TIMEOUT_S = "fall_inactivity_detector_timeout_s"
         const val FALL_INACTIVITY_DETECTOR_THRESHOLD = "fall_inactivity_detector_threshold"
-        const val EPILEPSY_THRESHOLD = "epilepsy_motion_threshold"
-        const val EPILEPSY_SAMPLING_TIME_S = "epilepsy_sampling_time_s"
-        const val EPILEPSY_MOTIONS_TO_DETECT = "epilepsy_motions_to_detect"
-        const val EPILEPSY_MOTIONS_TO_CANCEL = "epilepsy_motions_to_cancel"
+        const val CONVULSIONS_THRESHOLD = "convulsions_motion_threshold"
+        const val CONVULSIONS_SAMPLING_TIME_S = "convulsions_sampling_time_s"
+        const val CONVULSIONS_MOTIONS_TO_DETECT = "convulsions_motions_to_detect"
+        const val CONVULSIONS_MOTIONS_TO_CANCEL = "convulsions_motions_to_cancel"
     }
 }

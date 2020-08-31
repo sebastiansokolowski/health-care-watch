@@ -119,41 +119,41 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/health_event_epilepsy_title"
+        android:title="@string/health_event_convulsions_title"
         app:iconSpaceReserved="false">
 
         <SeekBarPreference
-            android:key="epilepsy_sampling_time_s"
+            android:key="convulsions_sampling_time_s"
             android:max="30"
-            android:summary="@string/settings_epilepsy_time_summary"
-            android:title="@string/settings_epilepsy_time_title"
+            android:summary="@string/settings_convulsions_time_summary"
+            android:title="@string/settings_convulsions_time_title"
             app:iconSpaceReserved="false"
             app:min="5"
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            android:key="epilepsy_motion_threshold"
+            android:key="convulsions_motion_threshold"
             android:max="20"
-            android:summary="@string/settings_epilepsy_motion_threshold_summary"
-            android:title="@string/settings_epilepsy_motion_threshold_title"
+            android:summary="@string/settings_convulsions_motion_threshold_summary"
+            android:title="@string/settings_convulsions_motion_threshold_title"
             app:iconSpaceReserved="false"
             app:min="1"
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            android:key="epilepsy_motions_to_detect"
+            android:key="convulsions_motions_to_detect"
             android:max="200"
-            android:summary="@string/settings_epilepsy_motions_to_detect_summary"
-            android:title="@string/settings_epilepsy_motions_to_detect_title"
+            android:summary="@string/settings_convulsions_motions_to_detect_summary"
+            android:title="@string/settings_convulsions_motions_to_detect_title"
             app:iconSpaceReserved="false"
             app:min="20"
             app:showSeekBarValue="true" />
 
         <SeekBarPreference
-            android:key="epilepsy_motions_to_cancel"
+            android:key="convulsions_motions_to_cancel"
             android:max="50"
-            android:summary="@string/settings_epilepsy_motions_to_cancel_summary"
-            android:title="@string/settings_epilepsy_motions_to_cancel_title"
+            android:summary="@string/settings_convulsions_motions_to_cancel_summary"
+            android:title="@string/settings_convulsions_motions_to_cancel_title"
             app:iconSpaceReserved="false"
             app:min="1"
             app:showSeekBarValue="true" />

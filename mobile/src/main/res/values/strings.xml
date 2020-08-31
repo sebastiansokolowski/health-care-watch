@@ -15,9 +15,9 @@
     <string name="action_cancel">CANCEL</string>
     <string name="action_undo">UNDO</string>
     <string name="settings_health_events_not_synced">Please connect to watch earlier.</string>
-    <string name="health_event_epilepsy_title">Epilepsy</string>
+    <string name="health_event_convulsions_title">Convulsions</string>
     <string name="health_event_heart_rate_anomaly_title">Heart rate anomaly</string>
-    <string name="health_event_epilepsy_message">The number of motions detected</string>
+    <string name="health_event_convulsions_message">The number of motions detected</string>
     <string name="health_event_heart_rate_anomaly_message">Heart rate</string>
     <string name="unit_heart_rate" translatable="false">bpm</string>
     <string name="unit_percentage" translatable="false">%</string>
@@ -74,17 +74,17 @@
     <string name="settings_heart_beat_anomaly_min_threshold_summary">The value below which the event will be recognized as a heartbeat anomaly</string>
     <string name="settings_heart_beat_anomaly_inactivity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during inactivity</string>
     <string name="settings_heart_beat_anomaly_activity_max_threshold_summary">The value above which the event will be recognized as a heartbeat anomaly during activity</string>
-    <string name="settings_epilepsy_motion_threshold_title">Motion threshold value</string>
+    <string name="settings_convulsions_motion_threshold_title">Motion threshold value</string>
     <string name="settings_fall_sampling_time_summary">Data collection time for analysis</string>
     <string name="settings_fall_step_detector_summary">The event will only be detected in motion</string>
     <string name="settings_fall_step_detector_timeout_summary">Step detection timeout after which the event will be recognized as a motionless</string>
     <string name="settings_fall_inactivity_detector_threshold_title">Inactivity threshold</string>
     <string name="settings_fall_inactivity_detector_threshold_summary">The value above which the event will be recognized as an activity</string>
-    <string name="settings_epilepsy_motion_threshold_summary">The value above which the event will be recognized as a motion</string>
-    <string name="settings_epilepsy_time_title">Sampling time (s)</string>
-    <string name="settings_epilepsy_time_summary">Data collection time for analysis</string>
-    <string name="settings_epilepsy_motions_to_detect_summary">The value above which an attack will be detected</string>
-    <string name="settings_epilepsy_motions_to_cancel_summary">The value below which the attack will be canceled</string>
+    <string name="settings_convulsions_motion_threshold_summary">The value above which the event will be recognized as a motion</string>
+    <string name="settings_convulsions_time_title">Sampling time (s)</string>
+    <string name="settings_convulsions_time_summary">Data collection time for analysis</string>
+    <string name="settings_convulsions_motions_to_detect_summary">The value above which an attack will be detected</string>
+    <string name="settings_convulsions_motions_to_cancel_summary">The value below which the attack will be canceled</string>
     <string name="settings_sampling_time_summary">Frequency of refreshing data from sensors</string>
     <string name="settings_heart_beat_anomaly_activity_detector_timeout_summary">Activity detection timeout after which the event will be recognized as inactivity.</string>
     <string name="settings_fall_threshold_summary">The value above which the event will be recognized as a fall</string>
@@ -97,12 +97,12 @@
     <string name="test_mode_summary">In test mode, each reading is synchronized</string>
     <string name="battery_saver_title">Battery saver</string>
     <string name="battery_saver_summary">Fall will only be detected in motion.</string>
-    <string name="settings_epilepsy_motions_to_detect_title">Number of motions to detect</string>
-    <string name="settings_epilepsy_motions_to_cancel_title">Number of motions to cancel</string>
+    <string name="settings_convulsions_motions_to_detect_title">Number of motions to detect</string>
+    <string name="settings_convulsions_motions_to_cancel_title">Number of motions to cancel</string>
     <string name="share_data_test_mode">Test mode:</string>
     <string name="share_data_test_mode_general">General</string>
     <string name="share_data_test_mode_fall">Fall</string>
-    <string name="share_data_test_mode_epilepsy">Epilepsy</string>
+    <string name="share_data_test_mode_convulsions">Convulsions</string>
     <string name="share_data_test_mode_adl">ADL</string>
     <string name="share_data_comment">comment</string>
     <string name="share_data_events_number">number of events</string>

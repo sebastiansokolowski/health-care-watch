@@ -28,10 +28,10 @@
             android:text="@string/share_data_test_mode_fall" />
 
         <RadioButton
-            android:id="@+id/rb_test_mode_epilepsy"
+            android:id="@+id/rb_test_mode_convulsions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/share_data_test_mode_epilepsy" />
+            android:text="@string/share_data_test_mode_convulsions" />
 
         <RadioButton
             android:id="@+id/rb_test_mode_adl"

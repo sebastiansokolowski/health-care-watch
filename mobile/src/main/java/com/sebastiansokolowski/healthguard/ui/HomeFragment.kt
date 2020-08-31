@@ -188,8 +188,8 @@ class HomeFragment : DaggerFragment() {
                     R.id.rb_test_mode_fall -> {
                         DataExport.TestMode.FALL
                     }
-                    R.id.rb_test_mode_epilepsy -> {
-                        DataExport.TestMode.EPILEPSY
+                    R.id.rb_test_mode_convulsions -> {
+                        DataExport.TestMode.CONVULSIONS
                     }
                     R.id.rb_test_mode_adl -> {
                         DataExport.TestMode.ADL

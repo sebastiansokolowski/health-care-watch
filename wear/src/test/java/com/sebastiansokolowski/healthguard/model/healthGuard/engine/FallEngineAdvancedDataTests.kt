@@ -15,7 +15,7 @@ import java.util.concurrent.Executors
 @RunWith(MockitoJUnitRunner.Silent::class)
 class FallEngineAdvancedDataTests : DataTestsBase() {
 
-    private val fallPath = ""
+    private val fallPath = "C:\\Users\\admin\\Dysk Google (mateuszkozik222@gmail.com)\\mHealthGuard_test-data\\Fall"
 
     override fun getEventPath() = fallPath
 
@@ -27,8 +27,8 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
     fun findTheBestFallSettings() {
         val thresholdValues = IntRange(20, 25).step(1).toList()
         val samplingTimeSValues = IntRange(6, 10).step(1).toList()
-        val inactivityDetectorTimeoutSValues = IntRange(1, 5).step(1).toList()
-        val inactivityDetectorThresholdValues = IntRange(1, 5).step(1).toList()
+        val inactivityDetectorTimeoutSValues = IntRange(1, 1).step(1).toList()
+        val inactivityDetectorThresholdValues = IntRange(1, 1).step(1).toList()
         val minNumberOfThresholdValues = IntRange(1, 4).step(1).toList()
 
         val executorService = Executors.newScheduledThreadPool(5)
@@ -46,7 +46,7 @@ class FallEngineAdvancedDataTests : DataTestsBase() {
                         minNumberOfThresholdValues.forEach { minNumberOfThreshold ->
                             executorService.submit {
                                 val fallSettings = FallSettings(threshold, samplingTimeS, minNumberOfThreshold,
-                                        true, inactivityDetectorTimeoutS, inactivityDetectorThreshold)
+                                        false, inactivityDetectorTimeoutS, inactivityDetectorThreshold)
                                 println("testing $fallSettings")
 
                                 val measurementSettings = MeasurementSettings(fallSettings = fallSettings)
