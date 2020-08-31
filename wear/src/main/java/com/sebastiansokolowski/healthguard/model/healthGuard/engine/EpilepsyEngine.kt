@@ -17,7 +17,7 @@ class EpilepsyEngine : HealthGuardEngineBase() {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
-    private val lastDetected = AtomicBoolean(false)
+    private val detectedEvent = AtomicBoolean(false)
 
     override fun startEngine() {
         sensorsObservable.linearAccelerationObservable
@@ -47,12 +47,12 @@ class EpilepsyEngine : HealthGuardEngineBase() {
                         diff += abs(lastEvent.value - event.value)
                         lastEvent = event
                     }
-                    if (motions >= measurementSettings.epilepsySettings.motionsToDetect && !lastDetected.get()) {
+                    if (!detectedEvent.get() && motions >= measurementSettings.epilepsySettings.motionsToDetect) {
                         Timber.d("epilepsy detected!!")
-                        lastDetected.set(true)
+                        detectedEvent.set(true)
                         notifyHealthEvent(events.last(), motions.toFloat(), events)
-                    } else if (motions < measurementSettings.epilepsySettings.motionsToCancel) {
-                        lastDetected.set(false)
+                    } else if (detectedEvent.get() && motions < measurementSettings.epilepsySettings.motionsToCancel) {
+                        detectedEvent.set(false)
                     }
                 }
                 .let {
